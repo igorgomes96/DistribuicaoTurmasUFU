@@ -36,20 +36,25 @@ namespace DistribuicaoDisciplinas.Services
         #endregion
 
         #region Map
-        private readonly IMapper<FilaTurma, FilaTurmaRespostaDto> _filaTurmaRespMapper;
+        private readonly IMapper<Turma, TurmaRespostaDto> _turmaRespMapper;
+        private readonly IMapper<Professor, ProfessorRespostaDto> _profRespMapper;
         #endregion
 
         #region Constructor
         public DistribuicaoService(
+            IGenericRepository<FilaTurmaEntity> filasTurmasRep,
             IProfessoresService professoresService,
             ITurmasService turmasService,
             ICenariosService cenariosService,
-            IMapper<FilaTurma, FilaTurmaRespostaDto> filaTurmaRespMapper)
+            IMapper<Turma, TurmaRespostaDto> turmaRespMapper,
+            IMapper<Professor, ProfessorRespostaDto> profRespMapper)
         {
             _professoresService = professoresService;
             _turmasService = turmasService;
             _cenariosService = cenariosService;
-            _filaTurmaRespMapper = filaTurmaRespMapper;
+            _turmaRespMapper = turmaRespMapper;
+            _filasTurmasRep = filasTurmasRep;
+            _profRespMapper = profRespMapper;
         }
         #endregion
 
@@ -125,7 +130,7 @@ namespace DistribuicaoDisciplinas.Services
                     }
                     else
                     {
-                        if (ft.Turma.Posicoes.FirstOrDefault(t => t.StatusAlgoritmo != StatusFilaAlgoritmo.ChoqueRestricao) == ft)
+                        if (ft.Turma.Posicoes.FirstOrDefault().Equals(ft))
                         {
                             if (!turmasAtribuidas
                                 .Any(x => _turmasService.ChoqueHorario(x.Turma, ft.Turma)
@@ -134,6 +139,7 @@ namespace DistribuicaoDisciplinas.Services
                                 turmasAtribuidas.Add(ft);
                             }
                         }
+
                         if (turmasAtribuidas.Select(x => x.Turma.CH).Sum() >= prof.CH)
                             flagCHCompleta = true;
                     }
@@ -164,12 +170,27 @@ namespace DistribuicaoDisciplinas.Services
         }
 
         /// <summary>
+        ///  Para o professor passado por parâmetro, atualiza as prioridades EmEspera e NaoAnalisadasAinda
+        /// para CHCompleta.
+        /// </summary>
+        /// <param name="professor">Professor a ser atualizado</param>
+        private void AtualizaPrioridadesCHCompleta(Professor professor)
+        {
+            professor.Prioridades
+                .Where(ft =>ft.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera ||
+                    ft.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda)
+                .ToList()
+                .ForEach(ft => ft.StatusAlgoritmo = StatusFilaAlgoritmo.CHCompleta);
+        }
+
+        /// <summary>
         /// Faz a atribuição dos casos triviais (Turmas não analisadas ou em espera que são a próxima prioridade do professor)
         /// </summary>
         /// <returns>true, se houve alguma atribuição; false, se não.</returns>
         private bool CasosTriviais()
         {
-            bool flag = false;
+            bool flagHouveAtribuicao = false;
+            bool flagCHCompleta = false;
             foreach (Professor p in professores.Values)
             {
                 List<FilaTurma> possibilidadesProf = p.Prioridades
@@ -188,7 +209,15 @@ namespace DistribuicaoDisciplinas.Services
                         if ((p.CHAtribuida() + filaTurma.Turma.CH + ACRESCIMO_CH + p.CHEmEspera()) <= p.CH)
                         {
                             AtribuirTurma(filaTurma);
-                            flag = true;
+                            flagHouveAtribuicao = true;
+
+                            //Se a CH do professor já estiver completa e nenhum turma estiver em espera, atualiza 
+                            //o status de todas as demais FilasTurmas do professor e passa para o próximo
+                            if (p.CHCompletaAtribuida() && p.CHEmEspera() == 0) { 
+                                AtualizaPrioridadesCHCompleta(p);
+                                flagCHCompleta = true;
+                                continue;
+                            }
                         }
                         else
                             filaTurma.StatusAlgoritmo = StatusFilaAlgoritmo.EmEspera;
@@ -198,11 +227,31 @@ namespace DistribuicaoDisciplinas.Services
                         filaTurma.StatusAlgoritmo = StatusFilaAlgoritmo.EmEspera;
                     }
                 }
+
+                if (flagCHCompleta) continue;
             }
 
-            return flag;
+            return flagHouveAtribuicao;
         }
 
+        private RespostaDto GeraResposta()
+        {
+            ICollection<Turma> turmasAtribuidas = filasTurmas
+                .Where(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.Atribuda).Select(x => x.Turma)
+                .Distinct()
+                .ToList();
+
+            return new RespostaDto
+            {
+                Professores = _profRespMapper.Map(professores.Values),
+                TurmasPendentes = _turmaRespMapper.Map(turmas.Values.Where(t => !turmasAtribuidas.Any(x => x.Id == t.Id)).ToList())
+            };
+        }
+
+        /// <summary>
+        /// Atualiza os status das FilasTurmas do professor e verifica se alguma turma não analisada choca com a turma atribuída
+        /// </summary>
+        /// <param name="filaTurma"></param>
         private void AtribuirTurma(FilaTurma filaTurma)
         {
             //Atualiza o status de todas as filas da turma que foi atribuída para OutroProfessor
@@ -211,6 +260,7 @@ namespace DistribuicaoDisciplinas.Services
                     || pt.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera).ToList()
                 .ForEach(ft => ft.StatusAlgoritmo = StatusFilaAlgoritmo.OutroProfessor);
 
+            //Atualiza o status das FilasTurmas que chocam horário ou período com a turma atribuída
             foreach (FilaTurma prioridade in filaTurma.Fila.Professor.Prioridades)
             {
                 if (!prioridade.Equals(filaTurma))
@@ -228,7 +278,7 @@ namespace DistribuicaoDisciplinas.Services
         #endregion
 
         #region Public Methods
-        public ICollection<FilaTurmaRespostaDto> Distribuir(int numCenario)
+        public RespostaDto Distribuir(int numCenario)
         {
             cenario = _cenariosService.Find(numCenario);
             ICollection<FilaTurmaEntity> filasTurmasEntities = _filasTurmasRep
@@ -247,14 +297,9 @@ namespace DistribuicaoDisciplinas.Services
 
             while (CasosTriviais())
             {
-                AtualizaPrioridadesCHCompleta();
             };
 
-            return _filaTurmaRespMapper
-                .Map(filasTurmas)
-                .OrderBy(x => x.Professor)
-                .ThenBy(x => x.Prioridade)
-                .ToList();
+            return GeraResposta();
         }
         #endregion
 

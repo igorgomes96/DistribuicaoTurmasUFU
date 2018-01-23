@@ -39,6 +39,10 @@ namespace DistribuicaoDisciplinas.Models
             return CHAtribuida() + CHEmEspera();
         }
 
+        /// <summary>
+        /// Verifica se as turmas atribuídas são suficientes para completas a carga horário do professor
+        /// </summary>
+        /// <returns></returns>
         public bool CHCompletaAtribuida()
         {
             return CHAtribuida() >= CH;

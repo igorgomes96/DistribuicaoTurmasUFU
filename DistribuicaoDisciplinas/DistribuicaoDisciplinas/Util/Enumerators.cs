@@ -9,16 +9,15 @@ namespace DistribuicaoDisciplinas.Util
     {
         public enum StatusFilaAlgoritmo
         {
-            NaoAnalisadaAinda,
-            Desconsiderada,  //As filas com maior prioridade completarão a CH do professor, com certeza
-            EmEspera,  //Filas já analisadas, porém por algum motivo não foi possível fazer a atribuição até momento
-            Atribuda,
-            ChoqueHorario,
-            ChoqueRestricao,
-            ChoquePeriodo,
-            OutroProfessor,
-            CHCompleta,
-            CHUltrapassadaSeAtribuida,
+            Desconsiderada,     //FilaTurma que está com uma prioridade muito baixa e as que estão com prioridade maior com certeza completarão a CH do professor
+            Atribuda,           //FilaTurma atribuída
+            NaoAnalisadaAinda,  //FilaTurma não desconsiderada, porém o algoritmo ainda não chegou à ela.
+            EmEspera,           //FilaTurma analisada, porém o professor não está na primeira posição da turma
+            ChoqueHorario,      //FilaTurma em que a turma choca horário com outra já atribuída ao professor
+            ChoqueRestricao,    //FilaTurma em que a turma choca com um horário que o professor estará indisponível
+            ChoquePeriodo,      //FilaTurma em que a turma choca período com outra já atribuída ao professor
+            OutroProfessor,     //FilaTurma em que a turma já foi atribuída a outro professor no momento da análise
+            CHCompleta          //FilaTurma em que o professor já está com CH completa no momento em que foi atribuída a outro professor
         }
     }
 }

@@ -34,11 +34,10 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<ISingleMapper<Oferta, OfertaEntity>, OfertaMapper>();
             container.RegisterSingleton<ISingleMapper<Professor, ProfessorEntity>, ProfessorMapper>();
             container.RegisterSingleton<ISingleMapper<Restricao, RestricaoEntity>, RestricaoMapper>();
-            container.RegisterSingleton<ISingleMapper<Turma, TurmaEntity>, TurmaMapper>();
+            container.RegisterSingleton<ISingleMapper<Turma, TurmaEntity >, TurmaMapper>();
             container.RegisterSingleton<ISingleMapper<Cenario, CenarioEntity>, CenarioMapper>();
-            container.RegisterSingleton<ISingleMapper<Turma, TurmaRespostaDto>, TurmaRespostaMapper>();
+            container.RegisterSingleton<ISingleMapper<FilaTurma, TurmaRespostaDto>, FilaTurmaRespostaMapper>();
             container.RegisterSingleton<ISingleMapper<Ministra, MinistraEntity>, MinistraMapper>();
-            container.RegisterSingleton<ISingleMapper<Professor, ProfessorRespostaDto>, ProfessorRespostaMapper>();
             container.RegisterSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
 
             //Services

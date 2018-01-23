@@ -9,7 +9,7 @@ namespace DistribuicaoDisciplinas.Services
 {
     public interface IDistribuicaoService
     {
-        RespostaDto Distribuir(int numCenario);
+        ICollection<FilaTurmaRespostaDto> Distribuir(int numCenario);
     }
 }
 

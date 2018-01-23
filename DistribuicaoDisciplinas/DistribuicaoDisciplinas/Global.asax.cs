@@ -16,6 +16,7 @@ namespace DistribuicaoDisciplinas
         {
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
+            UnityConfig.RegisterComponents();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);            
         }

@@ -51,7 +51,8 @@ namespace DistribuicaoDisciplinas.Controllers
             IMapper<Turma, TurmaEntity> turmaMap,
             IMapper<Cenario, CenarioEntity> cenariosMap,
             IDistribuicaoService distService,
-            IMapper<Ministra, MinistraEntity> ministraMap)
+            IMapper<Ministra, MinistraEntity> ministraMap
+        )
         {
             _db = db;
             _cursoRep = cursoRep;

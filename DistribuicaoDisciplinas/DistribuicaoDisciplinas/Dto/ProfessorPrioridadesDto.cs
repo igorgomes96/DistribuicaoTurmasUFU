@@ -5,13 +5,9 @@ using System.Web;
 
 namespace DistribuicaoDisciplinas.Dto
 {
-    public class ProfessorRespostaDto
+    public class ProfessorPrioridadesDto
     {
-        public string Siape { get; set; }
-        public string Nome { get; set; }
-        public DateTime DataIngresso { get; set; }
-        public int CH { get; set; }
-
+        public ProfessorDto Professor { get; set; }
         public ICollection<TurmaRespostaDto> Prioridades { get; set; }
     }
 }

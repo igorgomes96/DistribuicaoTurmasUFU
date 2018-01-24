@@ -164,3 +164,6 @@ C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\
 C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Threading.Tasks.Extensions.dll
 C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\Npgsql.xml
 C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Threading.Tasks.Extensions.xml
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Cors.dll
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Http.Cors.dll
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Http.Cors.xml

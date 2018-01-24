@@ -27,6 +27,7 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             //Mapper
+            //Entity
             container.RegisterSingleton<ISingleMapper<Curso, CursoEntity>, CursoMapper>();
             container.RegisterSingleton<ISingleMapper<Disciplina, DisciplinaEntity>, DisciplinaMapper>();
             container.RegisterSingleton<ISingleMapper<Fila, FilaEntity>, FilaMapper>();
@@ -36,9 +37,14 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<ISingleMapper<Restricao, RestricaoEntity>, RestricaoMapper>();
             container.RegisterSingleton<ISingleMapper<Turma, TurmaEntity>, TurmaMapper>();
             container.RegisterSingleton<ISingleMapper<Cenario, CenarioEntity>, CenarioMapper>();
-            container.RegisterSingleton<ISingleMapper<Turma, TurmaRespostaDto>, TurmaRespostaMapper>();
             container.RegisterSingleton<ISingleMapper<Ministra, MinistraEntity>, MinistraMapper>();
-            container.RegisterSingleton<ISingleMapper<Professor, ProfessorRespostaDto>, ProfessorRespostaMapper>();
+
+            //Dto
+            container.RegisterSingleton<ISingleMapper<FilaTurma, TurmaRespostaDto>, TurmaRespostaMapper>();
+            container.RegisterSingleton<ISingleMapper<Turma, TurmaDto>, TurmaDtoMapper>();
+            container.RegisterSingleton<ISingleMapper<Professor, ProfessorDto>, ProfessorDtoMapper>();
+            container.RegisterSingleton<ISingleMapper<Bloqueio, BloqueioDto>, BloqueioMapper>();
+            container.RegisterSingleton<ISingleMapper<Professor, ProfessorPrioridadesDto>, ProfessorPrioridadesMapper>();
             container.RegisterSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
 
             //Services

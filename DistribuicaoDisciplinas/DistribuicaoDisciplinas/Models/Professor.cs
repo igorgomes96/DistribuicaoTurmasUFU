@@ -30,7 +30,7 @@ namespace DistribuicaoDisciplinas.Models
 
         public int CHAtribuida()
         {
-            return Prioridades.Where(p => p.StatusAlgoritmo == StatusFilaAlgoritmo.Atribuda)
+            return Prioridades.Where(p => p.StatusAlgoritmo == StatusFilaAlgoritmo.Atribuida)
                 .Select(p => p.Turma.CH).Sum();
         }
 

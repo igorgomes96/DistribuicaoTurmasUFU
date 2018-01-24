@@ -12,8 +12,10 @@ namespace DistribuicaoDisciplinas.Dto
         public int IdTurma { get; set; }
         public string Turma { get; set; }
         public string CodigoDisc { get; set; }
+        public string NomeDisciplina { get; set; }
         public int Posicao { get; set; }
         public int Prioridade { get; set; }
+        public int CH { get; set; }
 
         public StatusFilaAlgoritmo Status { get; set; }
 

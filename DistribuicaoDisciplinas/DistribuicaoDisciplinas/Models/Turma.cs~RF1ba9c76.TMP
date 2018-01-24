@@ -18,10 +18,11 @@ namespace DistribuicaoDisciplinas.Models
             }
             set
             {
-                letraTurma = value.Trim();
+                letraTurma = value;
             }
         }
 
+        public bool FlagAtribuida { get; set; } = false;
         public int CH { get; set; }
 
         public Disciplina Disciplina { get; set; }

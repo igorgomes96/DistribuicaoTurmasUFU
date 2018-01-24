@@ -8,18 +8,23 @@ using System.Web;
 
 namespace DistribuicaoDisciplinas.Map
 {
-    public class TurmaRespostaMapper : ISingleMapper<Turma, TurmaRespostaDto>
+    public class TurmaRespostaMapper : ISingleMapper<FilaTurma, TurmaRespostaDto>
     {
-        public TurmaRespostaDto Map(Turma source)
+        public TurmaRespostaDto Map(FilaTurma source)
         {
             return new TurmaRespostaDto {
-                IdTurma = source.Id,
-                Turma = source.LetraTurma,
-                CodigoDisc = source.CodigoDisc
+                IdTurma = source.Turma.Id,
+                Turma = source.Turma.LetraTurma,
+                CodigoDisc = source.Turma.CodigoDisc,
+                NomeDisciplina  = source.Turma.Disciplina.Nome,
+                CH = source.Turma.CH,
+                Prioridade = source.Prioridade,
+                Posicao = source.Fila.Posicao,
+                Status = source.StatusAlgoritmo
             };
         }
 
-        public Turma Map(TurmaRespostaDto destination)
+        public FilaTurma Map(TurmaRespostaDto destination)
         {
             throw new NotImplementedException();
         }

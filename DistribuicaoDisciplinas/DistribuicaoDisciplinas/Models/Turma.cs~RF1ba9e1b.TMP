@@ -22,6 +22,7 @@ namespace DistribuicaoDisciplinas.Models
             }
         }
 
+        public bool FlagAtribuida { get; set; } = false;
         public int CH { get; set; }
 
         public Disciplina Disciplina { get; set; }

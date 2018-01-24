@@ -74,10 +74,10 @@ namespace DistribuicaoDisciplinas.Controllers
 
         }
 
-        [Route("api/Testes/Distribuir")]
-        public IHttpActionResult GetDistribuir()
+        [Route("api/Testes/Distribuir/{id}")]
+        public IHttpActionResult GetDistribuir(int id)
         {
-            return Ok(_distService.Distribuir(1));
+            return Ok(_distService.Distribuir(id));
         }
 
         [Route("api/Testes/Cursos")]

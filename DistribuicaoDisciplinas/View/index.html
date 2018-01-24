@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- As 3 meta tags acima *devem* vir em primeiro lugar dentro do `head`; qualquer outro conteúdo deve vir *após* essas tags -->
+    <title>Distribuição</title>
+
+    <!-- Bootstrap -->
+    <!-- Última versão CSS compilada e minificada -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+
+
+    <!-- HTML5 shim e Respond.js para suporte no IE8 de elementos HTML5 e media queries -->
+    <!-- ALERTA: Respond.js não funciona se você visualizar uma página file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body ng-app="distribuicaoApp" ng-controller="distribuicaoCtrl as ct">
+    
+    <div class="container" style="margin-top: 20px;">
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                <div class="form-group">
+                    <label for="inputCenario">Código do Cenário</label>
+                    <input type="number" name="inputCenario" id="inputCenario" ng-model="ct.codigoCenario" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-success" ng-click="ct.gerarCenarios(ct.codigoCenario)">Distribuir</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row" ng-if="!ct.carregando">
+            <div class="col-md-12">
+
+                <div ng-hide="!ct.resposta.Bloqueio">
+                    <h3>Bloqueio</h3>
+
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <ul class="list-group">
+                                <li ng-repeat="b in ct.resposta.bloqueio" class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <strong class="list-group-item-heading">Professor: {{b.professor.siape}} - {{b.professor.nome}}</strong>
+                                            <p class="list-group-item-text">
+                                                CH atual: {{b.professor.cargaAtual}} horas; CH distribuída: {{b.professor.cargaDistribuida}} horas<br>  
+                                                Turma: {{b.turma.id}} - {{b.turma.codigoDisc}} - {{b.turma.turma}} - CH: {{b.turma.ch}} horas<br>
+                                                Posição {{b.posicao}}, Prioridade {{b.prioridade}}
+                                            </p>
+                                            <div>
+                                            	<a class="small" ng-click="ct.verPosicoes(b)" href style="margin-right: 10px;">Ver Posições ({{b.posicoes.length}})</a>
+                                            	<a class="small" ng-click="ct.verPrioridades(b)" href>Ver Prioridades ({{b.prioridades.length}})</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                        	<div class="options">
+    	                                        <div>
+    	                                            <input type="radio" ng-model="b.resposta" value="0">Não Atribuir
+    	                                        </div>
+    	                                        <div>
+    	                                            <input type="radio" ng-model="b.resposta" value="1">Atribuir
+    	                                        </div>
+    	                                        <div>
+    	                                            <input type="radio" ng-model="b.resposta" value="2">Final da Fila
+    	                                        </div>
+    	                                        <div>
+    	                                            <input type="radio" ng-model="b.resposta" value="3">Última Prioridade
+    	                                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div class="row">
+                            	<div class="col-md-12">
+                            		<button class="btn btn-success pull-right" ng-click="ct.continuar()">Continuar</button>
+                            	</div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <hr>
+
+                </div>
+
+                
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4>Turmas já distribuídas</h4>
+                        <div class="form-group">
+                        	<label for="inputFiltroDist">Filtro</label>
+                        	<input type="text" name="inputFiltroDist" id="inputFiltroDist" placeholder="Digite uma expressão para filtrar" ng-model="filtroDistribuicao" ng-model-options="{debounce:500}" class="form-control">
+                        </div>
+
+                        <ul class="list-group">
+                            <li ng-repeat="prof in ct.resposta.Professores | filter:filtroDistribuicao" class="list-group-item">
+                                <strong class="list-group-item-heading">{{prof.Professor.Siape}} - {{prof.Professor.Nome}}</strong>
+                                <p class="list-group-item-text" style="margin-bottom: 5px;">
+                                    CH atual: {{prof.Professor.CH}} horas<br> 
+                                </p>
+                                <div ng-repeat="pri in prof.Prioridades | filter:{Status:1}" class="card-turma">
+                                    <button class="close"><span class="fa fa-times"></span></button>
+                                    <div style="font-weight: bold;">
+                                        {{pri.CodigoDisc}} ({{pri.Turma}})
+                                    </div>
+                                    <div>
+                                        {{pri.NomeDisciplina}}
+                                    </div>
+                                    <div>
+                                        Pos: {{pri.Posicao}} - Prioridade: {{pri.Prioridade}} - CH {{pri.CH}}
+                                    </div>
+                                </div>
+                                <div>
+                                	<a class="small" ng-click="ct.verPrioridades(ministra)" href>Ver Prioridades ({{prof.Prioridades.length}})</a>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                   <div class="col-md-6">
+                        <h4>Turmas Pendentes</h4>
+                        <div class="form-group">
+                        	<label for="inputFiltroTurmas">Filtro</label>
+                        	<input type="text" name="inputFiltroTurmas" id="inputFiltroTurmas" placeholder="Digite uma expressão para filtrar" ng-model="filtroTurmas" class="form-control">
+                        </div>
+                        <ul class="list-group">
+                            <li ng-repeat="t in ct.resposta.TurmasPendentes | filter:filtroTurmas" class="list-group-item">
+                                <strong>{{t.Id}} - {{t.CodigoDisc}} ({{t.LetraTurma}})</strong><br>
+                                {{t.Disciplina.Nome}}<br>
+                                Curso: {{t.Disciplina.Curso.Nome}}<br>
+                                CH: {{t.CH}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Modal de Posições -->
+	<div class="modal fade" id="modalPosicoes" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title">Posições</h4>
+	      		</div>
+	      		<div class="modal-body">
+	        		<table class="table table-striped table-hover">
+	        			<thead>
+	        				<tr>
+	        					<th>Disciplina</th>
+	        					<th>Turma</th>
+	        					<th>Siape</th>
+	        					<th>Professor</th>
+	        					<th>Posição</th>
+	        					<th>Prioridade</th>
+	        					<th></th>
+	        				</tr>
+	        			</thead>
+
+	        			<tbody>
+	        				<tr ng-repeat="p in ct.ministraSelecionado.posicoes | orderBy:'posicao'">
+	        					<td>{{p.codigoDisc}} - {{p.nomeDisc}}</td>
+	        					<td>{{p.turma}}</td>
+	        					<td>{{p.siape}}</td>
+	        					<td>{{p.nomeProfessor}}</td>
+	        					<td>{{p.posicao}}</td>
+	        					<td>{{p.prioridade}}</td>
+	        					<td>({{p.qtdaMinistrada}}/{{p.qtdaMaxima}})</td>
+	        				</tr>
+	        			</tbody>
+	        		</table>
+	      		</div>
+	      		<div class="modal-footer">
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      		</div>
+	    	</div>
+	  	</div>
+	</div>
+
+
+
+	<!-- Modal de Posições -->
+	<div class="modal fade" id="modalPrioridades" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-lg" role="document">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title">Prioridades</h4>
+	      		</div>
+	      		<div class="modal-body">
+	        		<table class="table table-striped table-hover">
+	        			<thead>
+	        				<tr>
+	        					<th>Siape</th>
+	        					<th>Professor</th>
+	        					<th>Disciplina</th>
+	        					<th>Turma</th>
+	        					<th>Posição</th>
+	        					<th>Prioridade</th>
+	        					<th></th>
+	        				</tr>
+	        			</thead>
+
+	        			<tbody>
+	        				<tr ng-repeat="p in ct.ministraSelecionado.prioridades | orderBy:'prioridade'">
+	        					<td>{{p.siape}}</td>
+	        					<td>{{p.nomeProfessor}}</td>
+	        					<td>{{p.codigoDisc}} - {{p.nomeDisc}}</td>
+	        					<td>{{p.turma}}</td>
+	        					<td>{{p.posicao}}</td>
+	        					<td>{{p.prioridade}}</td>
+	        					<td>({{p.qtdaMinistrada}}/{{p.qtdaMaxima}})</td>
+	        				</tr>
+	        			</tbody>
+	        		</table>
+	      		</div>
+	      		<div class="modal-footer">
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      		</div>
+	    	</div>
+	  	</div>
+	</div>
+
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script> -->
+
+    <!-- Inclui todos os plugins compilados (abaixo), ou inclua arquivos separadados se necessário -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Angular -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.min.js"></script> -->
+
+    <!-- Alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script type="text/javascript" src="js/distribuicaoCtrl.js"></script>
+
+</body>
+</html>
+

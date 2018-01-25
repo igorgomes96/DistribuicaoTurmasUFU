@@ -20,6 +20,8 @@ namespace DistribuicaoDisciplinas.Map
                 CH = source.Turma.CH,
                 Prioridade = source.Prioridade,
                 Posicao = source.Fila.Posicao,
+                QtdaMaxima = source.Fila.QtdaMaxima,
+                QtdaMinistrada = source.Fila.QtdaMinistrada,
                 Status = source.StatusAlgoritmo
             };
         }

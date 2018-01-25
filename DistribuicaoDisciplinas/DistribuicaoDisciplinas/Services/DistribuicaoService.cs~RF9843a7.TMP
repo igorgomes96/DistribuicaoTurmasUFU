@@ -167,9 +167,7 @@ namespace DistribuicaoDisciplinas.Services
                 .Where(ft => ft.Fila.Professor.CHCompletaAtribuida() && (ft.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera ||
                     ft.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda))
                 .ToList()
-                .ForEach(ft => {
-                    ft.StatusAlgoritmo = StatusFilaAlgoritmo.CHCompleta;
-                });
+                .ForEach(ft => ft.StatusAlgoritmo = StatusFilaAlgoritmo.CHCompleta);
         }
 
         /// <summary>
@@ -212,23 +210,19 @@ namespace DistribuicaoDisciplinas.Services
                     int chLimite = (p.CH + ACRESCIMO_CH);
 
                     if (possibilidadesTurma.FirstOrDefault().Equals(filaTurma) //Verifica se o professor está na primeira posição da turma
+                        && ch <= chLimite   //Verifica se a carga horário do professor é suficiente para pegar mais essa turma
                         && !_turmasService.ChoqueHorario(filaTurma.Turma, prioridadesEmEspera)  //Verifica se a turma tem choque de horário com as turmas em espera
                         && !_turmasService.ChoquePeriodo(filaTurma.Turma, prioridadesEmEspera)) //Verifica se a turma tem choque de período com as turmas em espera
                     {
-                        if (ch > chLimite)
-                        {
-                            filaTurma.StatusAlgoritmo = StatusFilaAlgoritmo.UltrapassariaCH;
-                        } else {
-                            AtribuirTurma(filaTurma);
-                            flagHouveAtribuicao = true;
+                        AtribuirTurma(filaTurma);
+                        flagHouveAtribuicao = true;
 
-                            //Se a CH do professor já estiver completa e nenhum turma estiver em espera, atualiza 
-                            //o status de todas as demais FilasTurmas do professor e passa para o próximo
-                            if (p.CHCompletaAtribuida() && p.CHEmEspera() == 0)
-                            {
-                                AtualizaPrioridadesCHCompleta(p);
-                                break;
-                            }
+                        //Se a CH do professor já estiver completa e nenhum turma estiver em espera, atualiza 
+                        //o status de todas as demais FilasTurmas do professor e passa para o próximo
+                        if (p.CHCompletaAtribuida() && p.CHEmEspera() == 0)
+                        {
+                            AtualizaPrioridadesCHCompleta(p);
+                            break;
                         }
                     }
                     else
@@ -242,7 +236,7 @@ namespace DistribuicaoDisciplinas.Services
             return flagHouveAtribuicao;
         }
 
-        private RespostaDto GeraResposta(ICollection<Bloqueio> bloqueios)
+        private RespostaDto GeraResposta()
         {
             ICollection<Turma> turmasAtribuidas = filasTurmas
                 .Where(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.Atribuida).Select(x => x.Turma)
@@ -252,20 +246,18 @@ namespace DistribuicaoDisciplinas.Services
             return new RespostaDto
             {
                 Professores = _profRespMapper.Map(professores.Values).OrderBy(x => x.Professor.Nome).ToList(),
-                TurmasPendentes = _turmaMapper.Map(turmas.Values.Where(t => !turmasAtribuidas.Any(x => x.Id == t.Id)).ToList()),
-                Bloqueios = bloqueios
+                TurmasPendentes = _turmaMapper.Map(turmas.Values.Where(t => !turmasAtribuidas.Any(x => x.Id == t.Id)).ToList())
             };
         }
 
         /// <summary>
-        /// Identifica e retorna todos os deadlocks
+        /// Identifica todos os deaclocks
         /// </summary>
         /// <returns>Lista de todos os deadlocks</returns>
-        private ICollection<Bloqueio> GetTodosDeadlocks()
+        private ICollection<Bloqueio> IdentificaTodosDeadlocks()
         {
             ICollection<Bloqueio> deadlocks = new List<Bloqueio>();
 
-            //Lista as FilasTurmas que estão em espera, pega a primeira de cada professor e joga na lista
             List<FilaTurma> filasTurmaComDeadlock =
                 professores.Values.Where(p => p.Prioridades.Any(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera))
                 .Select(p => p.Prioridades.First(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera)).ToList();
@@ -279,10 +271,8 @@ namespace DistribuicaoDisciplinas.Services
                     FilaTurma = filasTurmaComDeadlock[i]
                 };
 
-                HashSet<FilaTurma> trace = new HashSet<FilaTurma>
-                {
-                    deadlock.FilaTurma
-                };
+                HashSet<FilaTurma> trace = new HashSet<FilaTurma>();
+                trace.Add(deadlock.FilaTurma);
 
                 Bloqueio ultimoDependente = deadlock;
 
@@ -298,18 +288,13 @@ namespace DistribuicaoDisciplinas.Services
                     };
 
                     ultimoDependente.Dependente = dependente;
-                    ultimoDependente = dependente;
 
-                    if (trace.Contains(filaTurmaDependente)) break;
-                    trace.Add(filaTurmaDependente);
 
                 }
 
-                deadlocks.Add(deadlock);
-
             }
 
-            return deadlocks;
+            return null;
         }
 
         /// <summary>
@@ -358,15 +343,13 @@ namespace DistribuicaoDisciplinas.Services
 
             TurmasComRestricao();
 
-            AtualizaPrioridadesCHCompleta();
-
             //LimpezaInicial();
 
             while (CasosTriviais())
             {
             };
 
-            return GeraResposta(GetTodosDeadlocks());
+            return GeraResposta();
         }
         #endregion
 

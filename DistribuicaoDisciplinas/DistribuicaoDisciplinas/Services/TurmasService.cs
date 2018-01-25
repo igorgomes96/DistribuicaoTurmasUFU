@@ -27,11 +27,21 @@ namespace DistribuicaoDisciplinas.Services
             return turma1.Horarios.Any(h => turma2.Horarios.Any(x => x.Dia == h.Dia && x.Letra == h.Letra));
         }
 
+        public bool ChoqueHorario(Turma turma, ICollection<Turma> turmas)
+        {
+            return turmas.Any(x => ChoqueHorario(turma, x));
+        }
+
         public bool ChoquePeriodo(Turma turma1, Turma turma2)
         {
             return turma1.Disciplina.Curso.Codigo == turma2.Disciplina.Curso.Codigo
                 && turma1.Disciplina.Periodo == turma2.Disciplina.Periodo
                 && turma1.LetraTurma != turma2.LetraTurma;
+        }
+
+        public bool ChoquePeriodo(Turma turma, ICollection<Turma> turmas)
+        {
+            return turmas.Any(x => ChoquePeriodo(turma, x));
         }
 
         public ICollection<Turma> List(int ano, int semestre)

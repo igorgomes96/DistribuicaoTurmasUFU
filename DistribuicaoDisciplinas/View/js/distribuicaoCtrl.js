@@ -8,7 +8,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
     self.posicoes = [];
     self.prioridades = [];
 
-    self.statusAlgoritmo = ['Desconsiderada', 'Atribuída', 'Nao Analisada Ainda', 'Em Espera', 'Choque Horário', 'Choque Restrição', 'Choque Período', 'Outro Professor', 'CHCompleta'];
+    self.statusAlgoritmo = ['Desconsiderada', 'Atribuída', 'Nao Analisada Ainda', 'Em Espera', 'Choque Horário', 'Choque Restrição', 'Choque Período', 'Outro Professor', 'CH Completa', 'Ultrapassaria CH se Atribuída'];
 
     var url = 'http://localhost:62921/api/Testes/Distribuir/';
 
@@ -25,8 +25,8 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
         })
     }
 
-    self.verPrioridades = function(bloqueio) {
-    	self.ministraSelecionado = bloqueio;
+    self.verPrioridades = function(prioridades) {
+    	self.prioridades = prioridades;
     	$('#modalPrioridades').modal('show');
     }
 

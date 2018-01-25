@@ -16,6 +16,8 @@ namespace DistribuicaoDisciplinas.Dto
         public int Posicao { get; set; }
         public int Prioridade { get; set; }
         public int CH { get; set; }
+        public int QtdaMaxima { get; set; }
+        public int QtdaMinistrada { get; set; }
 
         public StatusFilaAlgoritmo Status { get; set; }
 

@@ -22,7 +22,7 @@
           "lib/netstandard1.0/_._": {}
         }
       },
-      "NETStandard.Library/2.0.1": {
+      "NETStandard.Library/2.0.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
@@ -68,7 +68,7 @@
       ]
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
-      "sha512": "kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "sha512": "VllTYAJ1MakhOxsgrTAzmUqvNvVgfEWBFmySQDOQKumfdVqWgRG+eijyaeIQS5w3PR6wonm2g10crfexrwSuew==",
       "type": "package",
       "path": "microsoft.netcore.platforms/1.1.0",
       "files": [
@@ -80,14 +80,12 @@
         "runtime.json"
       ]
     },
-    "NETStandard.Library/2.0.1": {
-      "sha512": "oA6nwv9MhEKYvLpjZ0ggSpb1g4CQViDVQjLUcDWg598jtvJbpfeP2reqwI1GLW2TbxC/Ml7xL6BBR1HmKPXlTg==",
+    "NETStandard.Library/2.0.0": {
+      "sha512": "7jnbRU+L08FXKMxqUflxEXtVymWvNOrS8yHgu9s6EM8Anr6T/wIX4nZ08j/u3Asz+tCufp3YVwFSEvFTPYmBPA==",
       "type": "package",
-      "path": "netstandard.library/2.0.1",
+      "path": "netstandard.library/2.0.0",
       "files": [
         "LICENSE.TXT",
-        "NETStandard.Library.2.0.1.nupkg.sha512",
-        "NETStandard.Library.nuspec",
         "THIRD-PARTY-NOTICES.TXT",
         "build/NETStandard.Library.targets",
         "build/netstandard2.0/NETStandard.Library.targets",
@@ -205,18 +203,20 @@
         "build/netstandard2.0/ref/mscorlib.dll",
         "build/netstandard2.0/ref/netstandard.dll",
         "build/netstandard2.0/ref/netstandard.xml",
-        "lib/netstandard1.0/_._"
+        "lib/netstandard1.0/_._",
+        "netstandard.library.2.0.0.nupkg.sha512",
+        "netstandard.library.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
       "EntityFramework >= 6.2.0",
-      "NETStandard.Library >= 2.0.1"
+      "NETStandard.Library >= 2.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\igorago\\.nuget\\packages\\": {},
+    "C:\\Users\\igorg\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
@@ -226,18 +226,18 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\igorago\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
+      "projectUniqueName": "C:\\Users\\igorg\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
       "projectName": "Repository",
-      "projectPath": "C:\\Users\\igorago\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
-      "packagesPath": "C:\\Users\\igorago\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\igorago\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\obj\\",
+      "projectPath": "C:\\Users\\igorg\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
+      "packagesPath": "C:\\Users\\igorg\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\igorg\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\igorago\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\igorg\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
       ],
@@ -269,7 +269,7 @@
           "NETStandard.Library": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2.0.1, )",
+            "version": "[2.0.0, )",
             "autoReferenced": true
           }
         },

@@ -24,13 +24,13 @@ namespace DistribuicaoDisciplinas.Models
 
         public int CHEmEspera()
         {
-            return Prioridades.Where(p => p.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera)
+            return Prioridades.Where(p => p.StatusAlgoritmo == StatusFila.EmEspera)
                 .Select(p => p.Turma.CH).Sum();
         }
 
         public int CHAtribuida()
         {
-            return Prioridades.Where(p => p.StatusAlgoritmo == StatusFilaAlgoritmo.Atribuida)
+            return Prioridades.Where(p => p.StatusAlgoritmo == StatusFila.Atribuida)
                 .Select(p => p.Turma.CH).Sum();
         }
 

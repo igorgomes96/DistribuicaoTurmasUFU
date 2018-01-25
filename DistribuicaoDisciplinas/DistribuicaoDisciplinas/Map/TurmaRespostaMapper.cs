@@ -10,14 +10,17 @@ namespace DistribuicaoDisciplinas.Map
 {
     public class TurmaRespostaMapper : ISingleMapper<FilaTurma, TurmaRespostaDto>
     {
+        private readonly ISingleMapper<Turma, TurmaDto> _turmaMapper;
+        
+        public TurmaRespostaMapper(ISingleMapper<Turma, TurmaDto> turmaMapper)
+        {
+            _turmaMapper = turmaMapper;
+        }
+
         public TurmaRespostaDto Map(FilaTurma source)
         {
             return new TurmaRespostaDto {
-                IdTurma = source.Turma.Id,
-                Turma = source.Turma.LetraTurma,
-                CodigoDisc = source.Turma.CodigoDisc,
-                NomeDisciplina  = source.Turma.Disciplina.Nome,
-                CH = source.Turma.CH,
+                Turma = _turmaMapper.Map(source.Turma),
                 Prioridade = source.Prioridade,
                 Posicao = source.Fila.Posicao,
                 QtdaMaxima = source.Fila.QtdaMaxima,

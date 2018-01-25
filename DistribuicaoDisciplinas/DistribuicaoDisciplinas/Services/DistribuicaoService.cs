@@ -123,11 +123,11 @@ namespace DistribuicaoDisciplinas.Services
                 List<FilaTurma> turmasAtribuidas = new List<FilaTurma>();
                 bool flagCHCompleta = false;
 
-                foreach (FilaTurma ft in prof.Prioridades.Where(x => x.StatusAlgoritmo != StatusFilaAlgoritmo.ChoqueRestricao))
+                foreach (FilaTurma ft in prof.Prioridades.Where(x => x.StatusAlgoritmo != StatusFila.ChoqueRestricao))
                 {
                     if (flagCHCompleta)
                     {
-                        ft.StatusAlgoritmo = StatusFilaAlgoritmo.Desconsiderada;
+                        ft.StatusAlgoritmo = StatusFila.Desconsiderada;
                     }
                     else
                     {
@@ -154,7 +154,7 @@ namespace DistribuicaoDisciplinas.Services
         private void TurmasComRestricao()
         {
             filasTurmas.Where(x => x.Turma.Horarios.Any(h => x.Fila.Professor.Restricoes.Any(r => r.Dia == h.Dia && r.Letra == h.Letra)))
-                .ToList().ForEach(x => x.StatusAlgoritmo = StatusFilaAlgoritmo.ChoqueRestricao);
+                .ToList().ForEach(x => x.StatusAlgoritmo = StatusFila.ChoqueRestricao);
         }
 
         /// <summary>
@@ -164,11 +164,11 @@ namespace DistribuicaoDisciplinas.Services
         private void AtualizaPrioridadesCHCompleta()
         {
             filasTurmas
-                .Where(ft => ft.Fila.Professor.CHCompletaAtribuida() && (ft.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera ||
-                    ft.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda))
+                .Where(ft => ft.Fila.Professor.CHCompletaAtribuida() && (ft.StatusAlgoritmo == StatusFila.EmEspera ||
+                    ft.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda))
                 .ToList()
                 .ForEach(ft => {
-                    ft.StatusAlgoritmo = StatusFilaAlgoritmo.CHCompleta;
+                    ft.StatusAlgoritmo = StatusFila.CHCompleta;
                 });
         }
 
@@ -180,10 +180,10 @@ namespace DistribuicaoDisciplinas.Services
         private void AtualizaPrioridadesCHCompleta(Professor professor)
         {
             professor.Prioridades
-                .Where(ft => ft.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera ||
-                    ft.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda)
+                .Where(ft => ft.StatusAlgoritmo == StatusFila.EmEspera ||
+                    ft.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda)
                 .ToList()
-                .ForEach(ft => ft.StatusAlgoritmo = StatusFilaAlgoritmo.CHCompleta);
+                .ForEach(ft => ft.StatusAlgoritmo = StatusFila.CHCompleta);
         }
 
         /// <summary>
@@ -196,8 +196,8 @@ namespace DistribuicaoDisciplinas.Services
             foreach (Professor p in professores.Values)
             {
                 List<FilaTurma> possibilidadesProf = p.Prioridades
-                    .Where(pp => pp.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera
-                        || pp.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda)
+                    .Where(pp => pp.StatusAlgoritmo == StatusFila.EmEspera
+                        || pp.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda)
                     .ToList();
 
                 ICollection<Turma> prioridadesEmEspera = new List<Turma>();
@@ -205,8 +205,8 @@ namespace DistribuicaoDisciplinas.Services
                 foreach (FilaTurma filaTurma in possibilidadesProf)
                 {
                     List<FilaTurma> possibilidadesTurma = filaTurma.Turma.Posicoes
-                        .Where(pt => pt.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda
-                            || pt.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera).ToList();
+                        .Where(pt => pt.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda
+                            || pt.StatusAlgoritmo == StatusFila.EmEspera).ToList();
 
                     int ch = (p.CHAtribuida() + filaTurma.Turma.CH + p.CHEmEspera());
                     int chLimite = (p.CH + ACRESCIMO_CH);
@@ -217,7 +217,7 @@ namespace DistribuicaoDisciplinas.Services
                     {
                         if (ch > chLimite)
                         {
-                            filaTurma.StatusAlgoritmo = StatusFilaAlgoritmo.UltrapassariaCH;
+                            filaTurma.StatusAlgoritmo = StatusFila.UltrapassariaCH;
                         } else {
                             AtribuirTurma(filaTurma);
                             flagHouveAtribuicao = true;
@@ -234,7 +234,7 @@ namespace DistribuicaoDisciplinas.Services
                     else
                     {
                         prioridadesEmEspera.Add(filaTurma.Turma);
-                        filaTurma.StatusAlgoritmo = StatusFilaAlgoritmo.EmEspera;
+                        filaTurma.StatusAlgoritmo = StatusFila.EmEspera;
                     }
                 }
             }
@@ -245,7 +245,7 @@ namespace DistribuicaoDisciplinas.Services
         private RespostaDto GeraResposta(ICollection<Bloqueio> bloqueios)
         {
             ICollection<Turma> turmasAtribuidas = filasTurmas
-                .Where(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.Atribuida).Select(x => x.Turma)
+                .Where(x => x.StatusAlgoritmo == StatusFila.Atribuida).Select(x => x.Turma)
                 .Distinct()
                 .ToList();
 
@@ -267,8 +267,8 @@ namespace DistribuicaoDisciplinas.Services
 
             //Lista as FilasTurmas que estão em espera, pega a primeira de cada professor e joga na lista
             List<FilaTurma> filasTurmaComDeadlock =
-                professores.Values.Where(p => p.Prioridades.Any(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera))
-                .Select(p => p.Prioridades.First(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera)).ToList();
+                professores.Values.Where(p => p.Prioridades.Any(x => x.StatusAlgoritmo == StatusFila.EmEspera))
+                .Select(p => p.Prioridades.First(x => x.StatusAlgoritmo == StatusFila.EmEspera)).ToList();
 
             for (int i = (filasTurmaComDeadlock.Count - 1); i >= 0; i--)
             {
@@ -289,7 +289,7 @@ namespace DistribuicaoDisciplinas.Services
                 for (; ; )
                 {
                     FilaTurma filaTurmaDependente = ultimoDependente.FilaTurma.Turma.Posicoes
-                        .First(p => p.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera || p.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda);
+                        .First(p => p.StatusAlgoritmo == StatusFila.EmEspera || p.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda);
 
                     Bloqueio dependente = new Bloqueio
                     {
@@ -320,25 +320,25 @@ namespace DistribuicaoDisciplinas.Services
         {
             //Atualiza o status de todas as filas da turma que foi atribuída para OutroProfessor
             filaTurma.Turma.Posicoes
-                .Where(pt => pt.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda
-                    || pt.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera).ToList()
-                .ForEach(ft => ft.StatusAlgoritmo = StatusFilaAlgoritmo.OutroProfessor);
+                .Where(pt => pt.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda
+                    || pt.StatusAlgoritmo == StatusFila.EmEspera).ToList()
+                .ForEach(ft => ft.StatusAlgoritmo = StatusFila.OutroProfessor);
 
             //Atualiza o status das FilasTurmas que chocam horário ou período com a turma atribuída
             foreach (FilaTurma prioridade in filaTurma.Fila.Professor.Prioridades
-                .Where(x => x.StatusAlgoritmo == StatusFilaAlgoritmo.EmEspera || x.StatusAlgoritmo == StatusFilaAlgoritmo.NaoAnalisadaAinda))
+                .Where(x => x.StatusAlgoritmo == StatusFila.EmEspera || x.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda))
             {
                 if (!prioridade.Equals(filaTurma))
                 {
                     if (_turmasService.ChoqueHorario(filaTurma.Turma, prioridade.Turma))
-                        prioridade.StatusAlgoritmo = StatusFilaAlgoritmo.ChoqueHorario;
+                        prioridade.StatusAlgoritmo = StatusFila.ChoqueHorario;
                     else if (_turmasService.ChoquePeriodo(filaTurma.Turma, prioridade.Turma))
-                        prioridade.StatusAlgoritmo = StatusFilaAlgoritmo.ChoquePeriodo;
+                        prioridade.StatusAlgoritmo = StatusFila.ChoquePeriodo;
                 }
             }
 
             //Atualiza o status da Fila atribuída
-            filaTurma.StatusAlgoritmo = StatusFilaAlgoritmo.Atribuida;
+            filaTurma.StatusAlgoritmo = StatusFila.Atribuida;
         }
         #endregion
 
@@ -354,7 +354,7 @@ namespace DistribuicaoDisciplinas.Services
 
             filasTurmas = Encadear(filasTurmasEntities);
             //Atualiza o status de todas para NaoAnalisadaAinda
-            filasTurmas.ToList().ForEach(x => x.StatusAlgoritmo = StatusFilaAlgoritmo.NaoAnalisadaAinda);
+            filasTurmas.ToList().ForEach(x => x.StatusAlgoritmo = StatusFila.NaoAnalisadaAinda);
 
             TurmasComRestricao();
 

@@ -32,7 +32,7 @@ namespace DistribuicaoDisciplinas.Map
                 Fila = _filaMapper.Map(destination.Fila),
                 Turma = _turmaMapper.Map(destination.Turma),
                 Prioridade = destination.prioridade.Value,
-                StatusAlgoritmo = Util.Enumerators.StatusFilaAlgoritmo.NaoAnalisadaAinda
+                StatusAlgoritmo = Util.Enumerators.StatusFila.NaoAnalisadaAinda
             };
 
         }

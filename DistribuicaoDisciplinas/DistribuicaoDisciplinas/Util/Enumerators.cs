@@ -7,7 +7,7 @@ namespace DistribuicaoDisciplinas.Util
 {
     public class Enumerators
     {
-        public enum StatusFilaAlgoritmo
+        public enum StatusFila
         {
             Desconsiderada,     //FilaTurma que está com uma prioridade muito baixa e as que estão com prioridade maior com certeza completarão a CH do professor
             Atribuida,          //FilaTurma atribuída
@@ -26,5 +26,6 @@ namespace DistribuicaoDisciplinas.Util
             Deadlock,
             DisciplinaCHDiferente4
         }
+
     }
 }

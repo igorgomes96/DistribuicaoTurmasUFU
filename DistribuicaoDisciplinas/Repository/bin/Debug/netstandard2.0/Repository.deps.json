@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETStandard,Version=v2.0/",
-    "signature": "cba2920e86580291fc752aaba7ce19f603c47f2d"
+    "signature": "9a9c246759b9d36aa2b280dbe1d6bfae3e0b3b90"
   },
   "compilationOptions": {},
   "targets": {
@@ -10,7 +10,7 @@
       "Repository/1.0.0": {
         "dependencies": {
           "EntityFramework": "6.2.0",
-          "NETStandard.Library": "2.0.1"
+          "NETStandard.Library": "2.0.0"
         },
         "runtime": {
           "Repository.dll": {}
@@ -23,7 +23,7 @@
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
-      "NETStandard.Library/2.0.1": {
+      "NETStandard.Library/2.0.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
@@ -46,16 +46,16 @@
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "sha512": "sha512-VllTYAJ1MakhOxsgrTAzmUqvNvVgfEWBFmySQDOQKumfdVqWgRG+eijyaeIQS5w3PR6wonm2g10crfexrwSuew==",
       "path": "microsoft.netcore.platforms/1.1.0",
       "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
     },
-    "NETStandard.Library/2.0.1": {
+    "NETStandard.Library/2.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-oA6nwv9MhEKYvLpjZ0ggSpb1g4CQViDVQjLUcDWg598jtvJbpfeP2reqwI1GLW2TbxC/Ml7xL6BBR1HmKPXlTg==",
-      "path": "netstandard.library/2.0.1",
-      "hashPath": "netstandard.library.2.0.1.nupkg.sha512"
+      "sha512": "sha512-7jnbRU+L08FXKMxqUflxEXtVymWvNOrS8yHgu9s6EM8Anr6T/wIX4nZ08j/u3Asz+tCufp3YVwFSEvFTPYmBPA==",
+      "path": "netstandard.library/2.0.0",
+      "hashPath": "netstandard.library.2.0.0.nupkg.sha512"
     }
   }
 }

@@ -10,7 +10,7 @@ namespace DistribuicaoDisciplinas.Dto
     {
         public ICollection<ProfessorPrioridadesDto> Professores { get; set; }
         public ICollection<TurmaDto> TurmasPendentes { get; set; }
-        public ICollection<Bloqueio> Bloqueios { get; set; }
+        public ICollection<BloqueioDto> Bloqueios { get; set; }
         
     }
 }

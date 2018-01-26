@@ -12,5 +12,6 @@ namespace DistribuicaoDisciplinas.Models
         public Turma Turma { get; set; }
         public int Prioridade { get; set; }
         public StatusFila StatusAlgoritmo { get; set; }
+
     }
 }

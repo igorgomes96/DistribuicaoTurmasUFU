@@ -7,9 +7,20 @@ namespace DistribuicaoDisciplinas.Models
 {
     public class Turma
     {
+
         private string letraTurma;
         public int Id { get; set; }
-        public string CodigoDisc { get; set; }
+
+        private string codigoDisc;
+        public string CodigoDisc {
+            get {
+                return codigoDisc.Trim();
+            }
+            set
+            {
+                codigoDisc = value.Trim();
+            }
+        }
         public string LetraTurma
         {
             get

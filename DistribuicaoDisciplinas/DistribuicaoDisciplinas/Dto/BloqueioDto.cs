@@ -13,5 +13,7 @@ namespace DistribuicaoDisciplinas.Dto
         public int Posicao { get; set; }
         public int Prioridade { get; set; }
         public BloqueioDto Dependente { get; set; }
+        public int Tamanho { get; set; }
+
     }
 }

@@ -22,14 +22,15 @@ namespace DistribuicaoDisciplinas.Map
 
         public BloqueioDto Map(Bloqueio source)
         {
-            return new BloqueioDto
+            return source == null ? null : new BloqueioDto
             {
                 Professor = _profMapper.Map(source.FilaTurma.Fila.Professor),
                 Turma = _turmaMapper.Map(source.FilaTurma.Turma),
                 IdFila = source.FilaTurma.Fila.Id,
                 Posicao = source.FilaTurma.Fila.Posicao,
                 Prioridade = source.FilaTurma.Prioridade,
-                Dependente = Map(source.Dependente)
+                Dependente = Map(source.Dependente),
+                Tamanho = source.Tamanho
             };
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using DistribuicaoDisciplinas.Dto;
@@ -38,6 +39,7 @@ namespace DistribuicaoDisciplinas.Services
         #region Map
         private readonly IMapper<Turma, TurmaDto> _turmaMapper;
         private readonly IMapper<Professor, ProfessorPrioridadesDto> _profRespMapper;
+        private readonly IMapper<Bloqueio, BloqueioDto> _bloqueioMapper;
         #endregion
 
         #region Constructor
@@ -47,7 +49,8 @@ namespace DistribuicaoDisciplinas.Services
             ITurmasService turmasService,
             ICenariosService cenariosService,
             IMapper<Turma, TurmaDto> turmaMapper,
-            IMapper<Professor, ProfessorPrioridadesDto> profRespMapper)
+            IMapper<Professor, ProfessorPrioridadesDto> profRespMapper,
+            IMapper<Bloqueio, BloqueioDto> bloqueioMapper)
         {
             _professoresService = professoresService;
             _turmasService = turmasService;
@@ -55,6 +58,7 @@ namespace DistribuicaoDisciplinas.Services
             _filasTurmasRep = filasTurmasRep;
             _profRespMapper = profRespMapper;
             _turmaMapper = turmaMapper;
+            _bloqueioMapper = bloqueioMapper;
         }
         #endregion
 
@@ -215,20 +219,29 @@ namespace DistribuicaoDisciplinas.Services
                         && !_turmasService.ChoqueHorario(filaTurma.Turma, prioridadesEmEspera)  //Verifica se a turma tem choque de horário com as turmas em espera
                         && !_turmasService.ChoquePeriodo(filaTurma.Turma, prioridadesEmEspera)) //Verifica se a turma tem choque de período com as turmas em espera
                     {
-                        if (ch > chLimite)
-                        {
-                            filaTurma.StatusAlgoritmo = StatusFila.UltrapassariaCH;
-                        } else {
+
+                        if (ch <= chLimite) {
                             AtribuirTurma(filaTurma);
                             flagHouveAtribuicao = true;
 
-                            //Se a CH do professor já estiver completa e nenhum turma estiver em espera, atualiza 
-                            //o status de todas as demais FilasTurmas do professor e passa para o próximo
-                            if (p.CHCompletaAtribuida() && p.CHEmEspera() == 0)
+                            //Se a CH do professor já estiver completa, atualiza o status 
+                            //de todas as demais FilasTurmas do professor e passa para o próximo
+                            if (p.CHCompletaAtribuida())
                             {
                                 AtualizaPrioridadesCHCompleta(p);
                                 break;
                             }
+
+                        } else if (ch > chLimite && p.CHEmEspera() <= 0)
+                            //p.CHEmEspera() <= 0 é necessário pois se a(s) turma(s) não for(em) atribuída(s), 
+                            //a turma ainda pode ser atribuída, e eu não posso falar que ela ultrapassaria a CH
+                            //nesse momento, devendo portanto colocá-la em espera
+                        {
+                            filaTurma.StatusAlgoritmo = StatusFila.UltrapassariaCH;
+                        } else
+                        {
+                            prioridadesEmEspera.Add(filaTurma.Turma);
+                            filaTurma.StatusAlgoritmo = StatusFila.EmEspera;
                         }
                     }
                     else
@@ -253,7 +266,7 @@ namespace DistribuicaoDisciplinas.Services
             {
                 Professores = _profRespMapper.Map(professores.Values).OrderBy(x => x.Professor.Nome).ToList(),
                 TurmasPendentes = _turmaMapper.Map(turmas.Values.Where(t => !turmasAtribuidas.Any(x => x.Id == t.Id)).ToList()),
-                Bloqueios = bloqueios
+                Bloqueios = _bloqueioMapper.Map(bloqueios)
             };
         }
 
@@ -264,52 +277,78 @@ namespace DistribuicaoDisciplinas.Services
         private ICollection<Bloqueio> GetTodosDeadlocks()
         {
             ICollection<Bloqueio> deadlocks = new List<Bloqueio>();
+            int i = 1;
+            //Buscas os deadlocks de cada professor que tem turma em espera
+            ICollection<Professor> professoresPendentes = professores.Values
+                .Where(p => p.Prioridades.Any(pri => pri.StatusAlgoritmo == StatusFila.EmEspera)).ToList();
 
-            //Lista as FilasTurmas que estão em espera, pega a primeira de cada professor e joga na lista
-            List<FilaTurma> filasTurmaComDeadlock =
-                professores.Values.Where(p => p.Prioridades.Any(x => x.StatusAlgoritmo == StatusFila.EmEspera))
-                .Select(p => p.Prioridades.First(x => x.StatusAlgoritmo == StatusFila.EmEspera)).ToList();
-
-            for (int i = (filasTurmaComDeadlock.Count - 1); i >= 0; i--)
+            foreach(Professor p in professoresPendentes)
             {
-                
-                Bloqueio deadlock = new Bloqueio
-                {
-                    TipoBloqueio = TipoBloqueio.Deadlock,
-                    FilaTurma = filasTurmaComDeadlock[i]
-                };
-
-                HashSet<FilaTurma> trace = new HashSet<FilaTurma>
-                {
-                    deadlock.FilaTurma
-                };
-
-                Bloqueio ultimoDependente = deadlock;
-
-                for (; ; )
-                {
-                    FilaTurma filaTurmaDependente = ultimoDependente.FilaTurma.Turma.Posicoes
-                        .First(p => p.StatusAlgoritmo == StatusFila.EmEspera || p.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda);
-
-                    Bloqueio dependente = new Bloqueio
-                    {
-                        FilaTurma = filaTurmaDependente,
-                        TipoBloqueio = TipoBloqueio.Deadlock
-                    };
-
-                    ultimoDependente.Dependente = dependente;
-                    ultimoDependente = dependente;
-
-                    if (trace.Contains(filaTurmaDependente)) break;
-                    trace.Add(filaTurmaDependente);
-
-                }
-
-                deadlocks.Add(deadlock);
-
+                Trace.WriteLine(string.Format("\nDeadlock {0}:", i++));
+                Bloqueio deadlock = GetDeadlock(p);
+                if (deadlock != null)
+                    deadlocks.Add(deadlock);
             }
 
             return deadlocks;
+        }
+
+        /// <summary>
+        /// Encontra toda a cadeia de deadlock a partir de um professor
+        /// </summary>
+        /// <param name="professor"></param>
+        /// <returns></returns>
+        private Bloqueio GetDeadlock(Professor professor)
+        {
+            HashSet<FilaTurma> trace = new HashSet<FilaTurma>();
+            FilaTurma ftCabeca = professor.Prioridades
+                            .FirstOrDefault(ft => ft.StatusAlgoritmo == StatusFila.EmEspera);
+
+            if (ftCabeca == null) return null;
+            trace.Add(ftCabeca);
+
+            Bloqueio cabeca = new Bloqueio
+            {
+                FilaTurma = ftCabeca,
+                TipoBloqueio = TipoBloqueio.Deadlock
+            };
+            Bloqueio ultimoBloqueio = cabeca;
+
+            Trace.Write(professor.Nome + " -> " + ftCabeca.Turma.CodigoDisc);
+
+            for (; ; )
+            {
+
+                professor = ultimoBloqueio.FilaTurma.Turma.Posicoes
+                    .FirstOrDefault(x => x.StatusAlgoritmo == StatusFila.EmEspera).Fila.Professor;
+
+                Trace.WriteLine(" -> " + professor.Nome);
+
+                FilaTurma ftBloqueada = professor.Prioridades
+                            .FirstOrDefault(ft => ft.StatusAlgoritmo == StatusFila.EmEspera);
+
+                Trace.Write(professor.Nome + " -> " + ftBloqueada.Turma.CodigoDisc);
+
+                if (ftBloqueada == null) break;
+
+                Bloqueio bloqueio = new Bloqueio
+                {
+                    FilaTurma = ftBloqueada,
+                    TipoBloqueio = TipoBloqueio.Deadlock
+                };
+
+                ultimoBloqueio.Dependente = bloqueio;
+
+                if (trace.Contains(ftBloqueada))
+                    break;
+
+                trace.Add(ftBloqueada);
+                ultimoBloqueio = bloqueio;
+
+            }
+
+            Trace.WriteLine("");
+            return cabeca;
         }
 
         /// <summary>

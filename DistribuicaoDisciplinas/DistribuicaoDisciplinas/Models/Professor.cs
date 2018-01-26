@@ -21,7 +21,6 @@ namespace DistribuicaoDisciplinas.Models
         public ICollection<Restricao> Restricoes { get; set; } = new List<Restricao>();
         public ICollection<FilaTurma> Prioridades { get; set; } = new List<FilaTurma>();
 
-
         public int CHEmEspera()
         {
             return Prioridades.Where(p => p.StatusAlgoritmo == StatusFila.EmEspera)
@@ -32,11 +31,6 @@ namespace DistribuicaoDisciplinas.Models
         {
             return Prioridades.Where(p => p.StatusAlgoritmo == StatusFila.Atribuida)
                 .Select(p => p.Turma.CH).Sum();
-        }
-
-        public int CHAtribuidaEspera()
-        {
-            return CHAtribuida() + CHEmEspera();
         }
 
         /// <summary>

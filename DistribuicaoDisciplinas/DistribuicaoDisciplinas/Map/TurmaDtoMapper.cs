@@ -18,6 +18,7 @@ namespace DistribuicaoDisciplinas.Map
                 Id = source.Id,
                 CodigoDisc = source.CodigoDisc,
                 LetraTurma = source.LetraTurma,
+                NomeDisciplina = source.Disciplina.Nome,
                 CH = source.CH,
                 Disciplina = source.Disciplina
             };

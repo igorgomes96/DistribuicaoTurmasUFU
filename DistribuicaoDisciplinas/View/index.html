@@ -106,7 +106,7 @@
 
                 <div class="row">
 
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <h4>Turmas já distribuídas</h4>
                         <div class="form-group">
                         	<label for="inputFiltroDist">Filtro</label>
@@ -122,13 +122,13 @@
                                 <div ng-repeat="pri in prof.Prioridades | filter:{Status:1}" class="card-turma">
                                     <button class="close"><span class="fa fa-times"></span></button>
                                     <div style="font-weight: bold;">
-                                        {{pri.CodigoDisc}} ({{pri.Turma}})
+                                        {{pri.Turma.CodigoDisc}} ({{pri.Turma.LetraTurma}})
                                     </div>
                                     <div>
-                                        {{pri.NomeDisciplina}}
+                                        {{pri.Turma.NomeDisciplina}}
                                     </div>
                                     <div>
-                                        Pos: {{pri.Posicao}} - Prioridade: {{pri.Prioridade}} - CH {{pri.CH}}
+                                        Pos: {{pri.Posicao}} - Prioridade: {{pri.Prioridade}} - CH {{pri.Turma.CH}}
                                     </div>
                                 </div>
                                 <div>
@@ -139,20 +139,31 @@
 
                     </div>
 
-                   <div class="col-md-6">
+                   <div class="col-md-5">
                         <h4>{{ct.resposta.TurmasPendentes.length}} Turmas Pendentes</h4>
                         <div class="form-group">
                         	<label for="inputFiltroTurmas">Filtro</label>
-                        	<input type="text" name="inputFiltroTurmas" id="inputFiltroTurmas" placeholder="Digite uma expressão para filtrar" ng-model="filtroTurmas" class="form-control">
+                        	<input type="text" name="inputFiltroTurmas" id="inputFiltroTurmas" placeholder="Digite uma expressão para filtrar" ng-model="filtroTurmas" class="form-control" ng-model-options="{debounce: 500}">
                         </div>
-                        <ul class="list-group">
+                        <div ng-repeat="turma in ct.resposta.TurmasPendentes | filter:filtroTurmas" class="card-turma">
+                            <button class="close"><span class="fa fa-times"></span></button>
+                            <div style="font-weight: bold;">
+                                {{turma.Id}} - {{turma.CodigoDisc}} ({{turma.LetraTurma}})
+                            </div>
+                            <div>
+                                {{turma.Disciplina.Nome}}<br>
+                                Curso: {{turma.Disciplina.Curso.Nome}}<br>
+                                CH: {{turma.CH}}
+                            </div>
+                        </div>
+                        <!-- <ul class="list-group">
                             <li ng-repeat="t in ct.resposta.TurmasPendentes | filter:filtroTurmas" class="list-group-item">
                                 <strong>{{t.Id}} - {{t.CodigoDisc}} ({{t.LetraTurma}})</strong><br>
                                 {{t.Disciplina.Nome}}<br>
                                 Curso: {{t.Disciplina.Curso.Nome}}<br>
                                 CH: {{t.CH}}
                             </li>
-                        </ul>
+                        </ul> -->
                     </div>
                 </div>
             </div>
@@ -230,19 +241,19 @@
 
 	        			<tbody>
 	        				<tr ng-repeat="p in ct.prioridades">
-	        					<td>{{p.CodigoDisc}} - {{p.NomeDisciplina}}</td>
-	        					<td>{{p.Turma}}</td>
+	        					<td>{{p.Turma.CodigoDisc}} - {{p.Turma.NomeDisciplina}}</td>
+	        					<td>{{p.Turma.LetraTurma}}</td>
 	        					<td>{{p.Posicao}}</td>
 	        					<td>{{p.Prioridade}}</td>
                                 <td>{{ct.statusAlgoritmo[p.Status]}}</td>
-                                <td>{{p.CH}}</td>
+                                <td>{{p.Turma.CH}}</td>
 	        					<td>({{p.QtdaMinistrada}}/{{p.QtdaMaxima}})</td>
 	        				</tr>
 	        			</tbody>
 	        		</table>
 	      		</div>
 	      		<div class="modal-footer">
-	        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
 	      		</div>
 	    	</div>
 	  	</div>

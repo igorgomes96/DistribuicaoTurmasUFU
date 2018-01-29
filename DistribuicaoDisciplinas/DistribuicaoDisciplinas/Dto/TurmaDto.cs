@@ -16,5 +16,6 @@ namespace DistribuicaoDisciplinas.Dto
 
         public Disciplina Disciplina { get; set; }
 
+
     }
 }

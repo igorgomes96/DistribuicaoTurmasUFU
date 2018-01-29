@@ -8,9 +8,15 @@ namespace DistribuicaoDisciplinas.Dto
 {
     public class RespostaDto
     {
-        public ICollection<ProfessorPrioridadesDto> Professores { get; set; }
-        public ICollection<TurmaDto> TurmasPendentes { get; set; }
+        //public ICollection<ProfessorPrioridadesDto> Professores { get; set; }
+        //public ICollection<TurmaPosicoesDto> TurmasPendentes { get; set; }
+        //public ICollection<BloqueioDto> Bloqueios { get; set; }
+
+        public ICollection<ProfessorDto> Professores { get; set; }
+        public ICollection<TurmaDto> Turmas { get; set; }
+        public ICollection<FilaTurmaDto> FilasTurmas { get; set; }
         public ICollection<BloqueioDto> Bloqueios { get; set; }
+        public ICollection<int> TurmasPendentes { get; set; }
         
     }
 }

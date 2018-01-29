@@ -19,3 +19,8 @@
     font-weight: bold;
     float: right;
 }
+
+.card-turma a {
+    text-decoration: underline;
+    color: white;
+}

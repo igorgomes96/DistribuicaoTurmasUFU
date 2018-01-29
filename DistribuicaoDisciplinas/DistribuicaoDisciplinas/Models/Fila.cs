@@ -15,10 +15,14 @@ namespace DistribuicaoDisciplinas.Models
         public int QtdaMaxima { get; set; }
 
         //0, se QtdaMinistrada < QtdaMaxima; 1, caso contrário
-        public int QtdaMaximaJaMinistrada()
+        public int QtdaMaximaJaMinistrada
         {
-            return QtdaMinistrada < QtdaMaxima ? 0 : 1;
+            get
+            {
+                return QtdaMinistrada < QtdaMaxima ? 0 : 1;
+            }
         }
+
 
         public override bool Equals(object obj)
         {

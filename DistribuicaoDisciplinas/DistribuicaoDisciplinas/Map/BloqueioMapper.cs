@@ -24,11 +24,9 @@ namespace DistribuicaoDisciplinas.Map
         {
             return source == null ? null : new BloqueioDto
             {
-                Professor = _profMapper.Map(source.FilaTurma.Fila.Professor),
-                Turma = _turmaMapper.Map(source.FilaTurma.Turma),
+                IdTurma = source.FilaTurma.Turma.Id,
                 IdFila = source.FilaTurma.Fila.Id,
-                Posicao = source.FilaTurma.Fila.Posicao,
-                Prioridade = source.FilaTurma.Prioridade,
+                TipoBloqueio = source.TipoBloqueio,
                 Dependente = Map(source.Dependente),
                 Tamanho = source.Tamanho
             };

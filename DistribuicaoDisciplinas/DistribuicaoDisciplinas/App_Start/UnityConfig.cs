@@ -40,11 +40,15 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<ISingleMapper<Ministra, MinistraEntity>, MinistraMapper>();
 
             //Dto
-            container.RegisterSingleton<ISingleMapper<FilaTurma, TurmaRespostaDto>, TurmaRespostaMapper>();
+            //container.RegisterSingleton<ISingleMapper<FilaTurma, TurmaRespostaDto>, TurmaRespostaMapper>();
+            //container.RegisterSingleton<ISingleMapper<FilaTurma, ProfessorRespostaDto>, ProfessorRespostaMapper>();
             container.RegisterSingleton<ISingleMapper<Turma, TurmaDto>, TurmaDtoMapper>();
             container.RegisterSingleton<ISingleMapper<Professor, ProfessorDto>, ProfessorDtoMapper>();
             container.RegisterSingleton<ISingleMapper<Bloqueio, BloqueioDto>, BloqueioMapper>();
-            container.RegisterSingleton<ISingleMapper<Professor, ProfessorPrioridadesDto>, ProfessorPrioridadesMapper>();
+            container.RegisterSingleton<ISingleMapper<Fila, FilaDto>, FilaDtoMapper>();
+            container.RegisterSingleton<ISingleMapper<FilaTurma, FilaTurmaDto>, FilaTurmaDtoMapper>();
+            //container.RegisterSingleton<ISingleMapper<Professor, ProfessorPrioridadesDto>, ProfessorPrioridadesMapper>();
+            container.RegisterSingleton<ISingleMapper<Ministra, FilaTurma>, MinistraFilaTurmaMapper>();
             container.RegisterSingleton(typeof(IMapper<,>), typeof(Mapper<,>));
 
             //Services
@@ -53,7 +57,8 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<IProfessoresService, ProfessoresService>();
             container.RegisterSingleton<IRestricoesService, RestricoesService>();
             container.RegisterSingleton<ITurmasService, TurmasService>();
-            container.RegisterSingleton<IDistribuicaoService, DistribuicaoService>();
+            container.RegisterType<IDistribuicaoService, DistribuicaoService>();
+            container.RegisterSingleton<IMinistraService, MinistraService>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
             

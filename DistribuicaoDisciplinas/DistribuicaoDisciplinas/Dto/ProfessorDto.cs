@@ -11,5 +11,6 @@ namespace DistribuicaoDisciplinas.Dto
         public string Nome { get; set; }
         public DateTime DataIngresso { get; set; }
         public int CH { get; set; }
+
     }
 }

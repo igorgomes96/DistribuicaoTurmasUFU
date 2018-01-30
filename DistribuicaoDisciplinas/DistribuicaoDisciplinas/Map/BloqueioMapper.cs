@@ -26,6 +26,7 @@ namespace DistribuicaoDisciplinas.Map
             {
                 IdTurma = source.FilaTurma.Turma.Id,
                 IdFila = source.FilaTurma.Fila.Id,
+                Siape = source.FilaTurma.Fila.Professor.Siape,
                 TipoBloqueio = source.TipoBloqueio,
                 Dependente = Map(source.Dependente),
                 Tamanho = source.Tamanho

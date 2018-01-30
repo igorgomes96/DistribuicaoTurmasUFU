@@ -9,9 +9,12 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
     self.posicoes = [];
     self.profPrioridades = [];
     self.qtdaTurmasDistribuidas = 0;
+    self.indexBloqueio = 0;
+    self.paginasBloqueios = null;
+
 
     self.statusAlgoritmo = ['Desconsiderada', 'Atribuída', 'Nao Analisada Ainda', 'Em Espera', 'Choque Horário', 'Choque Restrição', 'Choque Período', 'Outro Professor', 'CH Completa', 'Ultrapassaria CH se Atribuída'];
-    self.tipoBloqueio = ['Deadlock', 'Disciplina com CH Diferente de 4 horas'];
+    var tipoBloqueio = ['Deadlock', 'Disciplina com CH Diferente de 4 horas'];
     var url = 'http://localhost:62921/api/Testes/Distribuir/';
 
     var getProfessor = function(siape, professores) {
@@ -67,19 +70,47 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
 
         resposta.FilasTurmasBloqueadas = [];
         resposta.Bloqueios.forEach(function(b) {
+            var cabeca = b;
             var aux = b;
             var limite = 20; //Evita Loop infinito - no máximo 20 dependentes
             var cont = 0;
             var bloqueio = [];
             while (aux) {
+                
                 bloqueio.push(getFilaTurma(aux.IdTurma, aux.IdFila, resposta.FilasTurmas));
-                //aux.FilaTurma = getFilaTurma(aux.IdTurma, aux.IdFila, resposta.FilasTurmas);
                 aux = aux.Dependente;
-                if (cont == limite) break;
+                
+                if (cont === limite) break;
+
+                if (aux.IdTurma == cabeca.IdTurma && aux.IdFila == cabeca.IdFila)
+                    break;
+
                 cont++;
             }
-            resposta.FilasTurmasBloqueadas.push(bloqueio);
+
+            resposta.FilasTurmasBloqueadas.push({
+                FilasTurmas: bloqueio,
+                TipoBloqueio: tipoBloqueio[cabeca.TipoBloqueio],
+                Tamanho: cabeca.Tamanho - 1
+            });
         });
+
+        // resposta.Bloqueios.forEach(function(b) {
+        //     var aux = b;
+        //     var limite = 20; //Evita Loop infinito - no máximo 20 dependentes
+        //     var cont = 0;
+        //     var bloqueio = [];
+        //     while (aux) {
+        //         bloqueio.push({
+        //             Professor: getProfessor(aux.Siape, resposta.Professores), 
+        //             Turma: getTurma(aux.IdTurma, resposta.Turmas)
+        //         });
+        //         aux = aux.Dependente;
+        //         if (cont === limite) break;
+        //         cont++;
+        //     }
+        //     resposta.FilasTurmasBloqueadas.push(bloqueio);
+        // });
 
         return resposta;
     }
@@ -97,12 +128,27 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
                 return x.Status == 1;
             }).length;
             self.resposta = encadear(dado.data);
+            self.indexBloqueio = 0;
+            self.paginasBloqueios = [];
+            for(var i = 0; i < self.resposta.FilasTurmasBloqueadas.length; i++)
+                self.paginasBloqueios.push(i);
+
             console.log(self.resposta);
         }, function(error) {
             console.log(error);
         }).finally(function() {
             self.carregando = false;
         });
+    }
+
+    self.nextBloqueio = function() {
+        if ((self.indexBloqueio + 1) < self.resposta.FilasTurmasBloqueadas.length)
+            self.indexBloqueio++;
+    }
+
+    self.previousBloqueio = function() {
+        if (self.indexBloqueio > 0)
+            self.indexBloqueio--;
     }
 
     self.verPrioridades = function(professor) {

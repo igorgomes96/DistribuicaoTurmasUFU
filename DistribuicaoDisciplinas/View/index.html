@@ -50,45 +50,78 @@
 
                 <div ng-hide="!ct.resposta.Bloqueios || ct.resposta.Bloqueios.length == 0">
                     <h3>Bloqueios</h3>
-
+                    <h2>{{ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].TipoBloqueio}}<span ng-show="ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].TipoBloqueio == 'Deadlock'"> {{ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].Tamanho}}</span></h2>
                     <div class="row">
                         <div class="col-md-6">
 
+                            <nav style="text-align: center;">
+                                <ul class="pagination pagination-sm">
+                                    <li ng-class="{'disabled':ct.indexBloqueio <= 0}">
+                                        <a href aria-label="Previous" ng-click="ct.previousBloqueio()">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="pagina in ct.paginasBloqueios" ng-class="{'active':pagina == ct.indexBloqueio}"><a href ng-click="ct.indexBloqueio = pagina">{{pagina + 1}}</a></li>
+                                    <li ng-class="{'disabled':ct.indexBloqueio >= (ct.resposta.FilasTurmasBloqueadas.length - 1)}">
+                                        <a href aria-label="Next" ng-click="ct.nextBloqueio()">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            
                             <ul class="list-group">
-                                <li ng-repeat="b in ct.resposta.bloqueios" class="list-group-item">
+                                <li ng-repeat="b in ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].FilasTurmas" class="list-group-item">
+                                    
                                     <div class="row">
                                         <div class="col-md-8">
-                                            <strong class="list-group-item-heading">Professor: {{b.professor.siape}} - {{b.professor.nome}}</strong>
+                                            <strong class="list-group-item-heading">Professor: {{b.Professor.Siape}} - {{b.Professor.Nome}}</strong>
                                             <p class="list-group-item-text">
-                                                CH atual: {{b.professor.cargaAtual}} horas; CH distribuída: {{b.professor.cargaDistribuida}} horas<br>  
-                                                Turma: {{b.turma.id}} - {{b.turma.codigoDisc}} - {{b.turma.turma}} - CH: {{b.turma.ch}} horas<br>
-                                                Posição {{b.posicao}}, Prioridade {{b.prioridade}}
+                                                CH atual: {{b.Professor.CH}} horas; CH distribuída: {{b.Professor.CHAtribuida}} horas<br>  
+                                                Turma: {{b.Turma.Id}} - {{b.Turma.CodigoDisc}} - {{b.Turma.Disciplina.Nome}} ({{b.Turma.LetraTurma}})<br>
+                                                CH: {{b.Turma.CH}} horas - Posição {{b.Fila.Posicao}}, Prioridade {{b.Prioridade}}
                                             </p>
                                             <div>
-                                            	<a class="small" ng-click="ct.verPosicoes(b)" href style="margin-right: 10px;">Ver Posições ({{b.posicoes.length}})</a>
-                                            	<a class="small" ng-click="ct.verPrioridades(b)" href>Ver Prioridades ({{b.prioridades.length}})</a>
+                                            	<a class="small" ng-click="ct.verPosicoes(b)" href style="margin-right: 10px;">Ver Posições ({{b.Turma.Posicoes.length}})</a>
+                                            	<a class="small" ng-click="ct.verPrioridades(b)" href>Ver Prioridades ({{b.Professor.Prioridades.length}})</a>
                                             </div>
                                         </div>
 
                                         <div class="col-md-4">
                                         	<div class="options">
     	                                        <div>
-    	                                            <input type="radio" ng-model="b.resposta" value="0">Não Atribuir
+    	                                            <input type="radio" ng-model="b.Status" ng-value="0">Não Atribuir
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" ng-model="b.resposta" value="1">Atribuir
+    	                                            <input type="radio" ng-model="b.Status" ng-value="1">Atribuir
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" ng-model="b.resposta" value="2">Final da Fila
+    	                                            <input type="radio">Final da Fila
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" ng-model="b.resposta" value="3">Última Prioridade
+    	                                            <input type="radio">Última Prioridade
     	                                        </div>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
                             </ul>
+
+                            <nav style="text-align: center;">
+                                <ul class="pagination pagination-sm">
+                                    <li ng-class="{'disabled':ct.indexBloqueio <= 0}">
+                                        <a href aria-label="Previous" ng-click="ct.previousBloqueio()">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="pagina in ct.paginasBloqueios" ng-class="{'active':pagina == ct.indexBloqueio}"><a href ng-click="ct.indexBloqueio = pagina">{{pagina + 1}}</a></li>
+                                    <li ng-class="{'disabled':ct.indexBloqueio >= (ct.resposta.FilasTurmasBloqueadas.length - 1)}">
+                                        <a href aria-label="Next" ng-click="ct.nextBloqueio()">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
 
                             <div class="row">
                             	<div class="col-md-12">

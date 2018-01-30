@@ -18,7 +18,7 @@ namespace DistribuicaoDisciplinas.Util
             ChoquePeriodo,      //FilaTurma em que a turma choca período com outra já atribuída ao professor
             OutroProfessor,     //FilaTurma em que a turma já foi atribuída a outro professor no momento da análise
             CHCompleta,         //FilaTurma em que o professor já está com CH completa no momento em que foi atribuída a outro professor
-            UltrapassariaCH     //FilaTurma que se atribuída faria a CH do professor ser ultrapassada
+            UltrapassariaCH,    //FilaTurma que se atribuída faria a CH do professor ser ultrapassada
         }
 
         public enum TipoBloqueio

@@ -68,7 +68,7 @@
       ]
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
-      "sha512": "VllTYAJ1MakhOxsgrTAzmUqvNvVgfEWBFmySQDOQKumfdVqWgRG+eijyaeIQS5w3PR6wonm2g10crfexrwSuew==",
+      "sha512": "kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
       "type": "package",
       "path": "microsoft.netcore.platforms/1.1.0",
       "files": [
@@ -216,7 +216,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\igorg\\.nuget\\packages\\": {},
+    "C:\\Users\\igorago\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
@@ -226,18 +226,18 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\igorg\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
+      "projectUniqueName": "C:\\Users\\igorago\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
       "projectName": "Repository",
-      "projectPath": "C:\\Users\\igorg\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
-      "packagesPath": "C:\\Users\\igorg\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\igorg\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\obj\\",
+      "projectPath": "C:\\Users\\igorago\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\Repository.csproj",
+      "packagesPath": "C:\\Users\\igorago\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\igorago\\Documents\\GitHub\\DistribuicaoTurmasUFU\\DistribuicaoDisciplinas\\Repository\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\igorg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\igorago\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
       ],

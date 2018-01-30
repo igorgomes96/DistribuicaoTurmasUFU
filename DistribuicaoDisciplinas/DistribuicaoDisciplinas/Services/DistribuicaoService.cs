@@ -315,7 +315,7 @@ namespace DistribuicaoDisciplinas.Services
                     .Select(x => x.Id).ToList(),
                 Turmas = _turmaMapper.Map(turmas.Values),
                 FilasTurmas = _filaTurmaMapper.Map(filasTurmas),
-                Bloqueios = _bloqueioMapper.Map(bloqueios)
+                Bloqueios = _bloqueioMapper.Map(bloqueios).OrderBy(x => x.Tamanho).ToList()
             };
 
         }

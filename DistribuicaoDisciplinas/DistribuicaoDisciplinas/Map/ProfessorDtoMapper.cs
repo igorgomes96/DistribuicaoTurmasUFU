@@ -16,7 +16,8 @@ namespace DistribuicaoDisciplinas.Map
                 Siape = source.Siape,
                 Nome = source.Nome,
                 CH =source.CH,
-                DataIngresso = source.DataIngresso
+                DataIngresso = source.DataIngresso,
+                CHAtribuida = source.CHAtribuida()
             };
         }
 

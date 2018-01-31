@@ -50,7 +50,7 @@
 
                 <div ng-hide="!ct.resposta.Bloqueios || ct.resposta.Bloqueios.length == 0">
                     <h3>Bloqueios</h3>
-                    <h2>{{ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].TipoBloqueio}}<span ng-show="ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].TipoBloqueio == 'Deadlock'"> {{ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].Tamanho}}</span></h2>
+                    <h4>{{ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].TipoBloqueio}}<span ng-show="ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].TipoBloqueio == 'Deadlock'"> Tamanho {{ct.resposta.FilasTurmasBloqueadas[ct.indexBloqueio].Tamanho}}</span></h4>
                     <div class="row">
                         <div class="col-md-6">
 
@@ -82,8 +82,8 @@
                                                 CH: {{b.Turma.CH}} horas - Posição {{b.Fila.Posicao}}, Prioridade {{b.Prioridade}}
                                             </p>
                                             <div>
-                                            	<a class="small" ng-click="ct.verPosicoes(b)" href style="margin-right: 10px;">Ver Posições ({{b.Turma.Posicoes.length}})</a>
-                                            	<a class="small" ng-click="ct.verPrioridades(b)" href>Ver Prioridades ({{b.Professor.Prioridades.length}})</a>
+                                            	<a class="small" ng-click="ct.verPosicoes(b.Turma)" href style="margin-right: 10px;">Ver Posições ({{b.Turma.Posicoes.length}})</a>
+                                            	<a class="small" ng-click="ct.verPrioridades(b.Professor)" href>Ver Prioridades ({{b.Professor.Prioridades.length}})</a>
                                             </div>
                                         </div>
 
@@ -146,9 +146,9 @@
                         	<input type="text" name="inputFiltroDist" id="inputFiltroDist" placeholder="Digite uma expressão para filtrar" ng-model="filtroDistribuicao" ng-model-options="{debounce:500}" class="form-control">
                         </div>
 
-                        <ul class="list-group">
-                            <li ng-repeat="prof in ct.resposta.Professores | filter:{'Nome':filtroDistribuicao}" class="list-group-item" ondrop="angular.element('body').scope().drop(event)" ondragover="angular.element('body').scope().allowDrop(event)">
-                                <strong class="list-group-item-heading">{{prof.Siape}} - {{prof.Nome}}</strong>
+                        <ul class="list-group" id="lista-professores">
+                            <li ng-repeat="prof in ct.resposta.Professores | filter:{'Nome':filtroDistribuicao}" class="list-group-item item-professor" ng-class="{'desabilitado': prof.Desabilitado}">
+                                <strong class="list-group-item-heading"><span class="prof-siape">{{prof.Siape}}</span> - {{prof.Nome}}</strong>
                                 <p class="list-group-item-text" style="margin-bottom: 5px;">
                                     CH atual: {{prof.CH}} horas<br> 
                                 </p>
@@ -176,7 +176,7 @@
                         	<label for="inputFiltroTurmas">Filtro</label>
                         	<input type="text" name="inputFiltroTurmas" id="inputFiltroTurmas" placeholder="Digite uma expressão para filtrar" ng-model="filtroTurmas" class="form-control" ng-model-options="{debounce: 500}">
                         </div>
-                        <div ng-repeat="t in ct.resposta.Turmas | filter:{'Pendente': true} | orderBy:'Disciplina.Nome'" class="card-turma" draggable="true" ondragstart="angular.element('body').scope().dragStart(event)" ondragover="angular.element('body').scope().allowDrop(event)">
+                        <div ng-repeat="t in ct.resposta.Turmas | filter:{'Pendente': true} | orderBy:'Disciplina.Nome'" class="card-turma" draggable="true">
                             <div style="font-weight: bold;">
                                 <span class="id-turma">{{t.Id}}</span> - {{t.CodigoDisc}} ({{t.LetraTurma}})
                             </div>
@@ -271,7 +271,7 @@
                                 <td>{{p.Turma.CH}}</td>
 	        					<td>({{p.Fila.QtdaMinistrada}}/{{p.Fila.QtdaMaxima}})</td>
                                 <td>
-                                    <button class="btn btn-success btn-xs" ng-show="ct.statusAlgoritmo[p.Status] == 'Em Espera' || ct.statusAlgoritmo[p.Status] == 'Nao Analisada Ainda'">
+                                    <button class="btn btn-success btn-xs" ng-show="ct.statusAlgoritmo[p.Status] == 'Em Espera' || ct.statusAlgoritmo[p.Status] == 'Nao Analisada Ainda'" ng-click="ct.atribuirFilaTurma(p)">
                                         <i class="fa fa-check"></i>
                                     </button>
                                 </td>

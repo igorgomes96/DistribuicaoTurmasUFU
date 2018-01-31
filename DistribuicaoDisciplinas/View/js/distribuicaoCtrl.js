@@ -11,9 +11,11 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
     self.qtdaTurmasDistribuidas = 0;
     self.indexBloqueio = 0;
     self.paginasBloqueios = null;
+    var profDesabilitadosAtribuicao = [];
 
 
     self.statusAlgoritmo = ['Desconsiderada', 'Atribuída', 'Nao Analisada Ainda', 'Em Espera', 'Choque Horário', 'Choque Restrição', 'Choque Período', 'Outro Professor', 'CH Completa', 'Ultrapassaria CH se Atribuída'];
+    
     var tipoBloqueio = ['Deadlock', 'Disciplina com CH Diferente de 4 horas'];
     var url = 'http://localhost:62921/api/Testes/Distribuir/';
 
@@ -26,7 +28,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
 
     var getTurma = function(id, turmas) {
         var result = turmas.filter(function(t) {
-            return t.Id === id;
+            return t.Id == id;
         });
         return result.length > 0 ? result[0] : null;
     }
@@ -37,6 +39,13 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
         });
         return result.length > 0 ? result[0] : null;
     } 
+
+    var getFilaTurmaBySiape = function(idTurma, siape, filasTurmas) {
+        var result = filasTurmas.filter(function(ft) {
+            return ft.Fila.Siape.trim() == siape.trim() && ft.IdTurma == idTurma;
+        });
+        return result.length > 0 ? result[0] : null;
+    }
 
     var encadear = function(resposta) {
         resposta.Professores.forEach(function(p) {
@@ -95,23 +104,6 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
             });
         });
 
-        // resposta.Bloqueios.forEach(function(b) {
-        //     var aux = b;
-        //     var limite = 20; //Evita Loop infinito - no máximo 20 dependentes
-        //     var cont = 0;
-        //     var bloqueio = [];
-        //     while (aux) {
-        //         bloqueio.push({
-        //             Professor: getProfessor(aux.Siape, resposta.Professores), 
-        //             Turma: getTurma(aux.IdTurma, resposta.Turmas)
-        //         });
-        //         aux = aux.Dependente;
-        //         if (cont === limite) break;
-        //         cont++;
-        //     }
-        //     resposta.FilasTurmasBloqueadas.push(bloqueio);
-        // });
-
         return resposta;
     }
 
@@ -161,20 +153,88 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
     	$('#modalPosicoes').modal('show');
     }
 
+    self.atribuirFilaTurma = function(filaTurma) {
+        filaTurma.Status = 1;
+        filaTurma.Turma.Pendente = false;
+    }
+
+    //Desabilita os professores que não tem a turma na fila de prioridades ou que 
+    //estão com status diferente de EmEspera e NaoAnalisadaAinda
+    var desabilitarProfessoresAtribuicao = function(turma) {
+        profDesabilitadosAtribuicao = [];
+        self.resposta.Professores.forEach(function(professor) {
+            var filasTurmas = professor.Prioridades.filter(function(p) {
+                return p.Turma.Id == turma.Id;
+            });
+
+            //Se a turma está em suas prioridades e com status diferente de EmEspera e NaoAnalisadaAinda
+            if (filasTurmas.length <= 0 || (filasTurmas[0].Status != 2 && filasTurmas[0].Status != 3)) {
+                professor.Desabilitado = true;
+                profDesabilitadosAtribuicao.push(professor);
+            }
+
+        });
+    }
+
+    var habilitarProfessoresAtribuicao = function() {
+        profDesabilitadosAtribuicao.forEach(function(p) {
+            p.Desabilitado = false;
+        });
+    }
+
 
     //Drag and Drop
-    $scope.dragStart = function(ev) {
-        ev.dataTransfer.setData("text", $(ev.target).find('.id-turma').text());
-    }
+    document.addEventListener("dragstart", function(ev) {
+        var idTurma = $(ev.target).find('.id-turma').text();
+        ev.dataTransfer.setData("text", idTurma);
+        desabilitarProfessoresAtribuicao(getTurma(idTurma, self.resposta.Turmas));
+        $scope.$apply();
+    }, false);
 
-    $scope.allowDrop = function(ev) {
-        ev.preventDefault();
-    }
 
-    $scope.drop = function(ev) {
+    document.addEventListener("dragover", function(ev) {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        console.log(data);
-    }
+    });
+
+    // document.addEventListener("dragenter", function(ev) {
+    //     var itemLista = $(ev.target).closest('li');
+
+    //     if (itemLista.hasClass('item-professor'))
+    //         itemLista[0].style.background = "purple";
+
+    // }, false);
+
+    // document.addEventListener("dragleave", function(ev) {
+    //     var itemLista = $(ev.target).closest('li');
+
+    //     // reset background of potential drop target when the draggable element leaves it
+    //     if (itemLista.hasClass('item-professor')) {
+    //         itemLista[0].style.background = "";
+    //     }
+
+    // }, false);
+
+    document.addEventListener("dragend", function( event ) {
+        habilitarProfessoresAtribuicao();
+        $scope.$apply();
+    }, false);
+
+    document.addEventListener("drop", function(ev) {
+        ev.preventDefault();
+        var idTurma = ev.dataTransfer.getData("text");
+        var itemLista = $(ev.target).closest('li');
+
+        if (!itemLista.hasClass('desabilitado')) {
+            var elementsSiape = $(itemLista.find('.prof-siape'));
+            if (elementsSiape.length > 0) {
+                var filaTurma = getFilaTurmaBySiape(idTurma, elementsSiape[0].outerText, self.resposta.FilasTurmas);
+                self.atribuirFilaTurma(filaTurma);
+            }
+        }
+
+        habilitarProfessoresAtribuicao();
+
+        $scope.$apply();
+    });
 
 }]);

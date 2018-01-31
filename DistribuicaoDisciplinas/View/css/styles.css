@@ -24,3 +24,8 @@
     text-decoration: underline;
     color: white;
 }
+
+#lista-professores li.desabilitado {
+    opacity: 0.3;
+    cursor: no-drop;
+}

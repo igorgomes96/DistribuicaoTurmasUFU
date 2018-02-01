@@ -175,6 +175,7 @@
     <Compile Include="Entities\ProfessorEntity.cs" />
     <Compile Include="Entities\RestricaoEntity.cs" />
     <Compile Include="Entities\TurmaEntity.cs" />
+    <Compile Include="Exceptions\FilaTurmaNaoEncontradaException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -233,7 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mapping\Mapping.csproj">

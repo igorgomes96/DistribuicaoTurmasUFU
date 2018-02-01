@@ -112,10 +112,22 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
         filaTurma.Status = 0;
     }
 
-    self.gerarCenarios = function(codigoCenario) {
+    self.distribuir = function(codigoCenario, filasTurmas) {
         self.carregando = true;
-        $http.get(url + codigoCenario)
-        .then(function(dado) {
+
+        var func = null;
+
+        if (filasTurmas) {
+            func = $http.post(url + codigoCenario, filasTurmas);
+            filasTurmas.forEach(function(ft) {
+                delete ft.Professor;
+                delete ft.Turma;
+            });
+        }
+        else
+            func = $http.get(url + codigoCenario);
+        
+        func.then(function(dado) {
             self.qtdaTurmasDistribuidas = dado.data.FilasTurmas.filter(function(x) {
                 return x.Status == 1;
             }).length;

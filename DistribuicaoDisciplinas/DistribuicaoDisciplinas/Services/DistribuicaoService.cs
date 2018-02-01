@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using DistribuicaoDisciplinas.Dto;
 using DistribuicaoDisciplinas.Entities;
+using DistribuicaoDisciplinas.Exceptions;
 using DistribuicaoDisciplinas.Models;
 using Mapping.Interfaces;
 using Repository.Interfaces;
@@ -462,10 +463,28 @@ namespace DistribuicaoDisciplinas.Services
             //Atualiza o status da Fila atribuída
             filaTurma.StatusAlgoritmo = StatusFila.Atribuida;
         }
+
+        private void AtualizaStatus(ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            if (filasTurmasDto == null)
+                return;
+
+            foreach(FilaTurmaDto ft in filasTurmasDto)
+            {
+                FilaTurma filaTurma = filasTurmas
+                    .FirstOrDefault(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma);
+
+                if (filaTurma == null)
+                    throw new FilaTurmaNaoEncontradaException();
+
+                filaTurma.StatusAlgoritmo = ft.Status;
+            }
+        }
+
         #endregion
 
         #region Public Methods
-        public RespostaDto Distribuir(int numCenario)
+        public RespostaDto Distribuir(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             cenario = _cenariosService.Find(numCenario);
             ICollection<FilaTurmaEntity> filasTurmasEntities = _filasTurmasRep
@@ -473,8 +492,6 @@ namespace DistribuicaoDisciplinas.Services
                     && ft.Turma.semestre == cenario.Semestre
                     && ft.Fila.ano == cenario.Ano
                     && ft.Fila.semestre == cenario.Semestre);
-
-            GetOptativas();
 
             filasTurmas = Encadear(filasTurmasEntities);
 
@@ -484,6 +501,8 @@ namespace DistribuicaoDisciplinas.Services
                 .ForEach(x => x.StatusAlgoritmo = StatusFila.NaoAnalisadaAinda);
 
             TurmasComRestricao();
+
+            AtualizaStatus(filasTurmasDto);
 
             AtualizaPrioridadesCHCompleta();
 

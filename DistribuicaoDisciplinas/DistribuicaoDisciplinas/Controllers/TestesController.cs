@@ -1,4 +1,5 @@
-﻿using DistribuicaoDisciplinas.Entities;
+﻿using DistribuicaoDisciplinas.Dto;
+using DistribuicaoDisciplinas.Entities;
 using DistribuicaoDisciplinas.Models;
 using DistribuicaoDisciplinas.Services;
 using Mapping.Interfaces;
@@ -77,7 +78,13 @@ namespace DistribuicaoDisciplinas.Controllers
         [Route("api/Testes/Distribuir/{id}")]
         public IHttpActionResult GetDistribuir(int id)
         {
-            return Ok(_distService.Distribuir(id));
+            return Ok(_distService.Distribuir(id, null));
+        }
+
+        [Route("api/Testes/Distribuir/{id}")]
+        public IHttpActionResult PostDistribuir(int id, ICollection<FilaTurmaDto> filasTurmas)
+        {
+            return Ok(_distService.Distribuir(id, filasTurmas));
         }
 
         [Route("api/Testes/Cursos")]

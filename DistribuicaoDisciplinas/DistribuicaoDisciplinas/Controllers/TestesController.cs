@@ -87,6 +87,12 @@ namespace DistribuicaoDisciplinas.Controllers
             return Ok(_distService.Distribuir(id, filasTurmas));
         }
 
+        [Route("api/Testes/Distribuir/AtribuicaoManual/{cenario}/{siape}/{idTurma}")]
+        public IHttpActionResult PostAtribuirTurmaManualmente(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
+        {
+            return Ok(_distService.Atribuir(cenario, siape, idTurma, filasTurmas));
+        }
+
         [Route("api/Testes/Cursos")]
         public IHttpActionResult GetCursos()
         {

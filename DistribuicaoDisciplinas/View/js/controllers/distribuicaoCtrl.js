@@ -1,11 +1,9 @@
-angular.module('distribuicaoApp', []);
-angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$filter', '$scope', function($http, $filter, $scope) {
+angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$scope', 'distribuicaoApi', 'statusValue', function($filter, $scope, distribuicaoApi, statusValue) {
 
 
     var self = this;
     self.codigoCenario = 1;
     self.resposta = {}; 
-    self.carregando = true;
     self.posicoes = [];
     self.profPrioridades = [];
     self.qtdaTurmasDistribuidas = 0;
@@ -17,7 +15,6 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
     self.statusAlgoritmo = ['Desconsiderada', 'Atribuída', 'Nao Analisada Ainda', 'Em Espera', 'Choque Horário', 'Choque Restrição', 'Choque Período', 'Outro Professor', 'CH Completa', 'Ultrapassaria CH se Atribuída'];
     
     var tipoBloqueio = ['Deadlock', 'Disciplina com CH Diferente de 4 horas'];
-    var url = 'http://localhost:62921/api/Testes/Distribuir/';
 
     var getProfessor = function(siape, professores) {
         var result = professores.filter(function(p) {
@@ -108,40 +105,72 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
     }
 
     self.removerTurma = function(filaTurma) {
-        filaTurma.Turma.Pendente = true;
-        filaTurma.Status = 0;
+        filaTurma.Status = statusValue.DESCONSIDERADA;
+        self.distribuir(self.resposta.FilasTurmas);
     }
 
-    self.distribuir = function(codigoCenario, filasTurmas) {
-        self.carregando = true;
+    var getFilasTurmasResposta = function(filasTurmas) {
+        var result = [];
+        filasTurmas.forEach(function(ft) {
+            var newFt = {
+                Fila: {
+                    Id: ft.Fila.Id
+                },
+                IdTurma: ft.IdTurma,
+                Status: ft.Status
+            }
+            result.push(newFt);
+        });
+        return result;
+    }
+
+    var atribuirFilaTurma = function(siape, idTurma, filasTurmas) {
+        if (!filasTurmas)
+            throw "FilasTurmas é nulo!";
+
+        distribuicaoApi.postAtribuirTurma(self.codigoCenario, siape, idTurma, getFilasTurmasResposta(filasTurmas))
+        .then(function(dado) {
+            preparaResposta(dado.data);
+        }, function(error) {
+            console.log(error);
+        });
+    }
+
+    //Ajusta a resposta recebida do servidor, gerando o encadeamento e criando as propriedades necessárias para o front.
+    var preparaResposta = function(dado) {
+        self.qtdaTurmasDistribuidas = dado.FilasTurmas.filter(function(x) {
+            return x.Status == statusValue.ATRIBUIDA;
+        }).length;
+        
+        self.resposta = encadear(dado);
+        self.indexBloqueio = 0;
+        self.paginasBloqueios = [];
+        for(var i = 0; i < self.resposta.FilasTurmasBloqueadas.length; i++)
+            self.paginasBloqueios.push(i);
+    }
+
+    self.desbloqueioChange = function(filaTurma) {
+        if (filaTurma.Status === statusValue.ATRIBUIDA)
+            atribuirFilaTurma(filaTurma.Professor.Siape, filaTurma.Turma.Id, self.resposta.FilasTurmas);
+        else
+            self.distribuir(self.resposta.FilasTurmas);
+    }
+
+    self.distribuir = function(filasTurmas) {
 
         var func = null;
 
-        if (filasTurmas) {
-            func = $http.post(url + codigoCenario, filasTurmas);
-            filasTurmas.forEach(function(ft) {
-                delete ft.Professor;
-                delete ft.Turma;
-            });
-        }
+        if (filasTurmas)
+            func = distribuicaoApi.postDistribuir(self.codigoCenario, getFilasTurmasResposta(filasTurmas));
         else
-            func = $http.get(url + codigoCenario);
+            func = distribuicaoApi.getDistribuir(self.codigoCenario);
         
         func.then(function(dado) {
-            self.qtdaTurmasDistribuidas = dado.data.FilasTurmas.filter(function(x) {
-                return x.Status == 1;
-            }).length;
-            self.resposta = encadear(dado.data);
-            self.indexBloqueio = 0;
-            self.paginasBloqueios = [];
-            for(var i = 0; i < self.resposta.FilasTurmasBloqueadas.length; i++)
-                self.paginasBloqueios.push(i);
 
-            console.log(self.resposta);
+            preparaResposta(dado.data);
+
         }, function(error) {
             console.log(error);
-        }).finally(function() {
-            self.carregando = false;
         });
     }
 
@@ -155,6 +184,16 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
             self.indexBloqueio--;
     }
 
+    self.atribuirModalPrioridades = function(p) {
+        atribuirFilaTurma(p.Professor.Siape, p.Turma.Id, self.resposta.FilasTurmas);
+        $('#modalPrioridades').modal('hide');
+    }
+
+    self.atribuirModalPosicoes = function(p) {
+        atribuirFilaTurma(p.Professor.Siape, p.Turma.Id, self.resposta.FilasTurmas);
+        $('#modalPosicoes').modal('hide');
+    }
+
     self.verPrioridades = function(professor) {
     	self.profPrioridades = professor;
     	$('#modalPrioridades').modal('show');
@@ -163,11 +202,6 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
     self.verPosicoes = function(posicoes) {
     	self.posicoes = posicoes;
     	$('#modalPosicoes').modal('show');
-    }
-
-    self.atribuirFilaTurma = function(filaTurma) {
-        filaTurma.Status = 1;
-        filaTurma.Turma.Pendente = false;
     }
 
     //Desabilita os professores que não tem a turma na fila de prioridades ou que 
@@ -180,7 +214,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
             });
 
             //Se a turma está em suas prioridades e com status diferente de EmEspera e NaoAnalisadaAinda
-            if (filasTurmas.length <= 0 || (filasTurmas[0].Status != 2 && filasTurmas[0].Status != 3)) {
+            if (filasTurmas.length <= 0 || (filasTurmas[0].Status != statusValue.NAO_ANALISADA_AINDA && filasTurmas[0].Status != statusValue.EM_ESPERA)) {
                 professor.Desabilitado = true;
                 profDesabilitadosAtribuicao.push(professor);
             }
@@ -226,7 +260,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
 
     // }, false);
 
-    document.addEventListener("dragend", function( event ) {
+    document.addEventListener("dragend", function(ev) {
         habilitarProfessoresAtribuicao();
         $scope.$apply();
     }, false);
@@ -239,12 +273,13 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$http', '$fil
         if (!itemLista.hasClass('desabilitado')) {
             var elementsSiape = $(itemLista.find('.prof-siape'));
             if (elementsSiape.length > 0) {
-                var filaTurma = getFilaTurmaBySiape(idTurma, elementsSiape[0].outerText, self.resposta.FilasTurmas);
-                self.atribuirFilaTurma(filaTurma);
+                var siape = elementsSiape[0].outerText;
+                //var filaTurma = getFilaTurmaBySiape(idTurma, elementsSiape[0].outerText, self.resposta.FilasTurmas);
+                atribuirFilaTurma(siape, idTurma, self.resposta.FilasTurmas);
             }
         }
 
-        habilitarProfessoresAtribuicao();
+        //habilitarProfessoresAtribuicao();
 
         $scope.$apply();
     });

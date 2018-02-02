@@ -39,14 +39,14 @@
 
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-success" ng-click="ct.distribuir(ct.codigoCenario)">Distribuir</button>
+                <button class="btn btn-success" ng-click="ct.distribuir()">Distribuir</button>
             </div>
         </div>
 
         <hr>
 
-        <div class="row" ng-if="!ct.carregando">
-            <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12" ng-if="ct.resposta && ct.resposta.FilasTurmas && ct.resposta.FilasTurmas.length > 0">
 
                 <div ng-hide="!ct.resposta.Bloqueios || ct.resposta.Bloqueios.length == 0">
                     <h3>Bloqueios</h3>
@@ -82,7 +82,7 @@
                                                 CH: {{b.Turma.CH}} horas - Posição {{b.Fila.Posicao}}, Prioridade {{b.Prioridade}}
                                             </p>
                                             <div>
-                                            	<a class="small" ng-click="ct.verPosicoes(b.Turma)" href style="margin-right: 10px;">Ver Posições ({{b.Turma.Posicoes.length}})</a>
+                                            	<a class="small" ng-click="ct.verPosicoes(b.Turma.Posicoes)" href style="margin-right: 10px;">Ver Posições ({{b.Turma.Posicoes.length}})</a>
                                             	<a class="small" ng-click="ct.verPrioridades(b.Professor)" href>Ver Prioridades ({{b.Professor.Prioridades.length}})</a>
                                             </div>
                                         </div>
@@ -90,19 +90,21 @@
                                         <div class="col-md-4">
                                         	<div class="options">
     	                                        <div>
-    	                                            <input type="radio" ng-model="b.Status" ng-value="0">Não Atribuir
+    	                                            <input type="radio" name="radioNaoAtribuir{{$index}}" id="radioNaoAtribuir{{$index}}" ng-model="b.Status" value="-1" ng-change="ct.desbloqueioChange(b)"><label for="radioNaoAtribuir{{$index}}" style="font-weight: normal;">Não Atribuir</label>
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" ng-model="b.Status" ng-value="1">Atribuir
+    	                                            <input type="radio" name="radioAtribuir{{$index}}" id="radioAtribuir{{$index}}" ng-model="b.Status" value="1" ng-change="ct.desbloqueioChange(b)"><label for="radioAtribuir{{$index}}" style="font-weight: normal;">Atribuir</label>
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio">Final da Fila
+    	                                            <input type="radio" name="radioFinalFila{{$index}}" id="radioFinalFila{{$index}}" ng-model="b.Status" value="2" ng-change="ct.desbloqueioChange(b)" disabled><label for="radioFinalFila{{$index}}" style="font-weight: normal;">Final da Fila</label>
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio">Última Prioridade
+    	                                            <input type="radio" name="radioUltimaPrioridade{{$index}}" id="radioUltimaPrioridade{{$index}}" ng-model="b.Status" value="3" ng-change="ct.desbloqueioChange(b)" disabled><label for="radioUltimaPrioridade{{$index}}" style="font-weight: normal;">Última Prioridade</label>
     	                                        </div>
                                             </div>
                                         </div>
+
+
                                     </div>
                                 </li>
                             </ul>
@@ -123,11 +125,11 @@
                                 </ul>
                             </nav>
 
-                            <div class="row">
+                            <!-- <div class="row">
                             	<div class="col-md-12">
-                            		<button class="btn btn-success pull-right" ng-click="ct.distribuir(ct.codigoCenario, ct.resposta.FilasTurmas)">Continuar</button>
+                            		<button class="btn btn-success pull-right" ng-click="ct.distribuir(ct.resposta.FilasTurmas)">Continuar</button>
                             	</div>
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
@@ -214,6 +216,7 @@
                                 <th>Prioridade</th>
                                 <th>Status</th>
 	        					<th></th>
+                                <th width="5%"></th>
 	        				</tr>
 	        			</thead>
 
@@ -223,8 +226,14 @@
 	        					<td>{{p.Professor.Nome}}</td>
 	        					<td>{{p.Fila.Posicao}}</td>
 	        					<td>{{p.Prioridade}}</td>
-                                <td>{{ct.statusAlgoritmo[p.Status]}}</td>
+                                <!-- <td>{{ct.statusAlgoritmo[p.Status]}}</td> -->
+                                <td>{{p.Status}}</td>
 	        					<td>({{p.Fila.QtdaMinistrada}}/{{p.Fila.QtdaMaxima}})</td>
+                                <td>
+                                    <button class="btn btn-success btn-xs" ng-show="ct.statusAlgoritmo[p.Status] == 'Em Espera' || ct.statusAlgoritmo[p.Status] == 'Nao Analisada Ainda'" ng-click="ct.atribuirModalPosicoes(p)">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </td>
 	        				</tr>
 	        			</tbody>
 	        		</table>
@@ -267,11 +276,12 @@
 	        					<td>{{p.Turma.LetraTurma}}</td>
 	        					<td>{{p.Fila.Posicao}}</td>
 	        					<td>{{p.Prioridade}}</td>
-                                <td>{{ct.statusAlgoritmo[p.Status]}}</td>
+                                <!-- <td>{{ct.statusAlgoritmo[p.Status]}}</td> -->
+                                <td>{{p.Status}}</td>
                                 <td>{{p.Turma.CH}}</td>
 	        					<td>({{p.Fila.QtdaMinistrada}}/{{p.Fila.QtdaMaxima}})</td>
                                 <td>
-                                    <button class="btn btn-success btn-xs" ng-show="ct.statusAlgoritmo[p.Status] == 'Em Espera' || ct.statusAlgoritmo[p.Status] == 'Nao Analisada Ainda'" ng-click="ct.atribuirFilaTurma(p)">
+                                    <button class="btn btn-success btn-xs" ng-show="ct.statusAlgoritmo[p.Status] == 'Em Espera' || ct.statusAlgoritmo[p.Status] == 'Nao Analisada Ainda'" ng-click="ct.atribuirModalPrioridades(p)">
                                         <i class="fa fa-check"></i>
                                     </button>
                                 </td>
@@ -302,7 +312,18 @@
     <!-- Alert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-    <script type="text/javascript" src="js/distribuicaoCtrl.js"></script>
+    <!-- App -->
+    <script type="text/javascript" src="js/app.js"></script>
+
+    <!-- Controllers -->
+    <script type="text/javascript" src="js/controllers/distribuicaoCtrl.js"></script>
+
+    <!-- API -->
+    <script type="text/javascript" src="js/api/distribuicaoApi.js"></script>
+
+    <!-- Values -->
+    <script type="text/javascript" src="js/values/configValue.js"></script>
+    <script type="text/javascript" src="js/values/statusValue.js"></script>
 
 </body>
 </html>

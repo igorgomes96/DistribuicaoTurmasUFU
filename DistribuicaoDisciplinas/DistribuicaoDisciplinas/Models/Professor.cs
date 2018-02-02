@@ -42,6 +42,27 @@ namespace DistribuicaoDisciplinas.Models
             return CHAtribuida() >= CH;
         }
 
+        
+        /// <summary>
+        /// Retorna a soma da CH das turmas em espera com menor prioridade que a turma passada por parâmetro
+        /// </summary>
+        /// <param name="filaTurma"></param>
+        /// <returns>Soma da CH</returns>
+        public int CHEmEspera(FilaTurma filaTurma)
+        {
+            int ch = 0;
+            foreach (FilaTurma ft in Prioridades)
+            {
+                if (ft.Fila.Id.Equals(filaTurma.Fila.Id) && ft.Turma.Id.Equals(filaTurma.Turma.Id))
+                    break;
+
+                if (ft.StatusAlgoritmo == StatusFila.EmEspera)
+                    ch += ft.Turma.CH;
+            }
+
+            return ch;
+        }
+
         public override bool Equals(object obj)
         {
             Professor prof = obj as Professor;

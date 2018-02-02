@@ -162,37 +162,37 @@ namespace DistribuicaoDisciplinas.Services
         /// Altera o status das FilasTurmas que com certeza não serão atribuídas ao professor,
         /// pois as turmas com maior prioridade completarão sua CH.
         /// </summary>
-        private void LimpezaInicial()
-        {
-            foreach (Professor prof in professores.Values)
-            {
-                List<FilaTurma> turmasAtribuidas = new List<FilaTurma>();
-                bool flagCHCompleta = false;
+        //private void LimpezaInicial()
+        //{
+        //    foreach (Professor prof in professores.Values)
+        //    {
+        //        List<FilaTurma> turmasAtribuidas = new List<FilaTurma>();
+        //        bool flagCHCompleta = false;
 
-                foreach (FilaTurma ft in prof.Prioridades.Where(x => x.StatusAlgoritmo != StatusFila.ChoqueRestricao))
-                {
-                    if (flagCHCompleta)
-                    {
-                        ft.StatusAlgoritmo = StatusFila.Desconsiderada;
-                    }
-                    else
-                    {
-                        if (ft.Turma.Posicoes.FirstOrDefault().Equals(ft))
-                        {
-                            if (!turmasAtribuidas
-                                .Any(x => _turmasService.ChoqueHorario(x.Turma, ft.Turma)
-                                    || _turmasService.ChoquePeriodo(x.Turma, ft.Turma)))
-                            {
-                                turmasAtribuidas.Add(ft);
-                            }
-                        }
+        //        foreach (FilaTurma ft in prof.Prioridades.Where(x => x.StatusAlgoritmo != StatusFila.ChoqueRestricao))
+        //        {
+        //            if (flagCHCompleta)
+        //            {
+        //                ft.StatusAlgoritmo = StatusFila.Desconsiderada;
+        //            }
+        //            else
+        //            {
+        //                if (ft.Turma.Posicoes.FirstOrDefault().Equals(ft))
+        //                {
+        //                    if (!turmasAtribuidas
+        //                        .Any(x => _turmasService.ChoqueHorario(x.Turma, ft.Turma)
+        //                            || _turmasService.ChoquePeriodo(x.Turma, ft.Turma)))
+        //                    {
+        //                        turmasAtribuidas.Add(ft);
+        //                    }
+        //                }
 
-                        if (turmasAtribuidas.Select(x => x.Turma.CH).Sum() >= prof.CH)
-                            flagCHCompleta = true;
-                    }
-                }
-            }
-        }
+        //                if (turmasAtribuidas.Select(x => x.Turma.CH).Sum() >= prof.CH)
+        //                    flagCHCompleta = true;
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Atualiza o status das turmas com restrição.
@@ -303,6 +303,11 @@ namespace DistribuicaoDisciplinas.Services
             return flagHouveAtribuicao;
         }
 
+        /// <summary>
+        /// Faz a transformação das filas turmas em RespostaDto.
+        /// </summary>
+        /// <param name="bloqueios"></param>
+        /// <returns></returns>
         private RespostaDto GeraResposta(ICollection<Bloqueio> bloqueios)
         {
             ICollection<Turma> turmasAtribuidas = filasTurmas
@@ -335,9 +340,11 @@ namespace DistribuicaoDisciplinas.Services
 
             foreach(Professor p in professoresPendentes)
             {
-                Trace.WriteLine(string.Format("\nDeadlock {0}:", i++));
                 Bloqueio deadlock = GetDeadlock(p);
-                if (deadlock != null && !deadlocks.Any(x => x.FilaTurma.Equals(deadlock.FilaTurma)))
+                //Verifico se esse deadlock já foi identificado. Para isso,
+                //basta verificar se a FilaTurma cabeça do deadlock já existe
+                //em alqum dos deadlocks anteriores
+                if (deadlock != null && !deadlocks.Any(x => x.Contains(deadlock.FilaTurma)))
                     deadlocks.Add(deadlock);
                 
             }
@@ -345,7 +352,7 @@ namespace DistribuicaoDisciplinas.Services
             Trace.WriteLine("\n***********************************************\n");
             i = 0;
             foreach (Bloqueio deadlock in deadlocks) {
-                Trace.WriteLine(string.Format("\nDeadlock {0}:", i++));
+                Trace.WriteLine(string.Format("\n\nDeadlock {0}:", i++));
                 PrintDeadlock(deadlock);
             }
 
@@ -363,7 +370,7 @@ namespace DistribuicaoDisciplinas.Services
                 if (bloqueio.Dependente != null)
                 {
                     professor = bloqueio.Dependente.FilaTurma.Fila.Professor;
-                    Trace.WriteLine(" -> " + professor.Nome + "(" + professor.Siape + ")\n");
+                    Trace.WriteLine(" -> " + professor.Nome + "(" + professor.Siape + ")");
                 }
 
                 bloqueio = bloqueio.Dependente;
@@ -391,7 +398,7 @@ namespace DistribuicaoDisciplinas.Services
             };
             Bloqueio ultimoBloqueio = cabeca;
 
-            Trace.Write(professor.Nome + "(" + professor.Siape  + ") -> " + ftCabeca.Turma.CodigoDisc);
+            //Trace.Write(professor.Nome + "(" + professor.Siape  + ") -> " + ftCabeca.Turma.CodigoDisc);
 
             for (; ; )
             {
@@ -400,12 +407,12 @@ namespace DistribuicaoDisciplinas.Services
                     .FirstOrDefault(x => x.StatusAlgoritmo == StatusFila.EmEspera 
                         || x.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda).Fila.Professor;
 
-                Trace.WriteLine(" -> " + professor.Nome + "(" + professor.Siape + ")");
+                //Trace.WriteLine(" -> " + professor.Nome + "(" + professor.Siape + ")");
 
                 FilaTurma ftBloqueada = professor.Prioridades
                             .FirstOrDefault(ft => ft.StatusAlgoritmo == StatusFila.EmEspera);
 
-                Trace.Write(professor.Nome + "(" + professor.Siape + ") -> " + ftBloqueada.Turma.CodigoDisc);
+                //Trace.Write(professor.Nome + "(" + professor.Siape + ") -> " + ftBloqueada.Turma.CodigoDisc);
 
                 if (ftBloqueada == null) break;
 
@@ -431,12 +438,13 @@ namespace DistribuicaoDisciplinas.Services
 
             }
 
-            Trace.WriteLine("");
+            //Trace.WriteLine("");
             return cabeca;
         }
 
         /// <summary>
-        /// Atualiza os status das FilasTurmas do professor e verifica se alguma turma não analisada choca com a turma atribuída
+        /// Atualiza os status das FilasTurmas do professor e verifica se alguma turma não 
+        /// analisada choca com a turma atribuída
         /// </summary>
         /// <param name="filaTurma"></param>
         private void AtribuirTurma(FilaTurma filaTurma)
@@ -464,6 +472,10 @@ namespace DistribuicaoDisciplinas.Services
             filaTurma.StatusAlgoritmo = StatusFila.Atribuida;
         }
 
+        /// <summary>
+        /// Atualiza os status de cada fila turma de acordo as filas turmas recebida por parâmetro.
+        /// </summary>
+        /// <param name="filasTurmasDto"></param>
         private void AtualizaStatus(ICollection<FilaTurmaDto> filasTurmasDto)
         {
             if (filasTurmasDto == null)
@@ -481,10 +493,13 @@ namespace DistribuicaoDisciplinas.Services
             }
         }
 
-        #endregion
-
-        #region Public Methods
-        public RespostaDto Distribuir(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto)
+        /// <summary>
+        /// Carrega as filas turmas do semestre, chama função de encadeamento e deixa as 
+        /// propriedades privadas da classe prontas para a distribuição.
+        /// </summary>
+        /// <param name="numCenario"></param>
+        /// <param name="filasTurmasDto"></param>
+        private void PreparaDistribuicao(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             cenario = _cenariosService.Find(numCenario);
             ICollection<FilaTurmaEntity> filasTurmasEntities = _filasTurmasRep
@@ -497,7 +512,8 @@ namespace DistribuicaoDisciplinas.Services
 
             //Atualiza o status de todas para NaoAnalisadaAinda
             filasTurmas
-                .Where(x => x.StatusAlgoritmo != StatusFila.Atribuida).ToList()
+                .Where(x => x.StatusAlgoritmo != StatusFila.Atribuida
+                     && x.StatusAlgoritmo != StatusFila.Desconsiderada).ToList()
                 .ForEach(x => x.StatusAlgoritmo = StatusFila.NaoAnalisadaAinda);
 
             TurmasComRestricao();
@@ -506,13 +522,42 @@ namespace DistribuicaoDisciplinas.Services
 
             AtualizaPrioridadesCHCompleta();
 
-            //LimpezaInicial();
+        }
 
-            while (CasosTriviais())
-            {
-            };
+        #endregion
 
-            return GeraResposta(GetTodosDeadlocks());
+        #region Public Methods
+        public RespostaDto Atribuir(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            PreparaDistribuicao(numCenario, filasTurmasDto);
+
+            FilaTurma filaTurma = filasTurmas.FirstOrDefault(ft => ft.Fila.Professor.Siape.Equals(siape)
+                && ft.Turma.Id.Equals(turma));
+
+            if (filaTurma == null)
+                throw new FilaTurmaNaoEncontradaException();
+
+            AtribuirTurma(filaTurma);
+
+            if (filaTurma.Fila.Professor.CHCompletaAtribuida() && filaTurma.Fila.Professor.CHEmEspera(filaTurma) <= 0)
+                AtualizaPrioridadesCHCompleta(filaTurma.Fila.Professor);
+
+            while (CasosTriviais()) { };
+
+            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+
+            return GeraResposta(bloqueios);
+        }
+
+        public RespostaDto Distribuir(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            PreparaDistribuicao(numCenario, filasTurmasDto);
+
+            while (CasosTriviais()) { };
+
+            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+
+            return GeraResposta(bloqueios);
         }
         #endregion
 

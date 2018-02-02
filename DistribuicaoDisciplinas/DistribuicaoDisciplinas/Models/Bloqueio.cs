@@ -20,5 +20,16 @@ namespace DistribuicaoDisciplinas.Models
                 return 1 + Dependente.Tamanho;
             }
         }
+
+        public bool Contains(FilaTurma filaTurma)
+        {
+            if (FilaTurma.Fila.Equals(filaTurma.Fila) && FilaTurma.Turma.Equals(filaTurma.Turma))
+                return true;
+
+            if (Dependente == null)
+                return false;
+
+            return Dependente.Contains(filaTurma);
+        }
     }
 }

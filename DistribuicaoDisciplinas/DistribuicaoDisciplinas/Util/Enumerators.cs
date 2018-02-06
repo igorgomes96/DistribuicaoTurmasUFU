@@ -9,9 +9,9 @@ namespace DistribuicaoDisciplinas.Util
     {
         public enum StatusFila
         {
-            Desconsiderada = -1,     //FilaTurma que está com uma prioridade muito baixa e as que estão com prioridade maior com certeza completarão a CH do professor
+            NaoAnalisadaAinda = 0,  //FilaTurma não desconsiderada, porém o algoritmo ainda não chegou à ela.
             Atribuida = 1,          //FilaTurma atribuída
-            NaoAnalisadaAinda = 2,  //FilaTurma não desconsiderada, porém o algoritmo ainda não chegou à ela.
+            Desconsiderada = 2,     //FilaTurma que está com uma prioridade muito baixa e as que estão com prioridade maior com certeza completarão a CH do professor
             EmEspera = 3,           //FilaTurma analisada, porém o professor não está na primeira posição da turma
             ChoqueHorario = 4,      //FilaTurma em que a turma choca horário com outra já atribuída ao professor
             ChoqueRestricao = 5,    //FilaTurma em que a turma choca com um horário que o professor estará indisponível

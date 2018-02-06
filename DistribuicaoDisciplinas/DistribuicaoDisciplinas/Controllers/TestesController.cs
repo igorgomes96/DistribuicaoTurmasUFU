@@ -93,6 +93,12 @@ namespace DistribuicaoDisciplinas.Controllers
             return Ok(_distService.Atribuir(cenario, siape, idTurma, filasTurmas));
         }
 
+        [Route("api/Testes/Distribuir/RemocaoManual/{cenario}/{siape}/{idTurma}")]
+        public IHttpActionResult PostRemoverTurmaManualmente(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
+        {
+            return Ok(_distService.Remover(cenario, siape, idTurma, filasTurmas));
+        }
+
         [Route("api/Testes/Cursos")]
         public IHttpActionResult GetCursos()
         {

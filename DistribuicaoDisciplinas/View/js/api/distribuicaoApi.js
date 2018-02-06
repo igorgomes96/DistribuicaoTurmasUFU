@@ -8,11 +8,15 @@ angular.module('distribuicaoApp').service('distribuicaoApi', ['$http', 'configVa
 	}
 
 	self.postDistribuir = function(codigoCenario, resposta) {
-		return $http.post(urlBase + codigoCenario, resposta)
+		return $http.post(urlBase + codigoCenario, resposta);
 	}
 
 	self.postAtribuirTurma = function(codigoCenario, siape, idTurma, filasTurmas) {
-		return $http.post(urlBase + 'AtribuicaoManual/' + codigoCenario + '/' + siape + '/' + idTurma, filasTurmas)
+		return $http.post(urlBase + 'AtribuicaoManual/' + codigoCenario + '/' + siape + '/' + idTurma, filasTurmas);
+	}
+
+	self.postRemoverTurma = function(codigoCenario, siape, idTurma, filasTurmas) {
+		return $http.post(urlBase + 'RemocaoManual/' + codigoCenario + '/' + siape + '/' + idTurma, filasTurmas);
 	}
 
 }]);

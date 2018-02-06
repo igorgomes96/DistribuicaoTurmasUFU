@@ -11,6 +11,7 @@ namespace DistribuicaoDisciplinas.Services
     {
         RespostaDto Distribuir(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto);
         RespostaDto Atribuir(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
+        RespostaDto Remover(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
     }
 }
 

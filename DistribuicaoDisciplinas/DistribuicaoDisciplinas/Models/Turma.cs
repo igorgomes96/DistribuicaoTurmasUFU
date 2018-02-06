@@ -40,6 +40,10 @@ namespace DistribuicaoDisciplinas.Models
         public ICollection<FilaTurma> Posicoes { get; set; } = new List<FilaTurma>();
         public ICollection<Oferta> Horarios { get; set; } = new List<Oferta>();
 
+        public bool TurmaPendente()
+        {
+            return !Posicoes.Any(x => x.StatusAlgoritmo == Util.Enumerators.StatusFila.Atribuida);
+        }
 
         public override bool Equals(object obj)
         {

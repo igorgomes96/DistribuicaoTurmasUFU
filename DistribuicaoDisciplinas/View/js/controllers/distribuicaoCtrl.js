@@ -9,10 +9,9 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
     self.qtdaTurmasDistribuidas = 0;
     self.indexBloqueio = 0;
     self.paginasBloqueios = null;
+    self.statusAlgoritmo = statusValue;
     var profDesabilitadosAtribuicao = [];
-
-
-    self.statusAlgoritmo = ['Desconsiderada', 'Atribuída', 'Nao Analisada Ainda', 'Em Espera', 'Choque Horário', 'Choque Restrição', 'Choque Período', 'Outro Professor', 'CH Completa', 'Ultrapassaria CH se Atribuída'];
+    
     
     var tipoBloqueio = ['Deadlock', 'Disciplina com CH Diferente de 4 horas'];
 
@@ -104,10 +103,14 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
         return resposta;
     }
 
-    self.removerTurma = function(filaTurma) {
-        filaTurma.Status = statusValue.DESCONSIDERADA;
-        self.distribuir(self.resposta.FilasTurmas);
+    self.getStatusText = function(value) {
+        for(var st in self.statusAlgoritmo) {
+            if (self.statusAlgoritmo[st].value == value)
+                return self.statusAlgoritmo[st].text;
+        }
+        return 'N/A';
     }
+
 
     var getFilasTurmasResposta = function(filasTurmas) {
         var result = [];
@@ -136,10 +139,27 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
         });
     }
 
+
+    self.removerTurma = function(filaTurma) {
+        removerFilaTurma(filaTurma.Professor.Siape, filaTurma.Turma.Id, self.resposta.FilasTurmas);
+    }
+
+    var removerFilaTurma = function(siape, idTurma, filasTurmas) {
+        if (!filasTurmas)
+            throw "FilasTurmas é nulo!";
+
+        distribuicaoApi.postRemoverTurma(self.codigoCenario, siape, idTurma, getFilasTurmasResposta(filasTurmas))
+        .then(function(dado) {
+            preparaResposta(dado.data);
+        }, function(error) {
+            console.log(error);
+        });
+    }
+
     //Ajusta a resposta recebida do servidor, gerando o encadeamento e criando as propriedades necessárias para o front.
     var preparaResposta = function(dado) {
         self.qtdaTurmasDistribuidas = dado.FilasTurmas.filter(function(x) {
-            return x.Status == statusValue.ATRIBUIDA;
+            return x.Status == self.statusAlgoritmo.ATRIBUIDA.value;
         }).length;
         
         self.resposta = encadear(dado);
@@ -150,7 +170,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
     }
 
     self.desbloqueioChange = function(filaTurma) {
-        if (filaTurma.Status === statusValue.ATRIBUIDA)
+        if (filaTurma.Status == self.statusAlgoritmo.ATRIBUIDA.value)
             atribuirFilaTurma(filaTurma.Professor.Siape, filaTurma.Turma.Id, self.resposta.FilasTurmas);
         else
             self.distribuir(self.resposta.FilasTurmas);
@@ -213,8 +233,13 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
                 return p.Turma.Id == turma.Id;
             });
 
-            //Se a turma está em suas prioridades e com status diferente de EmEspera e NaoAnalisadaAinda
-            if (filasTurmas.length <= 0 || (filasTurmas[0].Status != statusValue.NAO_ANALISADA_AINDA && filasTurmas[0].Status != statusValue.EM_ESPERA)) {
+            //Se a turma está em suas prioridades e não tem choque nem está atribuída a outro professor
+            if (filasTurmas.length <= 0 
+              || filasTurmas[0].Status == self.statusAlgoritmo.CHOQUE_HORARIO.value 
+              || filasTurmas[0].Status == self.statusAlgoritmo.CHOQUE_RESTRICAO.value
+              || filasTurmas[0].Status == self.statusAlgoritmo.CHOQUE_PERIODO.value
+              || filasTurmas[0].Status == self.statusAlgoritmo.OUTRO_PROFESSOR.value) 
+            {
                 professor.Desabilitado = true;
                 profDesabilitadosAtribuicao.push(professor);
             }

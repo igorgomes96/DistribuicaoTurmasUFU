@@ -1,5 +1,5 @@
 ﻿using DistribuicaoDisciplinas.Dto;
-using DistribuicaoDisciplinas.Entities;
+//using DistribuicaoDisciplinas.Entities;
 using DistribuicaoDisciplinas.Models;
 using DistribuicaoDisciplinas.Services;
 using Mapping.Interfaces;
@@ -22,54 +22,21 @@ namespace DistribuicaoDisciplinas.Controllers
         private readonly IDistribuicaoService _distService;
 
         //Repositories
-        private readonly IGenericRepository<CursoEntity> _cursoRep;
-        private readonly IGenericRepository<CenarioEntity> _cenarioRep;
-        private readonly IGenericRepository<MinistraEntity> _ministraRep;
-
-        //Mapper
-        private readonly IMapper<Curso, CursoEntity> _cursoMap;
-        private readonly IMapper<Disciplina, DisciplinaEntity> _discMap;
-        private readonly IMapper<Fila, FilaEntity> _filaMap;
-        private readonly IMapper<FilaTurma, FilaTurmaEntity> _filaTurmaMap;
-        private readonly IMapper<Oferta, OfertaEntity> _ofertaMap;
-        private readonly IMapper<Professor, ProfessorEntity> _profMap;
-        private readonly IMapper<Restricao, RestricaoEntity> _restricaoMap;
-        private readonly IMapper<Turma, TurmaEntity> _turmaMap;
-        private readonly IMapper<Cenario, CenarioEntity> _cenariosMap;
-        private readonly IMapper<Ministra, MinistraEntity> _ministraMap;
+        private readonly IGenericRepository<Curso> _cursoRep;
+        private readonly IGenericRepository<Cenario> _cenarioRep;
+        private readonly IGenericRepository<Ministra> _ministraRep;
 
         public TestesController(DbContext db,
-            IGenericRepository<CursoEntity> cursoRep,
-            IGenericRepository<CenarioEntity> cenarioRep,
-            IGenericRepository<MinistraEntity> ministraRep,
-            IMapper<Curso, CursoEntity> cursoMap,
-            IMapper<Disciplina, DisciplinaEntity> discMap,
-            IMapper<Fila, FilaEntity> filaMap,
-            IMapper<FilaTurma, FilaTurmaEntity> filaTurmaMap,
-            IMapper<Oferta, OfertaEntity> ofertaMap,
-            IMapper<Professor, ProfessorEntity> profMap,
-            IMapper<Restricao, RestricaoEntity> restricaoMap,
-            IMapper<Turma, TurmaEntity> turmaMap,
-            IMapper<Cenario, CenarioEntity> cenariosMap,
-            IDistribuicaoService distService,
-            IMapper<Ministra, MinistraEntity> ministraMap
+            IGenericRepository<Curso> cursoRep,
+            IGenericRepository<Cenario> cenarioRep,
+            IGenericRepository<Ministra> ministraRep,
+            IDistribuicaoService distService
         )
         {
             _db = db;
             _cursoRep = cursoRep;
             _cenarioRep = cenarioRep;
             _ministraRep = ministraRep;
-
-            _cursoMap = cursoMap;
-            _discMap = discMap;
-            _filaMap = filaMap;
-            _filaTurmaMap = filaTurmaMap;
-            _ofertaMap = ofertaMap;
-            _profMap = profMap;
-            _restricaoMap = restricaoMap;
-            _turmaMap = turmaMap;
-            _cenariosMap = cenariosMap;
-            _ministraMap = ministraMap;
 
             _distService = distService;
 
@@ -102,61 +69,61 @@ namespace DistribuicaoDisciplinas.Controllers
         [Route("api/Testes/Cursos")]
         public IHttpActionResult GetCursos()
         {
-            return Ok(_cursoMap.Map(_cursoRep.List()));
+            return Ok(_cursoRep.List());
         }
 
         [Route("api/Testes/Ministra")]
         public IHttpActionResult GetMinistra()
         {
-            return Ok(_ministraMap.Map(_ministraRep.List()));
+            return Ok(_ministraRep.List());
         }
 
         [Route("api/Testes/Cenarios")]
         public IHttpActionResult GetCenarios()
         {
-            return Ok(_cenariosMap.Map(_cenarioRep.List()));
+            return Ok(_cenarioRep.List());
         }
 
         [Route("api/Testes/Disciplinas")]
         public IHttpActionResult GetDisciplinas()
         {
-            return Ok(_discMap.Map(_db.Set<DisciplinaEntity>().ToList()));
+            return Ok(_db.Set<Disciplina>().ToList());
         }
 
         [Route("api/Testes/Filas")]
         public IHttpActionResult GetFilas()
         {
-            return Ok(_filaMap.Map(_db.Set<FilaEntity>().ToList()));
+            return Ok(_db.Set<Fila>().ToList());
         }
 
         [Route("api/Testes/FilasTurmas")]
         public IHttpActionResult GetFilasTurmas()
         {
-            return Ok(_filaTurmaMap.Map(_db.Set<FilaTurmaEntity>().Where(x => x.id_turma == 878).ToList()));
+            return Ok(_db.Set<FilaTurma>().Where(x => x.IdTurma == 878).ToList());
         }
 
         [Route("api/Testes/Ofertas")]
         public IHttpActionResult GetOfertas()
         {
-            return Ok(_ofertaMap.Map(_db.Set<OfertaEntity>().ToList()));
+            return Ok(_db.Set<Oferta>().ToList());
         }
 
         [Route("api/Testes/Professores")]
         public IHttpActionResult GetProfessores()
         {
-            return Ok(_profMap.Map(_db.Set<ProfessorEntity>().ToList()));
+            return Ok(_db.Set<Professor>().ToList());
         }
 
         [Route("api/Testes/Restricoes")]
         public IHttpActionResult GetRestricoes()
         {
-            return Ok(_restricaoMap.Map(_db.Set<RestricaoEntity>().ToList()));
+            return Ok(_db.Set<Restricao>().ToList());
         }
 
         [Route("api/Testes/Turmas")]
         public IHttpActionResult GetTurmas()
         {
-            return Ok(_turmaMap.Map(_db.Set<TurmaEntity>().ToList()));
+            return Ok(_db.Set<Turma>().ToList());
         }
     }
 }

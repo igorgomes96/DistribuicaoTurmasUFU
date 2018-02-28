@@ -167,6 +167,7 @@ C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\
 C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Cors.dll
 C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Http.Cors.dll
 C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Http.Cors.xml
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Net.Http.Formatting.xml
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\DistribuicaoDisciplinas.dll.config
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\DistribuicaoDisciplinas.dll
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\DistribuicaoDisciplinas.pdb
@@ -320,7 +321,6 @@ C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Di
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Helpers.xml
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Mvc.xml
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\Newtonsoft.Json.xml
-C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Net.Http.Formatting.xml
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Http.xml
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\System.Web.Http.WebHost.xml
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\pt-br\System.Web.Razor.resources.dll

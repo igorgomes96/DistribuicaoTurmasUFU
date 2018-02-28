@@ -186,7 +186,7 @@
                         <!-- /Filtros -->
 
                         <!-- Detalhes das Turmas -->
-                        <div ng-repeat="t in ct.resposta.Turmas | filter:{'Pendente': true} | orderBy:'Disciplina.Nome'" class="card-turma" draggable="true">
+                        <div ng-repeat="t in ct.resposta.Turmas | filter:{'Pendente': true} | turmasFilter:filtroTurmas | orderBy:'Disciplina.Nome'" class="card-turma" draggable="true">
                             <div style="font-weight: bold;">
                                 <span class="id-turma">{{t.Id}}</span> - {{t.CodigoDisc}} ({{t.LetraTurma}})
                             </div>
@@ -239,6 +239,9 @@
 
     <!-- Controllers -->
     <script type="text/javascript" src="js/controllers/distribuicaoCtrl.js"></script>
+
+    <!-- Filters -->
+    <script type="text/javascript" src="js/filters/turmasFilter.js"></script>
 
     <!-- API -->
     <script type="text/javascript" src="js/api/distribuicaoApi.js"></script>

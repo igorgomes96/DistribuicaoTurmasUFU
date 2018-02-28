@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using DistribuicaoDisciplinas.Dto;
-using DistribuicaoDisciplinas.Entities;
+//using DistribuicaoDisciplinas.Entities;
 using DistribuicaoDisciplinas.Exceptions;
 using DistribuicaoDisciplinas.Models;
 using Mapping.Interfaces;
@@ -29,7 +29,8 @@ namespace DistribuicaoDisciplinas.Services
         #endregion
 
         #region Repositories
-        private readonly IGenericRepository<FilaTurmaEntity> _filasTurmasRep;
+        //private readonly IGenericRepository<FilaTurmaEntity> _filasTurmasRep;
+        private readonly IGenericRepository<FilaTurma> _filasTurmasRep;
         #endregion
 
         #region Services
@@ -49,7 +50,7 @@ namespace DistribuicaoDisciplinas.Services
 
         #region Constructor
         public DistribuicaoService(
-            IGenericRepository<FilaTurmaEntity> filasTurmasRep,
+            IGenericRepository<FilaTurma> filasTurmasRep,
             IProfessoresService professoresService,
             ITurmasService turmasService,
             ICenariosService cenariosService,
@@ -82,7 +83,7 @@ namespace DistribuicaoDisciplinas.Services
         /// </summary>
         /// <param name="filasTurmasEntities"></param>
         /// <returns></returns>
-        private ICollection<FilaTurma> Encadear(ICollection<FilaTurmaEntity> filasTurmasEntities)
+        private ICollection<FilaTurma> Encadear(ICollection<FilaTurma> filasTurmasEntities)
         {
             //Carrega todos os professores
             professores = _professoresService.List().ToDictionary(p => p.Siape.Trim());
@@ -102,12 +103,12 @@ namespace DistribuicaoDisciplinas.Services
                 {
                     return new Fila
                     {
-                        Id = ft.id_fila,
-                        Professor = professores[ft.Fila.siape.Trim()],
-                        Disciplina = disciplinas[ft.Fila.codigo_disc.Trim()],
-                        Posicao = ft.Fila.pos.Value,
-                        QtdaMaxima = ft.Fila.qte_maximo.Value,
-                        QtdaMinistrada = ft.Fila.qte_ministrada.Value
+                        Id = ft.IdFila,
+                        Professor = professores[ft.Fila.Siape.Trim()],
+                        Disciplina = disciplinas[ft.Fila.CodigoDisc.Trim()],
+                        Posicao = ft.Fila.Posicao,
+                        QtdaMaxima = ft.Fila.QtdaMaxima,
+                        QtdaMinistrada = ft.Fila.QtdaMinistrada
                     };
                 }).Distinct().ToDictionary(f => f.Id);
 
@@ -116,9 +117,9 @@ namespace DistribuicaoDisciplinas.Services
             {
                 return new FilaTurma
                 {
-                    Fila = filas[ft.id_fila],
-                    Turma = turmas[ft.id_turma],
-                    Prioridade = ft.prioridade.Value
+                    Fila = filas[ft.IdFila],
+                    Turma = turmas[ft.IdTurma],
+                    Prioridade = ft.Prioridade
                 };
             }).ToList().ForEach(ft =>
             {
@@ -477,11 +478,11 @@ namespace DistribuicaoDisciplinas.Services
         private void PreparaDistribuicao(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             cenario = _cenariosService.Find(numCenario);
-            ICollection<FilaTurmaEntity> filasTurmasEntities = _filasTurmasRep
-                .Query(ft => ft.Turma.ano == cenario.Ano
-                    && ft.Turma.semestre == cenario.Semestre
-                    && ft.Fila.ano == cenario.Ano
-                    && ft.Fila.semestre == cenario.Semestre);
+            ICollection<FilaTurma> filasTurmasEntities = _filasTurmasRep
+                .Query(ft => ft.Turma.Ano == cenario.Ano
+                    && ft.Turma.Semestre == cenario.Semestre
+                    && ft.Fila.Ano == cenario.Ano
+                    && ft.Fila.Semestre == cenario.Semestre);
 
             filasTurmas = Encadear(filasTurmasEntities);
 

@@ -7,6 +7,7 @@ using System.Web;
 
 namespace DistribuicaoDisciplinas.Models
 {
+    [Table("curso")]
     public class Curso
     {
         [Key]

@@ -1,44 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace DistribuicaoDisciplinas.Models
 {
+    [Table("turma")]
     public class Turma
     {
 
-        private string letraTurma;
+        public Turma()
+        {
+            Posicoes = new HashSet<FilaTurma>();
+            Horarios = new HashSet<Oferta>();
+        }
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Column("id")]
         public int Id { get; set; }
 
-        private string codigoDisc;
-        public string CodigoDisc {
-            get {
-                return codigoDisc.Trim();
-            }
-            set
-            {
-                codigoDisc = value.Trim();
-            }
-        }
-        public string LetraTurma
-        {
-            get
-            {
-                return letraTurma;
-            }
-            set
-            {
-                letraTurma = value.Trim();
-            }
-        }
 
+        [Column("codigo_disc")]
+        public string CodigoDisc { get; set; }
+
+        [Column("turma")]
+        public string LetraTurma { get; set; }
+
+        [Column("ch")]
         public int CH { get; set; }
+        [Column("ano")]
+        public int? Ano { get; set; }
+        [Column("semestre")]
+        public int? Semestre { get; set; }
 
+        [ForeignKey("CodigoDisc")]
         public Disciplina Disciplina { get; set; }
 
-        public ICollection<FilaTurma> Posicoes { get; set; } = new List<FilaTurma>();
-        public ICollection<Oferta> Horarios { get; set; } = new List<Oferta>();
+        public virtual ICollection<FilaTurma> Posicoes { get; set; }
+        public virtual ICollection<Oferta> Horarios { get; set; }
 
         public bool TurmaPendente()
         {

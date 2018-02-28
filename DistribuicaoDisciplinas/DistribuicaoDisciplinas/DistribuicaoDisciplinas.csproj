@@ -164,37 +164,16 @@
     <Compile Include="Dto\ProfessorDto.cs" />
     <Compile Include="Dto\RespostaDto.cs" />
     <Compile Include="Dto\TurmaDto.cs" />
-    <Compile Include="Entities\CenarioEntity.cs" />
-    <Compile Include="Entities\CursoEntity.cs" />
-    <Compile Include="Entities\DisciplinaEntity.cs" />
-    <Compile Include="Entities\FilaEntity.cs" />
-    <Compile Include="Entities\FilaTurmaEntity.cs" />
-    <Compile Include="Entities\MinistraEntity.cs" />
-    <Compile Include="Entities\Modelo.cs" />
-    <Compile Include="Entities\OfertaEntity.cs" />
-    <Compile Include="Entities\ProfessorEntity.cs" />
-    <Compile Include="Entities\RestricaoEntity.cs" />
-    <Compile Include="Entities\TurmaEntity.cs" />
     <Compile Include="Exceptions\FilaTurmaNaoEncontradaException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Map\BloqueioMapper.cs" />
-    <Compile Include="Map\CenarioMapper.cs" />
-    <Compile Include="Map\CursoMapper.cs" />
-    <Compile Include="Map\DisciplinaMapper.cs" />
     <Compile Include="Map\FilaDtoMapper.cs" />
-    <Compile Include="Map\FilaMapper.cs" />
     <Compile Include="Map\FilaTurmaDtoMapper.cs" />
-    <Compile Include="Map\FilaTurmaMapper.cs" />
     <Compile Include="Map\MinistraFilaTurmaMapper.cs" />
     <Compile Include="Map\ProfessorDtoMapper.cs" />
     <Compile Include="Map\TurmaDtoMapper.cs" />
-    <Compile Include="Map\MinistraMapper.cs" />
-    <Compile Include="Map\OfertaMapper.cs" />
-    <Compile Include="Map\ProfessorMapper.cs" />
-    <Compile Include="Map\RestricaoMapper.cs" />
-    <Compile Include="Map\TurmaMapper.cs" />
     <Compile Include="Models\Bloqueio.cs" />
     <Compile Include="Models\Cenario.cs" />
     <Compile Include="Models\Curso.cs" />
@@ -202,6 +181,7 @@
     <Compile Include="Models\Fila.cs" />
     <Compile Include="Models\FilaTurma.cs" />
     <Compile Include="Models\Ministra.cs" />
+    <Compile Include="Models\Modelo.cs" />
     <Compile Include="Models\Oferta.cs" />
     <Compile Include="Models\Professor.cs" />
     <Compile Include="Models\Restricao.cs" />
@@ -234,6 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Entities\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mapping\Mapping.csproj">

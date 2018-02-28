@@ -1,5 +1,5 @@
 using DistribuicaoDisciplinas.Dto;
-using DistribuicaoDisciplinas.Entities;
+//using DistribuicaoDisciplinas.Entities;
 using DistribuicaoDisciplinas.Map;
 using DistribuicaoDisciplinas.Models;
 using DistribuicaoDisciplinas.Services;
@@ -28,16 +28,16 @@ namespace DistribuicaoDisciplinas
 
             //Mapper
             //Entity
-            container.RegisterSingleton<ISingleMapper<Curso, CursoEntity>, CursoMapper>();
-            container.RegisterSingleton<ISingleMapper<Disciplina, DisciplinaEntity>, DisciplinaMapper>();
-            container.RegisterSingleton<ISingleMapper<Fila, FilaEntity>, FilaMapper>();
-            container.RegisterSingleton<ISingleMapper<FilaTurma, FilaTurmaEntity>, FilaTurmaMapper>();
-            container.RegisterSingleton<ISingleMapper<Oferta, OfertaEntity>, OfertaMapper>();
-            container.RegisterSingleton<ISingleMapper<Professor, ProfessorEntity>, ProfessorMapper>();
-            container.RegisterSingleton<ISingleMapper<Restricao, RestricaoEntity>, RestricaoMapper>();
-            container.RegisterSingleton<ISingleMapper<Turma, TurmaEntity>, TurmaMapper>();
-            container.RegisterSingleton<ISingleMapper<Cenario, CenarioEntity>, CenarioMapper>();
-            container.RegisterSingleton<ISingleMapper<Ministra, MinistraEntity>, MinistraMapper>();
+            //container.RegisterSingleton<ISingleMapper<Curso, CursoEntity>, CursoMapper>();
+            //container.RegisterSingleton<ISingleMapper<Disciplina, DisciplinaEntity>, DisciplinaMapper>();
+            //container.RegisterSingleton<ISingleMapper<Fila, FilaEntity>, FilaMapper>();
+            //container.RegisterSingleton<ISingleMapper<FilaTurma, FilaTurmaEntity>, FilaTurmaMapper>();
+            //container.RegisterSingleton<ISingleMapper<Oferta, OfertaEntity>, OfertaMapper>();
+            //container.RegisterSingleton<ISingleMapper<Professor, ProfessorEntity>, ProfessorMapper>();
+            //container.RegisterSingleton<ISingleMapper<Restricao, RestricaoEntity>, RestricaoMapper>();
+            //container.RegisterSingleton<ISingleMapper<Turma, TurmaEntity>, TurmaMapper>();
+            //container.RegisterSingleton<ISingleMapper<Cenario, CenarioEntity>, CenarioMapper>();
+            //container.RegisterSingleton<ISingleMapper<Ministra, MinistraEntity>, MinistraMapper>();
 
             //Dto
             //container.RegisterSingleton<ISingleMapper<FilaTurma, TurmaRespostaDto>, TurmaRespostaMapper>();

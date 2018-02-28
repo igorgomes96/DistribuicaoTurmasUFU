@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using DistribuicaoDisciplinas.Entities;
+//using DistribuicaoDisciplinas.Entities;
 using DistribuicaoDisciplinas.Models;
 using Mapping.Interfaces;
 using Repository.Interfaces;
@@ -11,15 +11,21 @@ namespace DistribuicaoDisciplinas.Services
 {
     public class TurmasService : ITurmasService
     {
+        //private readonly IGenericRepository<TurmaEntity> _turmasRep;
+        //private readonly IMapper<Turma, TurmaEntity> _turmasMap;
 
-        private readonly IGenericRepository<TurmaEntity> _turmasRep;
-        private readonly IMapper<Turma, TurmaEntity> _turmasMap;
+        //public TurmasService(IGenericRepository<TurmaEntity> turmasRep,
+        //    IMapper<Turma, TurmaEntity> turmasMap)
+        //{
+        //    _turmasRep = turmasRep;
+        //    _turmasMap = turmasMap;
+        //}
 
-        public TurmasService(IGenericRepository<TurmaEntity> turmasRep,
-            IMapper<Turma, TurmaEntity> turmasMap)
+        private readonly IGenericRepository<Turma> _turmasRep;
+
+        public TurmasService(IGenericRepository<Turma> turmasRep)
         {
             _turmasRep = turmasRep;
-            _turmasMap = turmasMap;
         }
 
         public bool ChoqueHorario(Turma turma1, Turma turma2)
@@ -44,9 +50,14 @@ namespace DistribuicaoDisciplinas.Services
             return turmas.Any(x => ChoquePeriodo(turma, x));
         }
 
+        //public ICollection<Turma> List(int ano, int semestre)
+        //{
+        //    return _turmasMap.Map(_turmasRep.Query(t => t.ano == ano && t.semestre == semestre));
+        //}
+
         public ICollection<Turma> List(int ano, int semestre)
         {
-            return _turmasMap.Map(_turmasRep.Query(t => t.ano == ano && t.semestre == semestre));
+            return _turmasRep.Query(t => t.Ano == ano && t.Semestre == semestre);
         }
     }
 }

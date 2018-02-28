@@ -7,6 +7,7 @@ using System.Web;
 
 namespace DistribuicaoDisciplinas.Models
 {
+    [Table("cenario")]
     public class Cenario
     {
         [Key]

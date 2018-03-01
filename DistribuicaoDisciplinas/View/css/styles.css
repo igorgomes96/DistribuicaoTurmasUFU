@@ -1,0 +1,31 @@
+.modal-lg {
+    width: 1100px;
+ }
+
+.card-turma {
+    padding: 4px 8px;
+    background-color: rgb(137, 183, 230);
+    border-radius: 6px;
+    margin-bottom: 7px;
+    display: inline-block;
+    margin-right: 7px;
+    box-shadow: #484545 1px 1px 5px;
+}
+
+.card-turma button.close {
+    border: 0;
+    background-color: transparent;
+    font-size: 12px;
+    font-weight: bold;
+    float: right;
+}
+
+.card-turma a {
+    text-decoration: underline;
+    color: white;
+}
+
+#lista-professores li.desabilitado {
+    opacity: 0.3;
+    cursor: no-drop;
+}

@@ -1,0 +1,27 @@
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.csproj.CoreCompileInputs.cache
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.AssemblyInfoInputs.cache
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.AssemblyInfo.cs
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.deps.json
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.dll
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.csprojResolveAssemblyReference.cache
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.pdb
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.dll
+C:\Users\igorago\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.pdb
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.deps.json
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.dll
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.pdb
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.csprojResolveAssemblyReference.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.csproj.CoreCompileInputs.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.AssemblyInfoInputs.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.AssemblyInfo.cs
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.dll
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.pdb
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.deps.json
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.dll
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\bin\Debug\netstandard2.0\Repository.pdb
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.csprojResolveAssemblyReference.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.csproj.CoreCompileInputs.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.AssemblyInfoInputs.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.AssemblyInfo.cs
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.dll
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.pdb

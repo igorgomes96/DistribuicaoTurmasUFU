@@ -1,0 +1,284 @@
+Deadlock 1:
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012
+
+Deadlock 2:
+Jamil Salem Barbar -> GGI041 -> Jamil Salem Barbar
+Jamil Salem Barbar -> GGI041
+
+Deadlock 3:
+Sílvio Bacalá Júnior -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014
+
+Deadlock 4:
+Gina Maira Barbosa de Oliveira -> GBC024 -> Marcelo de Almeida Maia
+Marcelo de Almeida Maia -> GBC055 -> Henrique Coelho Fernandes
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 5:
+Marcelo de Almeida Maia -> GBC055 -> Henrique Coelho Fernandes
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 6:
+José Gustavo de Souza Paiva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014
+
+Deadlock 7:
+André Ricardo Backes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 8:
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038
+
+Deadlock 9:
+Paulo Henrique Ribeiro Gabriel -> GBC042 -> Gina Maira Barbosa de Oliveira
+Gina Maira Barbosa de Oliveira -> GBC024 -> Marcelo de Almeida Maia
+Marcelo de Almeida Maia -> GBC055 -> Henrique Coelho Fernandes
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 10:
+Ivan da Silva Sendin -> GBC042 -> Gina Maira Barbosa de Oliveira
+Gina Maira Barbosa de Oliveira -> GBC024 -> Marcelo de Almeida Maia
+Marcelo de Almeida Maia -> GBC055 -> Henrique Coelho Fernandes
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 11:
+Renato Aparecido Pimentel da Silva -> GSI016 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014
+
+Deadlock 12:
+Shigueo Nomura -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038
+
+Deadlock 13:
+Luiz Cláudio Theodoro -> GBC072 -> Paulo Henrique Ribeiro Gabriel
+Paulo Henrique Ribeiro Gabriel -> GBC042 -> Gina Maira Barbosa de Oliveira
+Gina Maira Barbosa de Oliveira -> GBC024 -> Marcelo de Almeida Maia
+Marcelo de Almeida Maia -> GBC055 -> Henrique Coelho Fernandes
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 14:
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 15:
+Sara Luzia de Melo -> GES009 -> Sara Luzia de Melo
+Sara Luzia de Melo -> GES009
+
+Deadlock 16:
+Carlos Ramon Pantaleon Dionisio -> FACOM33501 -> Carlos Ramon Pantaleon Dionisio
+Carlos Ramon Pantaleon Dionisio -> FACOM33501
+
+Deadlock 17:
+Bruno César Duarte Nunes -> GSI529 -> Bruno César Duarte Nunes
+Bruno César Duarte Nunes -> GSI529
+
+Deadlock 18:
+Laurence Rodrigues do Amaral -> FACOM33502 -> Laurence Rodrigues do Amaral
+Laurence Rodrigues do Amaral -> FACOM33502
+
+Deadlock 19:
+Márcia Aparecida Fernandes -> GBC051 -> Jamil Salem Barbar
+Jamil Salem Barbar -> GGI041 -> Jamil Salem Barbar
+Jamil Salem Barbar -> GGI041
+
+Deadlock 20:
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 21:
+Luís Fernando Faina -> GBC066 -> Jamil Salem Barbar
+Jamil Salem Barbar -> GGI041 -> Jamil Salem Barbar
+Jamil Salem Barbar -> GGI041
+
+Deadlock 22:
+Maria Adriana Vidigal de Lima -> GGI017 -> José Gustavo de Souza Paiva
+José Gustavo de Souza Paiva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014
+
+Deadlock 23:
+Renan Gonçalves Cattelan -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002
+
+Deadlock 24:
+Fabiano Azevedo Dorça -> GBC055 -> Henrique Coelho Fernandes
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 25:
+Dino Rogerio Coinete Franklin -> GBC051 -> Jamil Salem Barbar
+Jamil Salem Barbar -> GGI041 -> Jamil Salem Barbar
+Jamil Salem Barbar -> GGI041
+
+Deadlock 26:
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002
+
+Deadlock 27:
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014
+
+Deadlock 28:
+Maria Camila Nardini Barioni -> GBC024 -> Marcelo de Almeida Maia
+Marcelo de Almeida Maia -> GBC055 -> Henrique Coelho Fernandes
+Henrique Coelho Fernandes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 29:
+Bruno Augusto Nassif Travençolo -> GSI011 -> André Ricardo Backes
+André Ricardo Backes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 30:
+Marcelo Keese Albertini -> GSI011 -> André Ricardo Backes
+André Ricardo Backes -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046
+
+Deadlock 31:
+Wendel Alexandre Xavier de Melo -> GGI017 -> José Gustavo de Souza Paiva
+José Gustavo de Souza Paiva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014 -> Claudio Camargo Rodrigues
+Claudio Camargo Rodrigues -> GBC046 -> Alexsandro Santos Soares
+Alexsandro Santos Soares -> GSI002 -> Christiane Regina Soares Brasil
+Christiane Regina Soares Brasil -> GMA038 -> Anilton Joaquim da Silva
+Anilton Joaquim da Silva -> GGI012 -> Elaine Ribeiro de Faria Paiva
+Elaine Ribeiro de Faria Paiva -> GBC014
+
+Deadlock 32:
+Marcos Luiz de Paula Bueno -> GSI502 -> Marcos Luiz de Paula Bueno
+Marcos Luiz de Paula Bueno -> GSI502
+
+Deadlock 33:
+Thiago Pirola Ribeiro -> FACOM33302 -> Italo Valença Mariotti Tasso
+Italo Valença Mariotti Tasso -> GSI530 -> Carlos Ramon Pantaleon Dionisio
+Carlos Ramon Pantaleon Dionisio -> FACOM33501 -> Carlos Ramon Pantaleon Dionisio
+Carlos Ramon Pantaleon Dionisio -> FACOM33501
+
+Deadlock 34:
+Leandro Nogueira Couto -> GSI505 -> Leandro Nogueira Couto
+Leandro Nogueira Couto -> GSI505
+
+Deadlock 35:
+João Batista Simão -> GSI526 -> João Batista Simão
+João Batista Simão -> GSI526
+
+Deadlock 36:
+Italo Valença Mariotti Tasso -> GSI530 -> Carlos Ramon Pantaleon Dionisio
+Carlos Ramon Pantaleon Dionisio -> FACOM33501 -> Carlos Ramon Pantaleon Dionisio
+Carlos Ramon Pantaleon Dionisio -> FACOM33501
+
+Deadlock 37:
+Carlos César Mansur Tuma -> GSI502 -> Marcos Luiz de Paula Bueno
+Marcos Luiz de Paula Bueno -> GSI502 -> Marcos Luiz de Paula Bueno
+Marcos Luiz de Paula Bueno -> GSI502

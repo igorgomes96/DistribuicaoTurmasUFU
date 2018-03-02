@@ -117,9 +117,12 @@ namespace DistribuicaoDisciplinas.Services
             {
                 return new FilaTurma
                 {
+                    IdTurma = ft.id_turma,
+                    IdFila = ft.id_fila,
                     Fila = filas[ft.id_fila],
                     Turma = turmas[ft.id_turma],
-                    Prioridade = ft.prioridade.Value
+                    PrioridadeReal = ft.prioridade.Value,
+                    PrioridadeBanco = ft.prioridade.Value
                 };
             }).ToList().ForEach(ft =>
             {
@@ -136,14 +139,29 @@ namespace DistribuicaoDisciplinas.Services
             });
 
             //Atualiza prioridades dos professores
-            filasTurmas.OrderBy(ft => ft.Fila.QtdaMaximaJaMinistrada).ThenBy(ft => ft.Prioridade) //Ordena por prioridade, colocando as filas onde o professor já ministrou a qtda máxima de vezes a turma
-                .ToList().ForEach(ft => ft.Fila.Professor.Prioridades.Add(ft));
+            /*filasTurmas.OrderBy(ft => ft.Fila.QtdaMaximaJaMinistrada).ThenBy(ft => ft.PrioridadeReal) //Ordena por prioridade, colocando no final as filas onde o professor já ministrou a qtda máxima de vezes a turma
+                .ToList().ForEach(ft => ft.Fila.Professor.Prioridades.Add(ft));*/
+            filasTurmas.ToList()
+                .ForEach(ft => ft.Fila.Professor.Prioridades.Add(ft));
 
             //Atualiza posições das turmas
-            filasTurmas.OrderBy(ft => ft.Fila.Posicao)
-                .ToList().ForEach(ft => ft.Turma.Posicoes.Add(ft));
+            filasTurmas.ToList()
+                .ForEach(ft => ft.Turma.Posicoes.Add(ft));
 
             return filasTurmas;
+
+        }
+        
+        /// <summary>
+        /// Ordena as prioridades de cada professor e as posições de cada turma
+        /// </summary>
+        private void OrdenaPrioridadesPosicoes()
+        {
+            foreach (Professor p in professores.Values)
+                p.OrdenaPrioridades();
+
+            foreach (Turma t in turmas.Values)
+                t.OrdenaPosicoes();
 
         }
 
@@ -177,7 +195,7 @@ namespace DistribuicaoDisciplinas.Services
         /// Para todos os professores que já estão com a CH preenchida, atualiza as prioridades EmEspera e NaoAnalisadasAinda
         /// para CHCompleta.
         /// </summary>
-        private void AtualizaPrioridadesCHCompleta()
+        private void AtualizaStatusCHCompleta()
         {
             filasTurmas
                 .Where(ft => ft.Fila.Professor.CHCompletaAtribuida() && (ft.StatusAlgoritmo == StatusFila.EmEspera ||
@@ -311,7 +329,7 @@ namespace DistribuicaoDisciplinas.Services
         private ICollection<Bloqueio> GetTodosDeadlocks()
         {
             ICollection<Bloqueio> deadlocks = new List<Bloqueio>();
-            int i = 1;
+
             //Buscas os deadlocks de cada professor que tem turma em espera
             ICollection<Professor> professoresPendentes = professores.Values
                 .Where(p => p.Prioridades.Any(pri => pri.StatusAlgoritmo == StatusFila.EmEspera 
@@ -470,6 +488,39 @@ namespace DistribuicaoDisciplinas.Services
         }
 
         /// <summary>
+        /// Atualiza a propriedade CH de cada professor de acordo com a CH em um cenário específico.
+        /// </summary>
+        /// <param name="idCenario"></param>
+        private void AtualizaCHProfessores(int idCenario)
+        {
+            foreach (Professor p in professores.Values)
+                p.CH = p.CHCenario(idCenario);
+
+        }
+
+        /// <summary>
+        /// Se for a primeira vez (filaTurmaDto vier vazio), joga para a última prioridade do professor cada
+        /// turma cuja disciplina já foi ministrada por ele a quantidade máxima de vezes.
+        /// Se estiver no meio da distribuição (filaTurmaDto não vier vazio), atualiza a prioridade com o que foi 
+        /// recebido do front-end.
+        /// </summary>
+        /// <param name="filasTurmasDto"></param>
+        private void AtualizaPrioridadesReais(ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            if (filasTurmasDto == null || filasTurmasDto.Count == 0) { 
+                foreach (FilaTurma ft in filasTurmas)
+                {
+                    if (ft.Fila.QtdaMaximaJaMinistrada)
+                        ft.Fila.Professor.JogarParaUltimaPrioridadeReal(ft);
+                }
+            } else
+            {
+                foreach (FilaTurmaDto ft in filasTurmasDto)
+                    filasTurmas.First(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma).PrioridadeReal = ft.PrioridadeReal;
+            }
+        }
+
+        /// <summary>
         /// Carrega as filas turmas do semestre, chama função de encadeamento e deixa as 
         /// propriedades privadas da classe prontas para a distribuição.
         /// </summary>
@@ -486,6 +537,11 @@ namespace DistribuicaoDisciplinas.Services
 
             filasTurmas = Encadear(filasTurmasEntities);
 
+            AtualizaPrioridadesReais(filasTurmasDto);
+            OrdenaPrioridadesPosicoes();
+
+            AtualizaCHProfessores(cenario.NumCenario);
+
             //Atualiza o status de todas para NaoAnalisadaAinda
             filasTurmas
                 .Where(x => x.StatusAlgoritmo != StatusFila.Atribuida
@@ -496,7 +552,7 @@ namespace DistribuicaoDisciplinas.Services
 
             AtualizaStatus(filasTurmasDto);
 
-            AtualizaPrioridadesCHCompleta();
+            AtualizaStatusCHCompleta();
 
         }
 
@@ -614,6 +670,28 @@ namespace DistribuicaoDisciplinas.Services
             ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
 
             return GeraResposta(bloqueios);
+        }
+
+        public RespostaDto UltimaPrioridade(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            PreparaDistribuicao(numCenario, filasTurmasDto);
+
+            FilaTurma filaTurma = GetFilaTurma(siape, turma);
+
+            if (filaTurma == null)
+                throw new FilaTurmaNaoEncontradaException();
+
+            filaTurma.Fila.Professor.JogarParaUltimaPrioridadeReal(filaTurma);
+
+            while (CasosTriviais()) { };
+
+            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+
+            return GeraResposta(bloqueios);
+        }
+        public RespostaDto FinalFila(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

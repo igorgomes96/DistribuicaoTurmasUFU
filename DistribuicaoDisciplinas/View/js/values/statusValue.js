@@ -9,5 +9,7 @@ angular.module('distribuicaoApp').value('statusValue',
 	CHOQUE_PERIODO:{value:6, text:'Choque de Período'},
 	OUTRO_PROFESSOR:{value:7, text:'Atribuída a Outro Professor'},
 	CH_COMPLETA:{value:8, text:'CH Completa'},
-	ULTRAPASSARIA_CH:{value:9, text:'Ultrapassaria CH'}
+	ULTRAPASSARIA_CH:{value:9, text:'Ultrapassaria CH'},
+	ULTIMA_PRIORIDADE:{value:99, text:'Última Prioridade'},
+	FINAL_FILA:{value:98, text:'Final da Fila'}
 });

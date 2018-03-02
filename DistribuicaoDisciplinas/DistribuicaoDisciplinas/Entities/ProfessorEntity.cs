@@ -10,6 +10,12 @@ namespace DistribuicaoDisciplinas.Entities
     [Table("professor")]
     public class ProfessorEntity
     {
+        public ProfessorEntity()
+        {
+            Restricoes = new HashSet<RestricaoEntity>();
+            CHsPorCenarios = new HashSet<DistribuicaoCargaEntity>();
+        }
+
         [Key]
         public string siape { get; set; }
         public string nome { get; set; }
@@ -26,6 +32,7 @@ namespace DistribuicaoDisciplinas.Entities
         public string status { get; set; }
 
         public virtual ICollection<RestricaoEntity> Restricoes { get; set; }
+        public virtual ICollection<DistribuicaoCargaEntity> CHsPorCenarios { get; set; }
 
     }
 }

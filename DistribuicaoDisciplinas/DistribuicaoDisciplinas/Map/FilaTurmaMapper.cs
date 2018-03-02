@@ -31,7 +31,8 @@ namespace DistribuicaoDisciplinas.Map
             {
                 Fila = _filaMapper.Map(destination.Fila),
                 Turma = _turmaMapper.Map(destination.Turma),
-                Prioridade = destination.prioridade.Value,
+                PrioridadeBanco = destination.prioridade.Value,
+                PrioridadeReal = destination.prioridade.Value,
                 StatusAlgoritmo = Util.Enumerators.StatusFila.NaoAnalisadaAinda
             };
 

@@ -10,17 +10,10 @@ namespace DistribuicaoDisciplinas.Models
     [Table("restricoes")]
     public class Restricao
     {
-        [Key]
-        [Column("siape", Order = 0)]
         public string Siape { get; set; }
-        [Key]
-        [Column("dia", Order = 1)]
         public string Dia { get; set; }
-        [Key]
-        [Column("letra", Order = 2)]
         public string Letra { get; set; }
 
-        [ForeignKey("Siape")]
         public virtual Professor Professor { get; set; }
 
         public override bool Equals(object obj)

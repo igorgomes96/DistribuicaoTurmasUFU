@@ -16,6 +16,8 @@ namespace DistribuicaoDisciplinas.Controllers
 {
     public class TestesController : ApiController
     {
+
+        #region Propriedades
         private readonly DbContext _db;
 
         //Services
@@ -37,7 +39,9 @@ namespace DistribuicaoDisciplinas.Controllers
         private readonly IMapper<Turma, TurmaEntity> _turmaMap;
         private readonly IMapper<Cenario, CenarioEntity> _cenariosMap;
         private readonly IMapper<Ministra, MinistraEntity> _ministraMap;
+        #endregion
 
+        #region Construtor
         public TestesController(DbContext db,
             IGenericRepository<CursoEntity> cursoRep,
             IGenericRepository<CenarioEntity> cenarioRep,
@@ -74,6 +78,7 @@ namespace DistribuicaoDisciplinas.Controllers
             _distService = distService;
 
         }
+        #endregion
 
         [Route("api/Testes/Distribuir/{id}")]
         public IHttpActionResult GetDistribuir(int id)
@@ -99,6 +104,19 @@ namespace DistribuicaoDisciplinas.Controllers
             return Ok(_distService.Remover(cenario, siape, idTurma, filasTurmas));
         }
 
+        [Route("api/Testes/Distribuir/UltimaPrioridade/{cenario}/{siape}/{idTurma}")]
+        public IHttpActionResult PostUltimaPrioridade(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
+        {
+            return Ok(_distService.UltimaPrioridade(cenario, siape, idTurma, filasTurmas));
+        }
+
+        [Route("api/Testes/Distribuir/FinalFila/{cenario}/{siape}/{idTurma}")]
+        public IHttpActionResult PostFinalFila(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
+        {
+            return Ok(_distService.FinalFila(cenario, siape, idTurma, filasTurmas));
+        }
+
+        #region Testes Crud
         [Route("api/Testes/Cursos")]
         public IHttpActionResult GetCursos()
         {
@@ -158,5 +176,6 @@ namespace DistribuicaoDisciplinas.Controllers
         {
             return Ok(_turmaMap.Map(_db.Set<TurmaEntity>().ToList()));
         }
+        #endregion
     }
 }

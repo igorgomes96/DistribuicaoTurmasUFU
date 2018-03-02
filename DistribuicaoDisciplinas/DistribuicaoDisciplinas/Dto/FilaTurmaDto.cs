@@ -10,7 +10,8 @@ namespace DistribuicaoDisciplinas.Dto
     {
         public FilaDto Fila { get; set; }
         public int IdTurma { get; set; }
-        public int Prioridade { get; set; }
+        public int PrioridadeBanco { get; set; }
+        public int PrioridadeReal { get; set; }
 
         public StatusFila Status { get; set; }
     }

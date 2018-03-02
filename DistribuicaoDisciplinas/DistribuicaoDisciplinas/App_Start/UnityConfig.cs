@@ -38,6 +38,7 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<ISingleMapper<Turma, TurmaEntity>, TurmaMapper>();
             container.RegisterSingleton<ISingleMapper<Cenario, CenarioEntity>, CenarioMapper>();
             container.RegisterSingleton<ISingleMapper<Ministra, MinistraEntity>, MinistraMapper>();
+            container.RegisterSingleton<ISingleMapper<DistribuicaoCarga, DistribuicaoCargaEntity>, DistribuicaoCargaMapper>();
 
             //Dto
             //container.RegisterSingleton<ISingleMapper<FilaTurma, TurmaRespostaDto>, TurmaRespostaMapper>();

@@ -21,7 +21,7 @@ namespace DistribuicaoDisciplinas.Map
                     QtdaMaxima = 1,
                     QtdaMinistrada = 0
                 },
-                Prioridade = -1,
+                PrioridadeReal = -1,
                 Turma = source.Turma
             };
         }

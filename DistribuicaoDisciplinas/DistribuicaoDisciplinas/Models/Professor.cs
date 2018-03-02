@@ -15,31 +15,57 @@ namespace DistribuicaoDisciplinas.Models
         {
             Restricoes = new HashSet<Restricao>();
             Prioridades = new HashSet<FilaTurma>();
+            CHsPorCenarios = new HashSet<DistribuicaoCarga>();
         }
 
-        [NotMapped]
         private string siape;
-
-        [Key]
-        [Column("siape")]
         public string Siape {
             get { return siape.Trim(); }
             set { siape = value.Trim(); }
         }
 
-        [Column("nome")]
         public string Nome { get; set; }
-        [Column("data_ingresso")]
         public DateTime DataIngresso { get; set; }
-        [Column("data_nasc")]
-        public DateTime? data_nasc { get; set; }
-        [NotMapped]
+        public DateTime DataNascimento { get; set; }
         public int CH { get; set; }
 
         public ICollection<Restricao> Restricoes { get; set; }
         public ICollection<FilaTurma> Prioridades { get; set; }
+        public ICollection<DistribuicaoCarga> CHsPorCenarios { get; set; }
 
+        /// <summary>
+        /// Altera a prioridade para a última.
+        /// </summary>
+        /// <param name="filaTurma"></param>
+        public void JogarParaUltimaPrioridadeReal(FilaTurma filaTurma)
+        {
+            Prioridades.Where(p => p.PrioridadeReal > filaTurma.PrioridadeReal).ToList().ForEach(p =>
+            {
+                p.PrioridadeReal -= 1;
+            });
+            filaTurma.PrioridadeReal = Prioridades.Max(x => x.PrioridadeReal) + 1;
+            OrdenaPrioridades();
+        }
 
+        public void OrdenaPrioridades()
+        {
+            Prioridades = Prioridades.OrderBy(x => x.PrioridadeReal).ToList();
+        }
+
+        /// <summary>
+        /// CH do professor para um cenário específico.
+        /// </summary>
+        /// <param name="idCenario"></param>
+        /// <returns></returns>
+        public int CHCenario(int idCenario)
+        {
+            return CHsPorCenarios.Where(x => x.IdCenario == idCenario).Select(x => x.CH).Sum();
+        }
+
+        /// <summary>
+        /// CH já atribuída.
+        /// </summary>
+        /// <returns></returns>
         public int CHAtribuida()
         {
             return Prioridades.Where(p => p.StatusAlgoritmo == StatusFila.Atribuida)

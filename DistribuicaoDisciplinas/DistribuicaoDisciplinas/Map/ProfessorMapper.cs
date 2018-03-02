@@ -11,10 +11,13 @@ namespace DistribuicaoDisciplinas.Map
     public class ProfessorMapper : ISingleMapper<Professor, ProfessorEntity>
     {
         private readonly IMapper<Restricao, RestricaoEntity> _restricaoMapper;
+        private readonly IMapper<DistribuicaoCarga, DistribuicaoCargaEntity> _chPorCenarioMapper;
 
-        public ProfessorMapper(IMapper<Restricao, RestricaoEntity> restricaoMapper)
+        public ProfessorMapper(IMapper<Restricao, RestricaoEntity> restricaoMapper,
+            IMapper<DistribuicaoCarga, DistribuicaoCargaEntity> chPorCenarioMapper)
         {
             _restricaoMapper = restricaoMapper;
+            _chPorCenarioMapper = chPorCenarioMapper;
         }
 
         public ProfessorEntity Map(Professor source)
@@ -29,8 +32,9 @@ namespace DistribuicaoDisciplinas.Map
                 Siape = destination.siape,
                 Nome = destination.nome,
                 DataIngresso = destination.data_ingresso.Value,
-                CH = destination.carga_atual.Value,
-                Restricoes = _restricaoMapper.Map(destination.Restricoes)
+                //CH = destination.carga_atual.Value,
+                Restricoes = _restricaoMapper.Map(destination.Restricoes),
+                CHsPorCenarios = _chPorCenarioMapper.Map(destination.CHsPorCenarios)
             };
         }
     }

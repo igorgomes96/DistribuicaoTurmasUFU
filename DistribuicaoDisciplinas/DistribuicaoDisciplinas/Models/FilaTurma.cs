@@ -11,21 +11,19 @@ namespace DistribuicaoDisciplinas.Models
     [Table("fila_turma_new")]
     public class FilaTurma
     {
-        [Key]
-        [Column("id_turma", Order = 0)]
         public int IdTurma { get; set; }
-        [Key]
-        [Column("id_fila", Order = 1)]
         public int IdFila { get; set; }
-        [Column("prioridade")]
-        public int Prioridade { get; set; }
+        //Prioridade cadastrada
+        public int PrioridadeBanco { get; set; }
+
+        //Prioridade utilizada no momento da distribuição. Pode mudar
+        //se o professor já houver ministrado a quantidade máxima de
+        //vezes, ou em caso de quebra de deadlock
+        public int PrioridadeReal { get; set; }
         
-        [ForeignKey("IdFila")]
         public Fila Fila { get; set; }
-        [ForeignKey("IdTurma")]
         public Turma Turma { get; set; }
         
-        [NotMapped]
         public StatusFila StatusAlgoritmo { get; set; }
 
     }

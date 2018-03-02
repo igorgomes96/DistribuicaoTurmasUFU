@@ -75,7 +75,7 @@
                                             <p class="list-group-item-text">
                                                 CH atual: {{b.Professor.CH}} horas; CH distribuída: {{b.Professor.CHAtribuida}} horas<br>  
                                                 Turma: {{b.Turma.Id}} - {{b.Turma.CodigoDisc}} - {{b.Turma.Disciplina.Nome}} ({{b.Turma.LetraTurma}})<br>
-                                                CH: {{b.Turma.CH}} horas - Posição {{b.Fila.Posicao}}, Prioridade {{b.Prioridade}}
+                                                CH: {{b.Turma.CH}} horas - Posição {{b.Fila.Posicao}}, Prioridade {{b.PrioridadeReal}}
                                             </p>
                                             <div>
                                             	<a class="small" ng-click="ct.verPosicoes(b.Turma.Posicoes)" href style="margin-right: 10px;">Ver Posições ({{b.Turma.Posicoes.length}})</a>
@@ -89,16 +89,16 @@
                                         <div class="col-md-4">
                                         	<div class="options">
     	                                        <div>
-    	                                            <input type="radio" name="radioNaoAtribuir{{$index}}" id="radioNaoAtribuir{{$index}}" ng-model="b.Status" value="{{ct.statusAlgoritmo.DESCONSIDERADA.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioNaoAtribuir{{$index}}" style="font-weight: normal;margin-bottom: initial;">Não Atribuir</label>
+    	                                            <input type="radio" name="radioNaoAtribuir{{$index}}" id="radioNaoAtribuir{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.DESCONSIDERADA.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioNaoAtribuir{{$index}}" style="font-weight: normal;margin-bottom: initial;">Não Atribuir</label>
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" name="radioAtribuir{{$index}}" id="radioAtribuir{{$index}}" ng-model="b.Status" value="{{ct.statusAlgoritmo.ATRIBUIDA.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioAtribuir{{$index}}" style="font-weight: normal;margin-bottom: initial;">Atribuir</label>
+    	                                            <input type="radio" name="radioAtribuir{{$index}}" id="radioAtribuir{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.ATRIBUIDA.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioAtribuir{{$index}}" style="font-weight: normal;margin-bottom: initial;">Atribuir</label>
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" name="radioFinalFila{{$index}}" id="radioFinalFila{{$index}}" ng-model="b.Status" value="3" ng-change="ct.desbloqueioChange(b)" disabled><label for="radioFinalFila{{$index}}" style="font-weight: normal;margin-bottom: initial;">Final da Fila</label>
+    	                                            <input type="radio" name="radioFinalFila{{$index}}" id="radioFinalFila{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.FINAL_FILA.value}}" ng-change="ct.desbloqueioChange(b)" disabled><label for="radioFinalFila{{$index}}" style="font-weight: normal;margin-bottom: initial;">Final da Fila</label>
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" name="radioUltimaPrioridade{{$index}}" id="radioUltimaPrioridade{{$index}}" ng-model="b.Status" value="4" ng-change="ct.desbloqueioChange(b)" disabled><label for="radioUltimaPrioridade{{$index}}" style="font-weight: normal;margin-bottom: initial;">Última Prioridade</label>
+    	                                            <input type="radio" name="radioUltimaPrioridade{{$index}}" id="radioUltimaPrioridade{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.ULTIMA_PRIORIDADE.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioUltimaPrioridade{{$index}}" style="font-weight: normal;margin-bottom: initial;">Última Prioridade</label>
     	                                        </div>
                                             </div>
                                         </div>
@@ -144,6 +144,7 @@
 
                                 <p class="list-group-item-text" style="margin-bottom: 5px;">
                                     CH atual: {{prof.CH}} horas<br>
+                                    CH atribuida: {{prof.CHAtribuida}} horas
                                 </p>
 
                                 <!-- Card-Turma -->
@@ -154,7 +155,7 @@
                                         {{pri.Turma.Id}} - {{pri.Turma.CodigoDisc}} ({{pri.Turma.LetraTurma}})
                                     </div>
                                     {{pri.Turma.NomeDisciplina}}<br>
-                                    Pos: {{pri.Fila.Posicao}} - Prioridade: {{pri.Prioridade}} - CH: {{pri.Turma.CH}}h<br>
+                                    Pos: {{pri.Fila.Posicao}} - Prioridade: {{pri.PrioridadeReal}} - CH: {{pri.Turma.CH}}h<br>
                                     Curso: {{pri.Turma.Disciplina.Curso.Nome}}<br>
                                     <a class="small" ng-click="ct.verPosicoes(pri.Turma.Posicoes)" href>Ver Posições</a>
 
@@ -193,7 +194,7 @@
                             <div>
                                 {{t.Disciplina.Nome}}<br>
                                 Curso: {{t.Disciplina.Curso.Nome}}<br>
-                                CH: {{t.CH}}<br>
+                                CH: {{t.CH}} horas<br>
                                 <a class="small" ng-click="ct.verPosicoes(t.Posicoes)" href>Ver Posições</a>
                             </div>
                         </div>

@@ -167,6 +167,7 @@
     <Compile Include="Entities\CenarioEntity.cs" />
     <Compile Include="Entities\CursoEntity.cs" />
     <Compile Include="Entities\DisciplinaEntity.cs" />
+    <Compile Include="Entities\DistribuicaoCargaEntity.cs" />
     <Compile Include="Entities\FilaEntity.cs" />
     <Compile Include="Entities\FilaTurmaEntity.cs" />
     <Compile Include="Entities\MinistraEntity.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="Map\CenarioMapper.cs" />
     <Compile Include="Map\CursoMapper.cs" />
     <Compile Include="Map\DisciplinaMapper.cs" />
+    <Compile Include="Map\DistribuicaoCargaMapper.cs" />
     <Compile Include="Map\FilaDtoMapper.cs" />
     <Compile Include="Map\FilaMapper.cs" />
     <Compile Include="Map\FilaTurmaDtoMapper.cs" />
@@ -199,6 +201,7 @@
     <Compile Include="Models\Cenario.cs" />
     <Compile Include="Models\Curso.cs" />
     <Compile Include="Models\Disciplina.cs" />
+    <Compile Include="Models\DistribuicaoCarga.cs" />
     <Compile Include="Models\Fila.cs" />
     <Compile Include="Models\FilaTurma.cs" />
     <Compile Include="Models\Ministra.cs" />

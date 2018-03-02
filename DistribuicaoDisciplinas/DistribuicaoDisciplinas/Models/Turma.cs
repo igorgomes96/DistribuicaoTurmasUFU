@@ -17,14 +17,9 @@ namespace DistribuicaoDisciplinas.Models
             Horarios = new HashSet<Oferta>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column("id")]
         public int Id { get; set; }
 
-        [NotMapped]
         private string codigoDisc;
-        [Column("codigo_disc")]
         public string CodigoDisc {
             get {
                 return codigoDisc.Trim();
@@ -35,9 +30,7 @@ namespace DistribuicaoDisciplinas.Models
             }
         }
 
-        [NotMapped]
         private string letraTurma;
-        [Column("turma")]
         public string LetraTurma
         {
             get
@@ -50,18 +43,20 @@ namespace DistribuicaoDisciplinas.Models
             }
         }
 
-        [Column("ch")]
         public int CH { get; set; }
-        [Column("ano")]
         public int? Ano { get; set; }
-        [Column("semestre")]
         public int? Semestre { get; set; }
 
-        [ForeignKey("CodigoDisc")]
         public Disciplina Disciplina { get; set; }
 
         public ICollection<FilaTurma> Posicoes { get; set; }
         public ICollection<Oferta> Horarios { get; set; }
+
+
+        public void OrdenaPosicoes()
+        {
+            Posicoes = Posicoes.OrderBy(x => x.Fila.Posicao).ToList();
+        }
 
         public bool TurmaPendente()
         {

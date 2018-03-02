@@ -13,6 +13,6 @@ namespace DistribuicaoDisciplinas.Dto
         public int Posicao { get; set; }
         public int QtdaMinistrada { get; set; }
         public int QtdaMaxima { get; set; }
-        public int QtdaMaximaJaMinistrada { get; set; }
+        public bool QtdaMaximaJaMinistrada { get; set; }
     }
 }

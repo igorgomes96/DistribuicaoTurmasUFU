@@ -19,4 +19,12 @@ angular.module('distribuicaoApp').service('distribuicaoApi', ['$http', 'configVa
 		return $http.post(urlBase + 'RemocaoManual/' + codigoCenario + '/' + siape + '/' + idTurma, filasTurmas);
 	}
 
+	self.postUltimaPrioridade = function(codigoCenario, siape, idTurma, filasTurmas) {
+		return $http.post(urlBase + 'UltimaPrioridade/' + codigoCenario + '/' + siape + '/' + idTurma, filasTurmas);
+	}
+
+	self.postFinalFila = function(codigoCenario, siape, idTurma, filasTurmas) {
+		return $http.post(urlBase + 'FinalFila/' + codigoCenario + '/' + siape + '/' + idTurma, filasTurmas);
+	}
+
 }]);

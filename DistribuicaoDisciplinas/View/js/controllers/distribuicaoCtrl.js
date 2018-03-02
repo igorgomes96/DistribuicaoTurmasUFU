@@ -120,7 +120,8 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
                     Id: ft.Fila.Id
                 },
                 IdTurma: ft.IdTurma,
-                Status: ft.Status
+                Status: ft.Status,
+                PrioridadeReal: ft.PrioridadeReal
             }
             result.push(newFt);
         });
@@ -170,10 +171,22 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
     }
 
     self.desbloqueioChange = function(filaTurma) {
-        if (filaTurma.Status == self.statusAlgoritmo.ATRIBUIDA.value)
+        if (filaTurma.StatusDesbloqueio == self.statusAlgoritmo.ATRIBUIDA.value)
             atribuirFilaTurma(filaTurma.Professor.Siape, filaTurma.Turma.Id, self.resposta.FilasTurmas);
-        else
-            self.distribuir(self.resposta.FilasTurmas);
+        else if (filaTurma.StatusDesbloqueio == self.statusAlgoritmo.DESCONSIDERADA.value)
+            self.removerTurma(filaTurma);
+        else if (filaTurma.StatusDesbloqueio == self.statusAlgoritmo.ULTIMA_PRIORIDADE.value)
+            jogarUltimaPrioridade(filaTurma);
+
+    }
+
+    var jogarUltimaPrioridade = function(filaTurma) {
+        distribuicaoApi.postUltimaPrioridade(self.codigoCenario, filaTurma.Fila.Siape, filaTurma.Turma.Id, getFilasTurmasResposta(self.resposta.FilasTurmas))
+        .then(function(dado) {
+            preparaResposta(dado.data);
+        }, function(error) {
+            console.log(error);
+        });
     }
 
     self.distribuir = function(filasTurmas) {

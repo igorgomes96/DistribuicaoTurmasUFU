@@ -10,16 +10,10 @@ namespace DistribuicaoDisciplinas.Models
     [Table("ministra")]
     public class Ministra
     {
-        [Key]
-        [Column("siape", Order = 0)]
         public string Siape { get; set; }
-        [Key]
-        [Column("id_turma", Order = 1)]
         public int IdTurma { get; set; }
 
-        [ForeignKey("Siape")]
         public Professor Professor { get; set; }
-        [ForeignKey("IdTurma")]
         public Turma Turma { get; set; }
     }
 }

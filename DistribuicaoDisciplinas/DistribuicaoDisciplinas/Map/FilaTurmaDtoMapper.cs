@@ -23,7 +23,8 @@ namespace DistribuicaoDisciplinas.Map
             {
                 Fila = _filaMap.Map(source.Fila),
                 IdTurma = source.Turma.Id,
-                Prioridade = source.Prioridade,
+                PrioridadeBanco = source.PrioridadeBanco,
+                PrioridadeReal = source.PrioridadeReal,
                 Status = source.StatusAlgoritmo
             };
         }

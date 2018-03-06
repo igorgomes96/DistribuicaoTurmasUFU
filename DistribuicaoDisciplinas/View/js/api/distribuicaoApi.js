@@ -27,4 +27,8 @@ angular.module('distribuicaoApp').service('distribuicaoApi', ['$http', 'configVa
 		return $http.post(urlBase + 'FinalFila/' + codigoCenario + '/' + siape + '/' + idTurma, filasTurmas);
 	}
 
+	self.postSalvarDistribuicao = function(filasTurmas) {
+		return $http.post(urlBase + 'Salvar', filasTurmas);
+	}
+
 }]);

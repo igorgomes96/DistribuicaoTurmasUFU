@@ -1,4 +1,4 @@
-angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$scope', 'distribuicaoApi', 'statusValue', function($filter, $scope, distribuicaoApi, statusValue) {
+angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$scope', 'distribuicaoApi', 'statusValue', 'distribuicaoService', 'turmasService', 'filasTurmasService', function($filter, $scope, distribuicaoApi, statusValue, distribuicaoService, turmasService, filasTurmasService) {
 
 
     var self = this;
@@ -10,98 +10,9 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
     self.indexBloqueio = 0;
     self.paginasBloqueios = null;
     self.statusAlgoritmo = statusValue;
+    self.loading = false;
     var profDesabilitadosAtribuicao = [];
-    
-    
-    var tipoBloqueio = ['Deadlock', 'Disciplina com CH Diferente de 4 horas'];
 
-    var getProfessor = function(siape, professores) {
-        var result = professores.filter(function(p) {
-            return p.Siape === siape;
-        });
-        return result.length > 0 ? result[0] : null;
-    }
-
-    var getTurma = function(id, turmas) {
-        var result = turmas.filter(function(t) {
-            return t.Id == id;
-        });
-        return result.length > 0 ? result[0] : null;
-    }
-
-    var getFilaTurma = function(idTurma, idFila, filasTurmas) {
-        var result = filasTurmas.filter(function(ft) {
-            return ft.Fila.Id === idFila && ft.IdTurma == idTurma;
-        });
-        return result.length > 0 ? result[0] : null;
-    } 
-
-    var getFilaTurmaBySiape = function(idTurma, siape, filasTurmas) {
-        var result = filasTurmas.filter(function(ft) {
-            return ft.Fila.Siape.trim() == siape.trim() && ft.IdTurma == idTurma;
-        });
-        return result.length > 0 ? result[0] : null;
-    }
-
-    var encadear = function(resposta) {
-        resposta.Professores.forEach(function(p) {
-            if (!p.hasOwnProperty('Prioridades'))
-                p.Prioridades = [];
-        });
-
-        resposta.Turmas.forEach(function(t) {
-            if (!t.hasOwnProperty('Posicoes'))
-                t.Posicoes = [];
-
-            var flagPendente = resposta.TurmasPendentes.some(function(x) {
-                return x === t.Id;
-            });
-
-            if (flagPendente)
-                t.Pendente = true;
-            else
-                t.Pendente = false;
-        });
-
-        resposta.FilasTurmas.forEach(function(ft) {
-            var prof = getProfessor(ft.Fila.Siape, resposta.Professores);
-            var turma = getTurma(ft.IdTurma, resposta.Turmas);
-
-            ft.Turma = turma;
-            ft.Professor = prof;
-            prof.Prioridades.push(ft);
-            turma.Posicoes.push(ft);
-        });
-
-        resposta.FilasTurmasBloqueadas = [];
-        resposta.Bloqueios.forEach(function(b) {
-            var cabeca = b;
-            var aux = b;
-            var limite = 20; //Evita Loop infinito - no máximo 20 dependentes
-            var cont = 0;
-            var bloqueio = [];
-            while (aux) {
-                
-                bloqueio.push(getFilaTurma(aux.IdTurma, aux.IdFila, resposta.FilasTurmas));
-                aux = aux.Dependente;
-                
-                if (cont === limite) break;
-
-                if (aux.IdTurma == cabeca.IdTurma && aux.IdFila == cabeca.IdFila)
-                    break;
-
-                cont++;
-            }
-
-            resposta.FilasTurmasBloqueadas.push({
-                FilasTurmas: bloqueio,
-                TipoBloqueio: tipoBloqueio[cabeca.TipoBloqueio],
-                Tamanho: cabeca.Tamanho - 1
-            });
-        });
-
-        return resposta;
-    }
 
     self.getStatusText = function(value) {
         for(var st in self.statusAlgoritmo) {
@@ -111,32 +22,18 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
         return 'N/A';
     }
 
-
-    var getFilasTurmasResposta = function(filasTurmas) {
-        var result = [];
-        filasTurmas.forEach(function(ft) {
-            var newFt = {
-                Fila: {
-                    Id: ft.Fila.Id
-                },
-                IdTurma: ft.IdTurma,
-                Status: ft.Status,
-                PrioridadeReal: ft.PrioridadeReal
-            }
-            result.push(newFt);
-        });
-        return result;
-    }
-
     var atribuirFilaTurma = function(siape, idTurma, filasTurmas) {
+        self.loading = true;
         if (!filasTurmas)
             throw "FilasTurmas é nulo!";
 
-        distribuicaoApi.postAtribuirTurma(self.codigoCenario, siape, idTurma, getFilasTurmasResposta(filasTurmas))
+        distribuicaoApi.postAtribuirTurma(self.codigoCenario, siape, idTurma, filasTurmasService.getFilasTurmasResposta(filasTurmas))
         .then(function(dado) {
             preparaResposta(dado.data);
         }, function(error) {
             console.log(error);
+        }).finally(function() {
+            self.loading = false;
         });
     }
 
@@ -145,15 +42,37 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
         removerFilaTurma(filaTurma.Professor.Siape, filaTurma.Turma.Id, self.resposta.FilasTurmas);
     }
 
+    self.turmaJaAtribuida = function(posicoes) {
+        return posicoes.some(function(p) {
+            return p.Status == self.statusAlgoritmo.ATRIBUIDA.value;
+        });
+    }
+
+    self.salvarDistribuicao = function() {
+        self.loading = true;
+        distribuicaoApi.postSalvarDistribuicao(filasTurmasService.getFilasTurmasResposta(self.resposta.FilasTurmas))
+        .then(function(dado) {
+            self.loading = false;
+            swal("Salvo!", "Distribuição salva com sucesso!", "success");
+        }, function(error) {
+            console.log(error);
+        }).finally(function() {
+            self.loading = false;
+        });
+    }
+
     var removerFilaTurma = function(siape, idTurma, filasTurmas) {
+        self.loading = true;
         if (!filasTurmas)
             throw "FilasTurmas é nulo!";
 
-        distribuicaoApi.postRemoverTurma(self.codigoCenario, siape, idTurma, getFilasTurmasResposta(filasTurmas))
+        distribuicaoApi.postRemoverTurma(self.codigoCenario, siape, idTurma, filasTurmasService.getFilasTurmasResposta(filasTurmas))
         .then(function(dado) {
             preparaResposta(dado.data);
         }, function(error) {
             console.log(error);
+        }).finally(function() {
+            self.loading = false;
         });
     }
 
@@ -163,7 +82,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
             return x.Status == self.statusAlgoritmo.ATRIBUIDA.value;
         }).length;
         
-        self.resposta = encadear(dado);
+        self.resposta = distribuicaoService.encadear(dado);
         self.indexBloqueio = 0;
         self.paginasBloqueios = [];
         for(var i = 0; i < self.resposta.FilasTurmasBloqueadas.length; i++)
@@ -177,24 +96,42 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
             self.removerTurma(filaTurma);
         else if (filaTurma.StatusDesbloqueio == self.statusAlgoritmo.ULTIMA_PRIORIDADE.value)
             jogarUltimaPrioridade(filaTurma);
+        else if (filaTurma.StatusDesbloqueio == self.statusAlgoritmo.FINAL_FILA.value)
+            jogarUltimaPrioridade(filaTurma);
 
     }
 
-    var jogarUltimaPrioridade = function(filaTurma) {
-        distribuicaoApi.postUltimaPrioridade(self.codigoCenario, filaTurma.Fila.Siape, filaTurma.Turma.Id, getFilasTurmasResposta(self.resposta.FilasTurmas))
+    var jogarFinalFila = function(filaTurma) {
+        self.loading = true;
+        distribuicaoApi.postFinalFila(self.codigoCenario, filaTurma.Fila.Siape, filaTurma.Turma.Id, filasTurmasService.getFilasTurmasResposta(self.resposta.FilasTurmas))
         .then(function(dado) {
             preparaResposta(dado.data);
         }, function(error) {
             console.log(error);
+        }).finally(function() {
+            self.loading = false;
+        });
+    }
+
+    var jogarUltimaPrioridade = function(filaTurma) {
+        self.loading = true;
+        distribuicaoApi.postUltimaPrioridade(self.codigoCenario, filaTurma.Fila.Siape, filaTurma.Turma.Id, filasTurmasService.getFilasTurmasResposta(self.resposta.FilasTurmas))
+        .then(function(dado) {
+            preparaResposta(dado.data);
+        }, function(error) {
+            console.log(error);
+        }).finally(function() {
+            self.loading = false;
         });
     }
 
     self.distribuir = function(filasTurmas) {
 
+        self.loading = true;
         var func = null;
 
         if (filasTurmas)
-            func = distribuicaoApi.postDistribuir(self.codigoCenario, getFilasTurmasResposta(filasTurmas));
+            func = distribuicaoApi.postDistribuir(self.codigoCenario, filasTurmasService.getFilasTurmasResposta(filasTurmas));
         else
             func = distribuicaoApi.getDistribuir(self.codigoCenario);
         
@@ -204,6 +141,8 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
 
         }, function(error) {
             console.log(error);
+        }).finally(function() {
+            self.loading = false;
         });
     }
 
@@ -271,7 +210,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
     document.addEventListener("dragstart", function(ev) {
         var idTurma = $(ev.target).find('.id-turma').text();
         ev.dataTransfer.setData("text", idTurma);
-        desabilitarProfessoresAtribuicao(getTurma(idTurma, self.resposta.Turmas));
+        desabilitarProfessoresAtribuicao(turmasService.getTurma(idTurma, self.resposta.Turmas));
         $scope.$apply();
     }, false);
 
@@ -312,7 +251,6 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
             var elementsSiape = $(itemLista.find('.prof-siape'));
             if (elementsSiape.length > 0) {
                 var siape = elementsSiape[0].outerText;
-                //var filaTurma = getFilaTurmaBySiape(idTurma, elementsSiape[0].outerText, self.resposta.FilasTurmas);
                 atribuirFilaTurma(siape, idTurma, self.resposta.FilasTurmas);
             }
         }

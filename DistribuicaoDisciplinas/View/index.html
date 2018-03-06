@@ -26,6 +26,8 @@
 
 </head>
 <body ng-app="distribuicaoApp" ng-controller="distribuicaoCtrl as ct">
+
+    <div id="modalWhite" ng-show="ct.loading"></div>
     
     <div class="container" style="margin-top: 20px;">
 
@@ -41,7 +43,8 @@
 
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-success" ng-click="ct.distribuir()">Distribuir</button>
+                <button class="btn btn-primary" ng-click="ct.distribuir()">Distribuir</button>
+                <button class="btn btn-success" ng-if="ct.resposta.TurmasPendentes.length == 0" ng-click="ct.salvarDistribuicao()">Salvar Distribuição</button>
             </div>
         </div>
         <!-- /Cenário -->
@@ -75,7 +78,7 @@
                                             <p class="list-group-item-text">
                                                 CH atual: {{b.Professor.CH}} horas; CH distribuída: {{b.Professor.CHAtribuida}} horas<br>  
                                                 Turma: {{b.Turma.Id}} - {{b.Turma.CodigoDisc}} - {{b.Turma.Disciplina.Nome}} ({{b.Turma.LetraTurma}})<br>
-                                                CH: {{b.Turma.CH}} horas - Posição {{b.Fila.Posicao}}, Prioridade {{b.PrioridadeReal}}
+                                                CH: {{b.Turma.CH}} horas - Posição {{b.Fila.PosicaoReal}}, Prioridade {{b.PrioridadeReal}}
                                             </p>
                                             <div>
                                             	<a class="small" ng-click="ct.verPosicoes(b.Turma.Posicoes)" href style="margin-right: 10px;">Ver Posições ({{b.Turma.Posicoes.length}})</a>
@@ -95,7 +98,7 @@
     	                                            <input type="radio" name="radioAtribuir{{$index}}" id="radioAtribuir{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.ATRIBUIDA.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioAtribuir{{$index}}" style="font-weight: normal;margin-bottom: initial;">Atribuir</label>
     	                                        </div>
     	                                        <div>
-    	                                            <input type="radio" name="radioFinalFila{{$index}}" id="radioFinalFila{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.FINAL_FILA.value}}" ng-change="ct.desbloqueioChange(b)" disabled><label for="radioFinalFila{{$index}}" style="font-weight: normal;margin-bottom: initial;">Final da Fila</label>
+    	                                            <input type="radio" name="radioFinalFila{{$index}}" id="radioFinalFila{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.FINAL_FILA.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioFinalFila{{$index}}" style="font-weight: normal;margin-bottom: initial;">Final da Fila</label>
     	                                        </div>
     	                                        <div>
     	                                            <input type="radio" name="radioUltimaPrioridade{{$index}}" id="radioUltimaPrioridade{{$index}}" ng-model="b.StatusDesbloqueio" value="{{ct.statusAlgoritmo.ULTIMA_PRIORIDADE.value}}" ng-change="ct.desbloqueioChange(b)"><label for="radioUltimaPrioridade{{$index}}" style="font-weight: normal;margin-bottom: initial;">Última Prioridade</label>
@@ -155,7 +158,7 @@
                                         {{pri.Turma.Id}} - {{pri.Turma.CodigoDisc}} ({{pri.Turma.LetraTurma}})
                                     </div>
                                     {{pri.Turma.NomeDisciplina}}<br>
-                                    Pos: {{pri.Fila.Posicao}} - Prioridade: {{pri.PrioridadeReal}} - CH: {{pri.Turma.CH}}h<br>
+                                    Pos: {{pri.Fila.PosicaoReal}} - Prioridade: {{pri.PrioridadeReal}} - CH: {{pri.Turma.CH}}h<br>
                                     Curso: {{pri.Turma.Disciplina.Curso.Nome}}<br>
                                     <a class="small" ng-click="ct.verPosicoes(pri.Turma.Posicoes)" href>Ver Posições</a>
 
@@ -246,6 +249,12 @@
 
     <!-- API -->
     <script type="text/javascript" src="js/api/distribuicaoApi.js"></script>
+
+    <!-- Services -->
+    <script type="text/javascript" src="js/services/distribuicaoService.js"></script>
+    <script type="text/javascript" src="js/services/filasTurmasService.js"></script>
+    <script type="text/javascript" src="js/services/professoresService.js"></script>
+    <script type="text/javascript" src="js/services/turmasService.js"></script>
 
     <!-- Values -->
     <script type="text/javascript" src="js/values/configValue.js"></script>

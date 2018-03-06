@@ -24,7 +24,7 @@
 	        				<tr ng-repeat="p in ct.profPrioridades.Prioridades | orderBy:'Fila.QtdaMaximaJaMinistrada' | orderBy:'PrioridadeReal'">
 	        					<td>{{p.Turma.CodigoDisc}} - {{p.Turma.NomeDisciplina}}</td>
 	        					<td>{{p.Turma.LetraTurma}}</td>
-	        					<td>{{p.Fila.Posicao}}</td>
+	        					<td>{{p.Fila.PosicaoReal}}</td>
 	        					<td>{{p.PrioridadeReal}}</td>
                                 <td>{{ct.getStatusText(p.Status)}}</td>
                                 <td>{{p.Turma.CH}}</td>

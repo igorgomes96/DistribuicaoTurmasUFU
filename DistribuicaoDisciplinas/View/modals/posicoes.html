@@ -21,16 +21,16 @@
         			</thead>
 
         			<tbody>
-        				<tr ng-repeat="p in ct.posicoes | orderBy:'Fila.Posicao'">
+        				<tr ng-repeat="p in ct.posicoes | orderBy:'Fila.PosicaoReal'">
         					<td>{{p.Professor.Siape}}</td>
         					<td>{{p.Professor.Nome}}</td>
-        					<td>{{p.Fila.Posicao}}</td>
+        					<td>{{p.Fila.PosicaoReal}}</td>
         					<td>{{p.PrioridadeReal}}</td>
                             <td>{{ct.getStatusText(p.Status)}}</td>
-                            <td>{{p.Status}}</td>
+                            <td>{{p.Professor.CH}}</td>
         					<td>({{p.Fila.QtdaMinistrada}}/{{p.Fila.QtdaMaxima}})</td>
                             <td>
-                                <button class="btn btn-success btn-xs" ng-show="p.Status == ct.statusAlgoritmo.EM_ESPERA.value || p.Status == ct.statusAlgoritmo.NAO_ANALISADA_AINDA.value" ng-click="ct.atribuirModalPosicoes(p)">
+                                <button class="btn btn-success btn-xs" ng-show="p.Status == ct.statusAlgoritmo.EM_ESPERA.value || p.Status == ct.statusAlgoritmo.NAO_ANALISADA_AINDA.value || (p.Status == ct.statusAlgoritmo.CH_COMPLETA.value && ct.resposta.Bloqueios.length == 0 && !ct.turmaJaAtribuida(ct.posicoes))" ng-click="ct.atribuirModalPosicoes(p)">
                                     <i class="fa fa-check"></i>
                                 </button>
                             </td>

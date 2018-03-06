@@ -14,6 +14,7 @@ namespace DistribuicaoDisciplinas.Services
         RespostaDto Remover(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
         RespostaDto UltimaPrioridade(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
         RespostaDto FinalFila(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
+        void SalvarDistribuicao(ICollection<FilaTurmaDto> filasTurmasDto);
     }
 }
 

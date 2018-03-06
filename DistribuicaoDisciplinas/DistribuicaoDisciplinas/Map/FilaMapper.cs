@@ -32,7 +32,8 @@ namespace DistribuicaoDisciplinas.Map
                 Id = destination.id,
                 Professor = _profMapper.Map(destination.Professor),
                 Disciplina = _discMapper.Map(destination.Disciplina),
-                Posicao = destination.pos.Value,
+                PosicaoReal = destination.pos.Value,
+                PosicaoBanco = destination.pos.Value,
                 QtdaMaxima = destination.qte_maximo.Value,
                 QtdaMinistrada = destination.qte_ministrada.Value
             };

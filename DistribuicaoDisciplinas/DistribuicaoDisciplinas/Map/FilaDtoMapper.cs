@@ -17,7 +17,7 @@ namespace DistribuicaoDisciplinas.Map
             {
                 Id = source.Id,
                 Siape = source.Professor.Siape,
-                Posicao = source.Posicao,
+                PosicaoReal = source.PosicaoReal,
                 CodigoDisc = source.Disciplina.Codigo,
                 QtdaMaxima = source.QtdaMaxima,
                 QtdaMinistrada = source.QtdaMinistrada,

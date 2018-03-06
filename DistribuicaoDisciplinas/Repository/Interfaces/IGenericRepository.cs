@@ -13,6 +13,7 @@ namespace Repository.Interfaces
         ICollection<TEntity> Query(Func<TEntity, bool> predicate);
         TEntity Find(params object[] chave);
         TEntity Add(TEntity entidade);
+        void SaveAll(ICollection<TEntity> entities);
         void Update(TEntity entidade);
         TEntity Delete(params object[] chave);
         void Delete(Func<TEntity, bool> predicate);

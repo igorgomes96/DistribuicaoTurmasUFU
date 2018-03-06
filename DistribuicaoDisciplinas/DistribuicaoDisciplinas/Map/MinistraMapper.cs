@@ -23,7 +23,11 @@ namespace DistribuicaoDisciplinas.Map
 
         public MinistraEntity Map(Ministra source)
         {
-            throw new NotImplementedException();
+            return new MinistraEntity
+            {
+                id_turma = source.IdTurma,
+                siape = source.Siape
+            };
         }
 
         public Ministra Map(MinistraEntity destination)

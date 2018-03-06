@@ -30,5 +30,15 @@ namespace DistribuicaoDisciplinas.Services
         {
             return _ministraMap.Map(_ministraRep.Query(m => m.Turma.ano == ano && m.Turma.semestre == semestre));
         }
+
+        public void LimparMinistra()
+        {
+            _ministraRep.Delete(x => true);
+        }
+
+        public void SalvarDistribuicao(ICollection<Ministra> distribuicao)
+        {
+            _ministraRep.SaveAll(_ministraMap.Map(distribuicao));
+        }
     }
 }

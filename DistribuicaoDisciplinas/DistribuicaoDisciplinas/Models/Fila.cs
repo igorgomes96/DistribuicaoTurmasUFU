@@ -11,7 +11,8 @@ namespace DistribuicaoDisciplinas.Models
     public class Fila
     {
         public int Id { get; set; }
-        public int Posicao { get; set; }
+        public int PosicaoBanco { get; set; }
+        public int PosicaoReal { get; set; }
         public int QtdaMinistrada { get; set; }
         public int QtdaMaxima { get; set; }
         public string Siape { get; set; }

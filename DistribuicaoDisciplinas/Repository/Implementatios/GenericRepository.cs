@@ -63,6 +63,15 @@ namespace Repository.Implementations
             return _db.Set<TEntity>().ToList().Where(predicate).ToList();
         }
 
+        public void SaveAll(ICollection<TEntity> entities)
+        {
+            foreach (TEntity entity in entities)
+            {
+                _db.Set<TEntity>().Add(entity);
+            }
+            _db.SaveChangesAsync();
+        }
+
         public void Update(TEntity entidade)
         {
             _db.Entry(entidade).State = EntityState.Modified;

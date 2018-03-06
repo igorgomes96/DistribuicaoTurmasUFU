@@ -53,9 +53,19 @@ namespace DistribuicaoDisciplinas.Models
         public ICollection<Oferta> Horarios { get; set; }
 
 
+        public void JogarParaFinalFila(FilaTurma filaTurma)
+        {
+            Posicoes.Where(p => p.Fila.PosicaoReal > filaTurma.Fila.PosicaoReal).ToList().ForEach(p =>
+            {
+                p.Fila.PosicaoReal -= 1;
+            });
+            filaTurma.Fila.PosicaoReal = Posicoes.Max(x => x.PrioridadeReal) + 1;
+            OrdenaPosicoes();
+        }
+
         public void OrdenaPosicoes()
         {
-            Posicoes = Posicoes.OrderBy(x => x.Fila.Posicao).ToList();
+            Posicoes = Posicoes.OrderBy(x => x.Fila.PosicaoReal).ToList();
         }
 
         public bool TurmaPendente()

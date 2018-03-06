@@ -106,7 +106,7 @@ namespace DistribuicaoDisciplinas.Services
                         Id = ft.id_fila,
                         Professor = professores[ft.Fila.siape.Trim()],
                         Disciplina = disciplinas[ft.Fila.codigo_disc.Trim()],
-                        Posicao = ft.Fila.pos.Value,
+                        PosicaoReal = ft.Fila.pos.Value,
                         QtdaMaxima = ft.Fila.qte_maximo.Value,
                         QtdaMinistrada = ft.Fila.qte_ministrada.Value
                     };
@@ -151,7 +151,7 @@ namespace DistribuicaoDisciplinas.Services
             return filasTurmas;
 
         }
-        
+
         /// <summary>
         /// Ordena as prioridades de cada professor e as posições de cada turma
         /// </summary>
@@ -174,9 +174,10 @@ namespace DistribuicaoDisciplinas.Services
             ICollection<Ministra> ministraOptativas = _ministraService.List(cenario.Ano, cenario.Semestre);
             ICollection<FilaTurma> filasTurmasOptativas = _ministraFTMapper.Map(ministraOptativas).ToList();
 
-            filasTurmasOptativas.ToList().ForEach(ft => {
-                    ft.StatusAlgoritmo = StatusFila.Atribuida;
-                });
+            filasTurmasOptativas.ToList().ForEach(ft =>
+            {
+                ft.StatusAlgoritmo = StatusFila.Atribuida;
+            });
 
             return filasTurmasOptativas;
 
@@ -201,7 +202,8 @@ namespace DistribuicaoDisciplinas.Services
                 .Where(ft => ft.Fila.Professor.CHCompletaAtribuida() && (ft.StatusAlgoritmo == StatusFila.EmEspera ||
                     ft.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda))
                 .ToList()
-                .ForEach(ft => {
+                .ForEach(ft =>
+                {
                     ft.StatusAlgoritmo = StatusFila.CHCompleta;
                 });
         }
@@ -253,7 +255,8 @@ namespace DistribuicaoDisciplinas.Services
                         && !_turmasService.ChoquePeriodo(filaTurma.Turma, prioridadesEmEspera)) //Verifica se a turma tem choque de período com as turmas em espera
                     {
 
-                        if ((p.CHAtribuida() + filaTurma.Turma.CH + chEmEspera) <= chLimite) {
+                        if ((p.CHAtribuida() + filaTurma.Turma.CH + chEmEspera) <= chLimite)
+                        {
                             AtribuirTurma(filaTurma);
                             flagHouveAtribuicao = true;
 
@@ -267,12 +270,14 @@ namespace DistribuicaoDisciplinas.Services
                                 break;
                             }
 
-                        } else if ((p.CHAtribuida() + filaTurma.Turma.CH) > chLimite && chEmEspera <= 0)
+                        }
+                        else if ((p.CHAtribuida() + filaTurma.Turma.CH) > chLimite && chEmEspera <= 0)
                         //Se ultrapassar a CH na atribuição, mas não tiver turmas em espera
                         //Analisar caso da Sara Luzia de Melo (1937166)
                         {
                             filaTurma.StatusAlgoritmo = StatusFila.UltrapassariaCH;
-                        } else
+                        }
+                        else
                         {
                             prioridadesEmEspera.Add(filaTurma.Turma);
                             filaTurma.StatusAlgoritmo = StatusFila.EmEspera;
@@ -332,10 +337,10 @@ namespace DistribuicaoDisciplinas.Services
 
             //Buscas os deadlocks de cada professor que tem turma em espera
             ICollection<Professor> professoresPendentes = professores.Values
-                .Where(p => p.Prioridades.Any(pri => pri.StatusAlgoritmo == StatusFila.EmEspera 
+                .Where(p => p.Prioridades.Any(pri => pri.StatusAlgoritmo == StatusFila.EmEspera
                     || pri.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda)).ToList();
 
-            foreach(Professor p in professoresPendentes)
+            foreach (Professor p in professoresPendentes)
             {
                 Bloqueio deadlock = GetDeadlock(p);
                 //Verifico se esse deadlock já foi identificado. Para isso,
@@ -343,7 +348,7 @@ namespace DistribuicaoDisciplinas.Services
                 //em alqum dos deadlocks anteriores
                 if (deadlock != null && !deadlocks.Any(x => x.Contains(deadlock.FilaTurma)))
                     deadlocks.Add(deadlock);
-                
+
             }
 
             //Trace.WriteLine("\n***********************************************\n");
@@ -403,7 +408,7 @@ namespace DistribuicaoDisciplinas.Services
             {
 
                 professor = ultimoBloqueio.FilaTurma.Turma.Posicoes
-                    .FirstOrDefault(x => x.StatusAlgoritmo == StatusFila.EmEspera 
+                    .FirstOrDefault(x => x.StatusAlgoritmo == StatusFila.EmEspera
                         || x.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda).Fila.Professor;
 
                 FilaTurma ftBloqueada = professor.Prioridades
@@ -426,7 +431,7 @@ namespace DistribuicaoDisciplinas.Services
                     cabeca = b;
                     break;
                 }
-                    
+
 
                 trace.Add(ftBloqueada);
                 ultimoBloqueio = bloqueio;
@@ -475,7 +480,7 @@ namespace DistribuicaoDisciplinas.Services
             if (filasTurmasDto == null)
                 return;
 
-            foreach(FilaTurmaDto ft in filasTurmasDto)
+            foreach (FilaTurmaDto ft in filasTurmasDto)
             {
                 FilaTurma filaTurma = filasTurmas
                     .FirstOrDefault(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma);
@@ -507,16 +512,31 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="filasTurmasDto"></param>
         private void AtualizaPrioridadesReais(ICollection<FilaTurmaDto> filasTurmasDto)
         {
-            if (filasTurmasDto == null || filasTurmasDto.Count == 0) { 
+            if (filasTurmasDto == null || filasTurmasDto.Count == 0)
+            {
                 foreach (FilaTurma ft in filasTurmas)
                 {
                     if (ft.Fila.QtdaMaximaJaMinistrada)
                         ft.Fila.Professor.JogarParaUltimaPrioridadeReal(ft);
                 }
-            } else
+            }
+            else
             {
                 foreach (FilaTurmaDto ft in filasTurmasDto)
                     filasTurmas.First(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma).PrioridadeReal = ft.PrioridadeReal;
+            }
+        }
+
+        /// <summary>
+        /// Atualiza as posições de acordo com o que foi recebido do front-end.
+        /// </summary>
+        /// <param name="filasTurmasDto"></param>
+        private void AtualizaPosicoesReais(ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            if (filasTurmasDto != null && filasTurmasDto.Count > 0)
+            {
+                foreach (FilaTurmaDto ft in filasTurmasDto)
+                    filasTurmas.First(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma).Fila.PosicaoReal = ft.Fila.PosicaoReal;
             }
         }
 
@@ -538,6 +558,7 @@ namespace DistribuicaoDisciplinas.Services
             filasTurmas = Encadear(filasTurmasEntities);
 
             AtualizaPrioridadesReais(filasTurmasDto);
+            AtualizaPosicoesReais(filasTurmasDto);
             OrdenaPrioridadesPosicoes();
 
             AtualizaCHProfessores(cenario.NumCenario);
@@ -587,7 +608,7 @@ namespace DistribuicaoDisciplinas.Services
 
             foreach (FilaTurma ft in choques)
             {
-                bool temChoque = _turmasService.ChoqueHorario(ft.Turma, atribuidas) 
+                bool temChoque = _turmasService.ChoqueHorario(ft.Turma, atribuidas)
                     || _turmasService.ChoquePeriodo(ft.Turma, atribuidas);
 
                 if (!temChoque)
@@ -639,7 +660,7 @@ namespace DistribuicaoDisciplinas.Services
 
                 file.WriteLine("******************************************\n\n\n");
             }
-            
+
         }
 
         #endregion
@@ -672,6 +693,14 @@ namespace DistribuicaoDisciplinas.Services
             return GeraResposta(bloqueios);
         }
 
+        /// <summary>
+        /// Joga a FilaTurma para última prioridade do professor.
+        /// </summary>
+        /// <param name="numCenario">Número do cenário a que se refere a distribuição</param>
+        /// <param name="siape">Siape do professor utilizado para encontrar o objeto FilaTurma</param>
+        /// <param name="turma">Id da turma utilizado para encontrar o objeto FilaTurma</param>
+        /// <param name="filasTurmasDto">Estado atual da distribuição</param>
+        /// <returns></returns>
         public RespostaDto UltimaPrioridade(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             PreparaDistribuicao(numCenario, filasTurmasDto);
@@ -689,9 +718,31 @@ namespace DistribuicaoDisciplinas.Services
 
             return GeraResposta(bloqueios);
         }
+
+        /// <summary>
+        /// Joga a FilaTurma para última posição da fila da turma.
+        /// </summary>
+        /// <param name="numCenario">Número do cenário a que se refere a distribuição</param>
+        /// <param name="siape">Siape do professor utilizado para encontrar o objeto FilaTurma</param>
+        /// <param name="turma">Id da turma utilizado para encontrar o objeto FilaTurma</param>
+        /// <param name="filasTurmasDto">Estado atual da distribuição</param>
+        /// <returns></returns>
         public RespostaDto FinalFila(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
         {
-            throw new NotImplementedException();
+            PreparaDistribuicao(numCenario, filasTurmasDto);
+
+            FilaTurma filaTurma = GetFilaTurma(siape, turma);
+
+            if (filaTurma == null)
+                throw new FilaTurmaNaoEncontradaException();
+
+            filaTurma.Turma.JogarParaFinalFila(filaTurma);
+
+            while (CasosTriviais()) { };
+
+            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+
+            return GeraResposta(bloqueios);
         }
 
         /// <summary>
@@ -739,6 +790,25 @@ namespace DistribuicaoDisciplinas.Services
             ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
 
             return GeraResposta(bloqueios);
+        }
+
+        /// <summary>
+        /// Exclui todos os registros da tabela Ministra e salva a distribuição.
+        /// </summary>
+        /// <param name="filasTurmasDto"></param>
+        public void SalvarDistribuicao(ICollection<FilaTurmaDto> filasTurmasDto)
+        {
+            _ministraService.LimparMinistra();
+
+            _ministraService.SalvarDistribuicao(
+                filasTurmasDto
+                .Where(ft => ft.Status == StatusFila.Atribuida)
+                .Select(ft => new Ministra
+                {
+                    IdTurma = ft.IdTurma,
+                    Siape = ft.Fila.Siape
+                }).ToList()
+            );
         }
         #endregion
 

@@ -17,7 +17,7 @@ namespace DistribuicaoDisciplinas.Map
                 {
                     Professor = source.Professor,
                     Disciplina = source.Turma.Disciplina,
-                    Posicao = -1,
+                    PosicaoReal = -1,
                     QtdaMaxima = 1,
                     QtdaMinistrada = 0
                 },

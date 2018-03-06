@@ -116,6 +116,12 @@ namespace DistribuicaoDisciplinas.Controllers
             return Ok(_distService.FinalFila(cenario, siape, idTurma, filasTurmas));
         }
 
+        [Route("api/Testes/Distribuir/Salvar")]
+        public IHttpActionResult PostSalvarDistribuicao(ICollection<FilaTurmaDto> filasTurmas)
+        {
+            _distService.SalvarDistribuicao(filasTurmas);
+            return Ok();
+        }
         #region Testes Crud
         [Route("api/Testes/Cursos")]
         public IHttpActionResult GetCursos()

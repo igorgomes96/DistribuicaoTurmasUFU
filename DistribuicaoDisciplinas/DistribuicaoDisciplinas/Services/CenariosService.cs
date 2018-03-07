@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using DistribuicaoDisciplinas.Dto;
 using DistribuicaoDisciplinas.Entities;
 using DistribuicaoDisciplinas.Models;
 using Mapping.Interfaces;
@@ -23,6 +24,11 @@ namespace DistribuicaoDisciplinas.Services
         public Cenario Find(int num)
         {
             return _map.Map(_rep.Find(num));
+        }
+
+        public ICollection<Cenario> List()
+        {
+            return _map.Map(_rep.List());
         }
 
     }

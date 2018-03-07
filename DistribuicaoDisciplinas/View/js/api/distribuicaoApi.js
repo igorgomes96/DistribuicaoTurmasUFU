@@ -1,7 +1,7 @@
 angular.module('distribuicaoApp').service('distribuicaoApi', ['$http', 'configValue', function($http, configValue) {
 
 	var self = this;
-	var urlBase = configValue.baseUrl + 'Testes/Distribuir/';
+	var urlBase = configValue.baseUrl + 'Distribuicao/';
 
 	self.getDistribuir = function(codigoCenario) {
 		return $http.get(urlBase + codigoCenario);

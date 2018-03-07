@@ -80,48 +80,6 @@ namespace DistribuicaoDisciplinas.Controllers
         }
         #endregion
 
-        [Route("api/Testes/Distribuir/{id}")]
-        public IHttpActionResult GetDistribuir(int id)
-        {
-            return Ok(_distService.Distribuir(id, null));
-        }
-
-        [Route("api/Testes/Distribuir/{id}")]
-        public IHttpActionResult PostDistribuir(int id, ICollection<FilaTurmaDto> filasTurmas)
-        {
-            return Ok(_distService.Distribuir(id, filasTurmas));
-        }
-
-        [Route("api/Testes/Distribuir/AtribuicaoManual/{cenario}/{siape}/{idTurma}")]
-        public IHttpActionResult PostAtribuirTurmaManualmente(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
-        {
-            return Ok(_distService.Atribuir(cenario, siape, idTurma, filasTurmas));
-        }
-
-        [Route("api/Testes/Distribuir/RemocaoManual/{cenario}/{siape}/{idTurma}")]
-        public IHttpActionResult PostRemoverTurmaManualmente(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
-        {
-            return Ok(_distService.Remover(cenario, siape, idTurma, filasTurmas));
-        }
-
-        [Route("api/Testes/Distribuir/UltimaPrioridade/{cenario}/{siape}/{idTurma}")]
-        public IHttpActionResult PostUltimaPrioridade(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
-        {
-            return Ok(_distService.UltimaPrioridade(cenario, siape, idTurma, filasTurmas));
-        }
-
-        [Route("api/Testes/Distribuir/FinalFila/{cenario}/{siape}/{idTurma}")]
-        public IHttpActionResult PostFinalFila(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
-        {
-            return Ok(_distService.FinalFila(cenario, siape, idTurma, filasTurmas));
-        }
-
-        [Route("api/Testes/Distribuir/Salvar")]
-        public IHttpActionResult PostSalvarDistribuicao(ICollection<FilaTurmaDto> filasTurmas)
-        {
-            _distService.SalvarDistribuicao(filasTurmas);
-            return Ok();
-        }
         #region Testes Crud
         [Route("api/Testes/Cursos")]
         public IHttpActionResult GetCursos()

@@ -1,4 +1,4 @@
-angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$scope', 'distribuicaoApi', 'statusValue', 'distribuicaoService', 'turmasService', 'filasTurmasService', function($filter, $scope, distribuicaoApi, statusValue, distribuicaoService, turmasService, filasTurmasService) {
+angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$scope', 'distribuicaoApi', 'statusValue', 'distribuicaoService', 'turmasService', 'filasTurmasService', 'cenariosService', 'cenariosApi', function($filter, $scope, distribuicaoApi, statusValue, distribuicaoService, turmasService, filasTurmasService, cenariosService, cenariosApi) {
 
 
     var self = this;
@@ -11,6 +11,7 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
     self.paginasBloqueios = null;
     self.statusAlgoritmo = statusValue;
     self.loading = false;
+    self.anosLetivos = [];
     var profDesabilitadosAtribuicao = [];
 
 
@@ -20,6 +21,16 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
                 return self.statusAlgoritmo[st].text;
         }
         return 'N/A';
+    }
+
+    var loadAnosLetivos = function() {
+        cenariosApi.getCenarios()
+        .then(function(dado) {
+            console.log(dado.data);
+            self.anosLetivos = cenariosService.getAnosLetivos(dado.data);    
+        }, function(error) {
+            console.log(error);
+        });
     }
 
     var atribuirFilaTurma = function(siape, idTurma, filasTurmas) {
@@ -205,8 +216,15 @@ angular.module('distribuicaoApp').controller('distribuicaoCtrl', ['$filter', '$s
         });
     }
 
+    loadAnosLetivos();
 
+
+
+
+
+    //********************************************************************************
     //Drag and Drop
+    //********************************************************************************
     document.addEventListener("dragstart", function(ev) {
         var idTurma = $(ev.target).find('.id-turma').text();
         ev.dataTransfer.setData("text", idTurma);

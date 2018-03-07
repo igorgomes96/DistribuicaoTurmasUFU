@@ -33,10 +33,24 @@
 
         <!-- Cenário -->
         <div class="row">
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-2 col-sm-6">
                 <div class="form-group">
-                    <label for="inputCenario">Código do Cenário</label>
-                    <input type="number" name="inputCenario" id="inputCenario" ng-model="ct.codigoCenario" class="form-control">
+                    <label for="selectAno">Ano</label>
+                    <select class="form-control" id="selectAno" name="selectAno" ng-options="a.ano for a in ct.anosLetivos" ng-model="ct.anoSelecionado"></select>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+                <div class="form-group">
+                    <label for="selectSemestre">Semestre</label>
+                    <select class="form-control" id="selectSemestre" name="selectSemestre" ng-model="ct.semestreSelecionado" ng-options="s.semestre for s in ct.anoSelecionado.semestres"></select>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label for="selectCenario">Cenário</label>
+                    <select class="form-control" id="selectCenario" name="selectCenario" ng-model="ct.codigoCenario" ng-options="c.NumCenario as (c.NumCenario + ' - ' + c.Descricao) for c in ct.semestreSelecionado.cenarios"></select>
                 </div>
             </div>
         </div>
@@ -249,12 +263,14 @@
 
     <!-- API -->
     <script type="text/javascript" src="js/api/distribuicaoApi.js"></script>
+    <script type="text/javascript" src="js/api/cenariosApi.js"></script>
 
     <!-- Services -->
     <script type="text/javascript" src="js/services/distribuicaoService.js"></script>
     <script type="text/javascript" src="js/services/filasTurmasService.js"></script>
     <script type="text/javascript" src="js/services/professoresService.js"></script>
     <script type="text/javascript" src="js/services/turmasService.js"></script>
+    <script type="text/javascript" src="js/services/cenariosService.js"></script>
 
     <!-- Values -->
     <script type="text/javascript" src="js/values/configValue.js"></script>

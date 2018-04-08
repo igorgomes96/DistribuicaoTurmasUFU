@@ -1,0 +1,9 @@
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\bin\Release\netstandard2.0\Mapping.deps.json
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\bin\Release\netstandard2.0\Mapping.dll
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\bin\Release\netstandard2.0\Mapping.pdb
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\obj\Release\netstandard2.0\Mapping.csprojResolveAssemblyReference.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\obj\Release\netstandard2.0\Mapping.csproj.CoreCompileInputs.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\obj\Release\netstandard2.0\Mapping.AssemblyInfoInputs.cache
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\obj\Release\netstandard2.0\Mapping.AssemblyInfo.cs
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\obj\Release\netstandard2.0\Mapping.dll
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\obj\Release\netstandard2.0\Mapping.pdb

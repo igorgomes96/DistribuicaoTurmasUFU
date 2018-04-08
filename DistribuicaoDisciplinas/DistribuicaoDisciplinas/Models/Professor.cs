@@ -33,6 +33,14 @@ namespace DistribuicaoDisciplinas.Models
         public ICollection<FilaTurma> Prioridades { get; set; }
         public ICollection<DistribuicaoCarga> CHsPorCenarios { get; set; }
 
+        public FilaTurma PrimeiraPrioridadeDisponivel()
+        {
+            return Prioridades
+                .Where(x => x.StatusAlgoritmo == StatusFila.EmEspera || x.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda)
+                .OrderBy(x => x.PrioridadeReal)
+                .FirstOrDefault();
+        }
+
         /// <summary>
         /// Altera a prioridade para a última.
         /// </summary>

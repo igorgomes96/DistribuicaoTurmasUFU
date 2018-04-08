@@ -8,7 +8,7 @@ namespace DistribuicaoDisciplinas.Models
 {
     public class Bloqueio
     {
-        public TipoBloqueio TipoBloqueio;
+        public string TipoBloqueio;
         public FilaTurma FilaTurma;
         public Bloqueio Dependente;
 

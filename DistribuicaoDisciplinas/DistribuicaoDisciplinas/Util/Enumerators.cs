@@ -5,7 +5,7 @@ using System.Web;
 
 namespace DistribuicaoDisciplinas.Util
 {
-    public class Enumerators
+    public static class Enumerators
     {
         public enum StatusFila
         {
@@ -21,11 +21,7 @@ namespace DistribuicaoDisciplinas.Util
             UltrapassariaCH = 9,    //FilaTurma que se atribuída faria a CH do professor ser ultrapassada
         }
 
-        public enum TipoBloqueio
-        {
-            Deadlock,
-            DisciplinaCHDiferente4
-        }
+        
 
     }
 }

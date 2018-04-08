@@ -17,6 +17,8 @@ namespace DistribuicaoDisciplinas.Controllers
             _distService = distService;
         }
 
+        [Route("api/Distribuicao/{id}")]
+        [HttpGet]
         public IHttpActionResult GetDistribuir(int id)
         {
             try

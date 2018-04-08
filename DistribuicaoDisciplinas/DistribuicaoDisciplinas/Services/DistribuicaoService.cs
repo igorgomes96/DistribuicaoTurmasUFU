@@ -11,6 +11,7 @@ using DistribuicaoDisciplinas.Models;
 using Mapping.Interfaces;
 using Repository.Interfaces;
 using static DistribuicaoDisciplinas.Util.Enumerators;
+using static DistribuicaoDisciplinas.Util.Constants;
 
 namespace DistribuicaoDisciplinas.Services
 {
@@ -250,9 +251,10 @@ namespace DistribuicaoDisciplinas.Services
 
                     int chLimite = (p.CH + ACRESCIMO_CH);
 
-                    if (possibilidadesTurma.FirstOrDefault().Equals(filaTurma) //Verifica se o professor está na primeira posição da turma
+                    if (possibilidadesTurma.FirstOrDefault().Equals(filaTurma)                  //Verifica se o professor está na primeira posição da turma
                         && !_turmasService.ChoqueHorario(filaTurma.Turma, prioridadesEmEspera)  //Verifica se a turma tem choque de horário com as turmas em espera
-                        && !_turmasService.ChoquePeriodo(filaTurma.Turma, prioridadesEmEspera)) //Verifica se a turma tem choque de período com as turmas em espera
+                        && !_turmasService.ChoquePeriodo(filaTurma.Turma, prioridadesEmEspera)  //Verifica se a turma tem choque de período com as turmas em espera
+                        && filaTurma.Turma.CH == CH_DEFAULT)                     //Verifica se a CH da turma tem CH default
                     {
 
                         if ((p.CHAtribuida() + filaTurma.Turma.CH + chEmEspera) <= chLimite)
@@ -328,6 +330,28 @@ namespace DistribuicaoDisciplinas.Services
         }
 
         /// <summary>
+        /// Identifica as turmas em espera, que são primeira prioridade, que tem a carga horária diferente da carga horária default.
+        /// </summary>
+        /// <returns>Bloqueios</returns>
+        private ICollection<Bloqueio> GetCHNotDefault()
+        {
+            ICollection<Bloqueio> bloqueios = new List<Bloqueio>();
+            foreach (Professor p in professores.Values)
+            {
+                FilaTurma primeiraPrioridade = p.PrimeiraPrioridadeDisponivel();
+                if (primeiraPrioridade != null && primeiraPrioridade.Turma.CH != CH_DEFAULT)
+                {
+                    bloqueios.Add(new Bloqueio
+                    {
+                        TipoBloqueio = TipoBloqueio.DisciplinaCHDiferente4,
+                        FilaTurma = p.PrimeiraPrioridadeDisponivel()
+                    });
+                }
+            }
+            return bloqueios;
+        }
+
+        /// <summary>
         /// Identifica e retorna todos os deadlocks
         /// </summary>
         /// <returns>Lista de todos os deadlocks</returns>
@@ -343,6 +367,11 @@ namespace DistribuicaoDisciplinas.Services
             foreach (Professor p in professoresPendentes)
             {
                 Bloqueio deadlock = GetDeadlock(p);
+
+                //Verifica se é uma turma que somente está esperando confirmação por ter CH diferente da CH default
+                if (deadlock.Tamanho == 2 && deadlock.Dependente.FilaTurma.Turma.CH != CH_DEFAULT)
+                    continue;
+
                 //Verifico se esse deadlock já foi identificado. Para isso,
                 //basta verificar se a FilaTurma cabeça do deadlock já existe
                 //em alqum dos deadlocks anteriores
@@ -359,6 +388,11 @@ namespace DistribuicaoDisciplinas.Services
             //}
 
             return deadlocks;
+        }
+
+        private ICollection<Bloqueio> GetBloqueios()
+        {
+            return GetTodosDeadlocks().Concat(GetCHNotDefault()).ToList();
         }
 
         /// <summary>
@@ -688,7 +722,7 @@ namespace DistribuicaoDisciplinas.Services
 
             while (CasosTriviais()) { };
 
-            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+            ICollection<Bloqueio> bloqueios = GetBloqueios();
 
             return GeraResposta(bloqueios);
         }
@@ -714,7 +748,7 @@ namespace DistribuicaoDisciplinas.Services
 
             while (CasosTriviais()) { };
 
-            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+            ICollection<Bloqueio> bloqueios = GetBloqueios();
 
             return GeraResposta(bloqueios);
         }
@@ -740,7 +774,7 @@ namespace DistribuicaoDisciplinas.Services
 
             while (CasosTriviais()) { };
 
-            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+            ICollection<Bloqueio> bloqueios = GetBloqueios();
 
             return GeraResposta(bloqueios);
         }
@@ -770,7 +804,7 @@ namespace DistribuicaoDisciplinas.Services
 
             while (CasosTriviais()) { };
 
-            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+            ICollection<Bloqueio> bloqueios = GetBloqueios();
 
             return GeraResposta(bloqueios);
         }
@@ -787,7 +821,7 @@ namespace DistribuicaoDisciplinas.Services
 
             while (CasosTriviais()) { };
 
-            ICollection<Bloqueio> bloqueios = GetTodosDeadlocks();
+            ICollection<Bloqueio> bloqueios = GetBloqueios();
 
             return GeraResposta(bloqueios);
         }

@@ -226,10 +226,12 @@
     <Compile Include="Services\ProfessoresService.cs" />
     <Compile Include="Services\RestricoesService.cs" />
     <Compile Include="Services\TurmasService.cs" />
+    <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\Enumerators.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

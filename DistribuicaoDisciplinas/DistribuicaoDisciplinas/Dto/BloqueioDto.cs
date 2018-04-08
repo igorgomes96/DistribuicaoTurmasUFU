@@ -12,7 +12,7 @@ namespace DistribuicaoDisciplinas.Dto
         public int IdFila { get; set; }
         public string Siape { get; set; }
 
-        public TipoBloqueio TipoBloqueio;
+        public string TipoBloqueio;
         public BloqueioDto Dependente { get; set; }
         public int Tamanho { get; set; }
 

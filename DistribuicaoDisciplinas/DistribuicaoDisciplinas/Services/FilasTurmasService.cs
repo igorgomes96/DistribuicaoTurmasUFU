@@ -21,6 +21,11 @@ namespace DistribuicaoDisciplinas.Services
             _filaTurmaMap = filaTurmaMap;
         }
 
+        public FilaTurma Find(int idTurma, int idFila)
+        {
+            return _filaTurmaMap.Map(_filaTurmaRep.Find(idTurma, idFila));
+        }
+
         public ICollection<FilaTurma> List(int ano, int semestre)
         {
             return _filaTurmaMap.Map(_filaTurmaRep.Query(

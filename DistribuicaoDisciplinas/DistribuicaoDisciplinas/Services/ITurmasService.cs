@@ -14,6 +14,7 @@ namespace DistribuicaoDisciplinas.Services
         bool ChoquePeriodo(Turma turma1, Turma turma2);
         bool ChoqueHorario(Turma turma, ICollection<Turma> turmas);
         bool ChoquePeriodo(Turma turma, ICollection<Turma> turmas);
+        ICollection<Turma> TurmasSemFila(int ano, int semestre);
 
     }
 }

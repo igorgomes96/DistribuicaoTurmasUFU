@@ -11,8 +11,8 @@ namespace DistribuicaoDisciplinas.Models
     [Table("fila_turma_new")]
     public class FilaTurma
     {
-        public int IdTurma { get; set; }
-        public int IdFila { get; set; }
+        //public int IdTurma { get; set; }
+        //public int IdFila { get; set; }
         //Prioridade cadastrada
         public int PrioridadeBanco { get; set; }
 

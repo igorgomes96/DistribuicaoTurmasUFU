@@ -16,7 +16,6 @@ namespace DistribuicaoDisciplinas.Models
         public int? CHTeorica { get; set; }
         public int? CHPratica { get; set; }
         public int Periodo { get; set; }
-        public string CodigoCurso { get; set; }
 
         public Curso Curso { get; set; }
 

@@ -38,6 +38,7 @@ namespace DistribuicaoDisciplinas.Entities
         public virtual DbSet<TurmaEntity> Turmas { get; set; }
         public virtual DbSet<CenarioEntity> Cenarios { get; set; }
         public virtual DbSet<MinistraEntity> Ministra { get; set; }
+        public virtual DbSet<CenarioFilaTurmaEntity> CenariosFilasTurmas { get; set; }
         public virtual DbSet<DistribuicaoCargaEntity> CHsPorCenarios { get; set; }
     }
 

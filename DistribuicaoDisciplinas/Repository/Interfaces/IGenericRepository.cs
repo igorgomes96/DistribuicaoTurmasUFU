@@ -12,13 +12,16 @@ namespace Repository.Interfaces
         ICollection<TEntity> List();
         ICollection<TEntity> Query(Func<TEntity, bool> predicate);
         TEntity Find(params object[] chave);
-        TEntity Add(TEntity entidade);
+        TEntity Add(TEntity entity);
+        TEntity AddOrUpdate(TEntity entity);
+        void AddOrUpdate(ICollection<TEntity> entities);
         void SaveAll(ICollection<TEntity> entities);
-        void Update(TEntity entidade);
+        void Update(TEntity entity);
         TEntity Delete(params object[] chave);
         void Delete(Func<TEntity, bool> predicate);
-        bool Existe(params object[] chave);
-
+        bool Existe(params object[] key);
+        int Count(Func<TEntity, bool> predicate);
+        void ExecuteSQLCommand(string sql);
 
     }
 }

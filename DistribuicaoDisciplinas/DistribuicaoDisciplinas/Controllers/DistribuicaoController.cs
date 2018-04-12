@@ -96,12 +96,12 @@ namespace DistribuicaoDisciplinas.Controllers
             }
         }
 
-        [Route("api/Distribuicao/Salvar/{ano}/{semestre}")]
-        public IHttpActionResult PostSalvarDistribuicao(int ano, int semestre, ICollection<FilaTurmaDto> filasTurmas)
+        [Route("api/Distribuicao/Salvar/{cenario}")]
+        public IHttpActionResult PostSalvarDistribuicao(int cenario, ICollection<FilaTurmaDto> filasTurmas)
         {
             try
             {
-                _distService.SalvarDistribuicao(filasTurmas);
+                _distService.SalvarDistribuicao(cenario, filasTurmas);
                 return Ok();
             }
             catch (Exception e)
@@ -111,5 +111,19 @@ namespace DistribuicaoDisciplinas.Controllers
 
         }
 
+        [Route("api/Distribuicao/Oficializar/{cenario}")]
+        public IHttpActionResult PostOficializarDistribuicao(int cenario)
+        {
+            try
+            {
+                _distService.OficializarDistribuicao(cenario);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+
+        }
     }
 }

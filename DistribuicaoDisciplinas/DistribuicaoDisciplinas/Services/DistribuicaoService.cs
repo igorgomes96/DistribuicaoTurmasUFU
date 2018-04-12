@@ -12,6 +12,7 @@ using Mapping.Interfaces;
 using Repository.Interfaces;
 using static DistribuicaoDisciplinas.Util.Enumerators;
 using static DistribuicaoDisciplinas.Util.Constants;
+using DistribuicaoDisciplinas.Repository;
 
 namespace DistribuicaoDisciplinas.Services
 {
@@ -32,6 +33,8 @@ namespace DistribuicaoDisciplinas.Services
         #region Repositories
         //private readonly IGenericRepository<FilaTurmaEntity> _filasTurmasRep;
         private readonly IGenericRepository<FilaTurmaEntity> _filasTurmasRep;
+        private readonly ICenariosFilasTurmasRepository _cenarioFilaTurmaRep;
+        private readonly IMinistraRepository _ministraRepository;
         #endregion
 
         #region Services
@@ -39,6 +42,8 @@ namespace DistribuicaoDisciplinas.Services
         private readonly ITurmasService _turmasService;
         private readonly ICenariosService _cenariosService;
         private readonly IMinistraService _ministraService;
+        private readonly ICenariosFilasTurmasService _cenariosFilasTurmasService;
+        private readonly IFilasTurmasService _filasTurmasService;
         #endregion
 
         #region Map
@@ -52,26 +57,35 @@ namespace DistribuicaoDisciplinas.Services
         #region Constructor
         public DistribuicaoService(
             IGenericRepository<FilaTurmaEntity> filasTurmasRep,
+            ICenariosFilasTurmasRepository cenarioFilaTurmaRep,
+            IMinistraRepository ministraRepository,
             IProfessoresService professoresService,
             ITurmasService turmasService,
             ICenariosService cenariosService,
             IMinistraService ministraService,
+            ICenariosFilasTurmasService cenariosFilasTurmasService,
+            IFilasTurmasService filasTurmasService,
             IMapper<Turma, TurmaDto> turmaMapper,
             IMapper<Bloqueio, BloqueioDto> bloqueioMapper,
             IMapper<Ministra, FilaTurma> ministraFTMapper,
             IMapper<Professor, ProfessorDto> professorMapper,
             IMapper<FilaTurma, FilaTurmaDto> filaTurmaMapper)
         {
+            _filasTurmasRep = filasTurmasRep;
+            _cenarioFilaTurmaRep = cenarioFilaTurmaRep;
+            _ministraRepository = ministraRepository;
+
             _professoresService = professoresService;
             _turmasService = turmasService;
             _cenariosService = cenariosService;
             _ministraService = ministraService;
-            _filasTurmasRep = filasTurmasRep;
             _turmaMapper = turmaMapper;
             _bloqueioMapper = bloqueioMapper;
             _ministraFTMapper = ministraFTMapper;
             _professorMapper = professorMapper;
             _filaTurmaMapper = filaTurmaMapper;
+            _cenariosFilasTurmasService = cenariosFilasTurmasService;
+            _filasTurmasService = filasTurmasService;
 
             //Instancia um novo Set de FilasTurmas
             filasTurmas = new HashSet<FilaTurma>();
@@ -118,8 +132,8 @@ namespace DistribuicaoDisciplinas.Services
             {
                 return new FilaTurma
                 {
-                    IdTurma = ft.id_turma,
-                    IdFila = ft.id_fila,
+                    //IdTurma = ft.id_turma,
+                    //IdFila = ft.id_fila,
                     Fila = filas[ft.id_fila],
                     Turma = turmas[ft.id_turma],
                     PrioridadeReal = ft.prioridade.Value,
@@ -130,7 +144,8 @@ namespace DistribuicaoDisciplinas.Services
                 filasTurmas.Add(ft);
             });
 
-            List<FilaTurma> optativas = GetOptativas().ToList();
+            // Disciplinas optativas e de pós-graduação (não tem fila)
+            List<FilaTurma> optativas = GetTurmasSemFilas().ToList();
             optativas.ForEach(op =>
             {
                 op.Turma = turmas[op.Turma.Id];
@@ -170,17 +185,17 @@ namespace DistribuicaoDisciplinas.Services
         /// Lê os dados que estão na tabela ministra, e cria instâncias de FilaTurma pra cada registro
         /// </summary>
         /// <returns>Collection de FilaTurma</returns>
-        public ICollection<FilaTurma> GetOptativas()
+        public ICollection<FilaTurma> GetTurmasSemFilas()
         {
-            ICollection<Ministra> ministraOptativas = _ministraService.List(cenario.Ano, cenario.Semestre);
-            ICollection<FilaTurma> filasTurmasOptativas = _ministraFTMapper.Map(ministraOptativas).ToList();
+            ICollection<Ministra> ministraTurmasSemFila = _ministraService.ListTurmasSemFila(cenario.Ano, cenario.Semestre);
+            ICollection<FilaTurma> novasFilasTurmas = _ministraFTMapper.Map(ministraTurmasSemFila).ToList();
 
-            filasTurmasOptativas.ToList().ForEach(ft =>
+            novasFilasTurmas.ToList().ForEach(ft =>
             {
                 ft.StatusAlgoritmo = StatusFila.Atribuida;
             });
 
-            return filasTurmasOptativas;
+            return novasFilasTurmas;
 
         }
 
@@ -827,22 +842,52 @@ namespace DistribuicaoDisciplinas.Services
         }
 
         /// <summary>
-        /// Exclui todos os registros da tabela Ministra e salva a distribuição.
+        /// Salva a distribuição para o cenário especificado
         /// </summary>
-        /// <param name="filasTurmasDto"></param>
-        public void SalvarDistribuicao(ICollection<FilaTurmaDto> filasTurmasDto)
+        /// <param name="numCenario"></param>
+        /// <param name="filasTurmas"></param>
+        public void SalvarDistribuicao(int numCenario, ICollection<FilaTurmaDto> filasTurmas)
         {
-            _ministraService.LimparMinistra();
+            cenario = _cenariosService.Find(numCenario);
+            ICollection<CenarioFilaTurmaEntity> entitiesToSave = new List<CenarioFilaTurmaEntity>();
 
-            _ministraService.SalvarDistribuicao(
-                filasTurmasDto
-                .Where(ft => ft.Status == StatusFila.Atribuida)
-                .Select(ft => new Ministra
+            //_cenarioFilaTurmaRep.Delete(x => x.num_cenario == numCenario);
+            _cenarioFilaTurmaRep.DeleteByCenario(numCenario);
+
+            ICollection<FilaTurma> turmasSemFila = GetTurmasSemFilas();
+
+            entitiesToSave = filasTurmas.Where(x => !turmasSemFila.Any(y => y.Turma.Id == x.IdTurma))
+                .Select(x => new CenarioFilaTurmaEntity
                 {
-                    IdTurma = ft.IdTurma,
-                    Siape = ft.Fila.Siape
-                }).ToList()
-            );
+                    id_fila = x.Fila.Id,
+                    id_turma = x.IdTurma,
+                    num_cenario = cenario.NumCenario,
+                    status = x.Status
+                }).ToList();
+
+            _cenarioFilaTurmaRep.SaveDistribuicao(entitiesToSave);
+        }
+
+
+        /// <summary>
+        /// Oficiliza (salva na tabela ministra) uma distribuição já realizada para um cenário
+        /// </summary>
+        /// <param name="numCenario"></param>
+        public void OficializarDistribuicao(int numCenario)
+        {
+            cenario = _cenariosService.Find(numCenario);
+
+            // Limpa todas as atribuições para o semestre, ignorando as turmas que não possuem fila
+            _ministraRepository.DeleteTurmasComFilaBySemestre(cenario.Ano, cenario.Semestre);
+
+            // Salvar a distribuição
+            _ministraRepository.SalvarDistribuicao(
+                _cenarioFilaTurmaRep.Query(x => x.status == StatusFila.Atribuida && x.num_cenario == numCenario)
+                .Select(x => new MinistraEntity
+                {
+                    id_turma = x.id_turma,
+                    siape = x.FilaTurma.Fila.siape
+                }).ToList());
         }
         #endregion
 

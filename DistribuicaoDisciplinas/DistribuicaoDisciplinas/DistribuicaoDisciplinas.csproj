@@ -167,6 +167,7 @@
     <Compile Include="Dto\RespostaDto.cs" />
     <Compile Include="Dto\TurmaDto.cs" />
     <Compile Include="Entities\CenarioEntity.cs" />
+    <Compile Include="Entities\CenarioFilaTurmaEntity.cs" />
     <Compile Include="Entities\CursoEntity.cs" />
     <Compile Include="Entities\DisciplinaEntity.cs" />
     <Compile Include="Entities\DistribuicaoCargaEntity.cs" />
@@ -183,6 +184,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Map\BloqueioMapper.cs" />
+    <Compile Include="Map\CenarioFilaTurmaMapper.cs" />
     <Compile Include="Map\CenarioMapper.cs" />
     <Compile Include="Map\CursoMapper.cs" />
     <Compile Include="Map\DisciplinaMapper.cs" />
@@ -201,6 +203,7 @@
     <Compile Include="Map\TurmaMapper.cs" />
     <Compile Include="Models\Bloqueio.cs" />
     <Compile Include="Models\Cenario.cs" />
+    <Compile Include="Models\CenarioFilaTurma.cs" />
     <Compile Include="Models\Curso.cs" />
     <Compile Include="Models\Disciplina.cs" />
     <Compile Include="Models\DistribuicaoCarga.cs" />
@@ -212,9 +215,16 @@
     <Compile Include="Models\Restricao.cs" />
     <Compile Include="Models\Turma.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\CenariosFilasTurmasEntity.cs" />
+    <Compile Include="Repository\CenariosFilasTurmasRepository.cs" />
+    <Compile Include="Repository\ICenariosFilasTurmasRepository.cs" />
+    <Compile Include="Repository\IMinistraRepository.cs" />
+    <Compile Include="Repository\MinistraRepository.cs" />
+    <Compile Include="Services\CenariosFilasTurmasService.cs" />
     <Compile Include="Services\CenariosService.cs" />
     <Compile Include="Services\DistribuicaoService.cs" />
     <Compile Include="Services\FilasTurmasService.cs" />
+    <Compile Include="Services\ICenariosFilasTurmasService.cs" />
     <Compile Include="Services\ICenariosService.cs" />
     <Compile Include="Services\IDistribuicaoService.cs" />
     <Compile Include="Services\IFilasTurmasService.cs" />
@@ -241,7 +251,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Distribuicao\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mapping\Mapping.csproj">

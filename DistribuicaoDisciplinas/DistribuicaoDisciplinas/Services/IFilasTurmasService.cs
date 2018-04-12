@@ -11,6 +11,7 @@ namespace DistribuicaoDisciplinas.Services
     {
 
         ICollection<FilaTurma> List(int ano, int semestre);
+        FilaTurma Find(int idTurma, int idFila);
 
     }
 }

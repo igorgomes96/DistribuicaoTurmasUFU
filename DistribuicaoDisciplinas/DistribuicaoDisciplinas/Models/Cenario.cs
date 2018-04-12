@@ -15,5 +15,7 @@ namespace DistribuicaoDisciplinas.Models
         public int Ano { get; set; }
         public int Semestre { get; set; }
 
+        public ICollection<CenarioFilaTurma> FilasTurmasStatus { get; set; }
+
     }
 }

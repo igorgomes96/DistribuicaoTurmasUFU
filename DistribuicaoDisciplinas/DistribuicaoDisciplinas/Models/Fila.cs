@@ -15,8 +15,6 @@ namespace DistribuicaoDisciplinas.Models
         public int PosicaoReal { get; set; }
         public int QtdaMinistrada { get; set; }
         public int QtdaMaxima { get; set; }
-        public string Siape { get; set; }
-        public string CodigoDisc { get; set; }
         public int Ano { get; set; }
         public int Semestre { get; set; }
 

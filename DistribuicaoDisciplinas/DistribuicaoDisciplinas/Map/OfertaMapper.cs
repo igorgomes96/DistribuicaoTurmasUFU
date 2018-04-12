@@ -10,6 +10,7 @@ namespace DistribuicaoDisciplinas.Map
 {
     public class OfertaMapper : ISingleMapper<Oferta, OfertaEntity>
     {
+
         public OfertaEntity Map(Oferta source)
         {
             throw new NotImplementedException();
@@ -21,7 +22,7 @@ namespace DistribuicaoDisciplinas.Map
             {
                 IdTurma = destination.id_turma,
                 Dia = destination.dia,
-                Letra = destination.letra
+                Letra = destination.letra,
             };
         }
     }

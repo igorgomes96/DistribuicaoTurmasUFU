@@ -44,6 +44,11 @@ namespace DistribuicaoDisciplinas.Services
             return turmas.Any(x => ChoquePeriodo(turma, x));
         }
 
+        public ICollection<Turma> TurmasSemFila(int ano, int semestre)
+        {
+            return _turmasMap.Map(_turmasRep.Query(x => x.ano == ano && x.semestre == semestre && x.FilasTurmas.Count == 0));
+        }
+
         public ICollection<Turma> List(int ano, int semestre)
         {
             return _turmasMap.Map(_turmasRep.Query(t => t.ano == ano && t.semestre == semestre));

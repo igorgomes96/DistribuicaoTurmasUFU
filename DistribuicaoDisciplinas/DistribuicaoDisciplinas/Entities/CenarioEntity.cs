@@ -16,5 +16,7 @@ namespace DistribuicaoDisciplinas.Entities
         public string descricao_cenario { get; set; }
         public int ano { get; set; }
         public int semestre { get; set; }
+
+        public virtual ICollection<CenarioFilaTurmaEntity> FilasTurmas { get; set; }
     }
 }

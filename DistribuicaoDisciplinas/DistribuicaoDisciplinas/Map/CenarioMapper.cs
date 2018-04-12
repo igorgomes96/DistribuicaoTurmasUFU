@@ -10,6 +10,13 @@ namespace DistribuicaoDisciplinas.Map
 {
     public class CenarioMapper : ISingleMapper<Cenario, CenarioEntity>
     {
+        private readonly IMapper<CenarioFilaTurma, CenarioFilaTurmaEntity> _cenarioFilaTurmaMap;
+
+        public CenarioMapper(IMapper<CenarioFilaTurma, CenarioFilaTurmaEntity> cenarioFilaTurmaMap)
+        {
+            _cenarioFilaTurmaMap = cenarioFilaTurmaMap;
+        }
+
         public CenarioEntity Map(Cenario source)
         {
             throw new NotImplementedException();
@@ -22,7 +29,8 @@ namespace DistribuicaoDisciplinas.Map
                 NumCenario = destination.num_cenario,
                 Descricao = destination.descricao_cenario,
                 Ano = destination.ano,
-                Semestre = destination.semestre
+                Semestre = destination.semestre,
+                FilasTurmasStatus = _cenarioFilaTurmaMap.Map(destination.FilasTurmas)
             };
         }
     }

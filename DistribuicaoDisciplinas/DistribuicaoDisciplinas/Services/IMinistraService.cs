@@ -10,8 +10,9 @@ namespace DistribuicaoDisciplinas.Services
     {
         ICollection<Ministra> List();
         ICollection<Ministra> List(int ano, int semestre);
+        ICollection<Ministra> ListTurmasSemFila(int ano, int semestre);
         void SalvarDistribuicao(ICollection<Ministra> distribuicao);
-        void LimparMinistra();
+        //void LimparMinistra(int ano, int semestre, bool ignorarSemFila = true);
 
     }
 }

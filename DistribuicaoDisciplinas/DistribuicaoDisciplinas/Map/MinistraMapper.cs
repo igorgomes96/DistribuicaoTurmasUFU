@@ -25,8 +25,8 @@ namespace DistribuicaoDisciplinas.Map
         {
             return new MinistraEntity
             {
-                id_turma = source.IdTurma,
-                siape = source.Siape
+                id_turma = source.Turma.Id,
+                siape = source.Professor.Siape
             };
         }
 

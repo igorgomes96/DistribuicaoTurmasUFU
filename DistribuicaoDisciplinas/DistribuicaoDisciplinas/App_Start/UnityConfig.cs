@@ -2,6 +2,7 @@ using DistribuicaoDisciplinas.Dto;
 using DistribuicaoDisciplinas.Entities;
 using DistribuicaoDisciplinas.Map;
 using DistribuicaoDisciplinas.Models;
+using DistribuicaoDisciplinas.Repository;
 using DistribuicaoDisciplinas.Services;
 using Mapping.Implementations;
 using Mapping.Interfaces;
@@ -25,6 +26,8 @@ namespace DistribuicaoDisciplinas
 
             //Repository
             container.RegisterSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            container.RegisterSingleton<IMinistraRepository, MinistraRepository>();
+            container.RegisterSingleton<ICenariosFilasTurmasRepository, CenariosFilasTurmasRepository>();
 
             //Mapper
             //Entity
@@ -36,6 +39,7 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<ISingleMapper<Professor, ProfessorEntity>, ProfessorMapper>();
             container.RegisterSingleton<ISingleMapper<Restricao, RestricaoEntity>, RestricaoMapper>();
             container.RegisterSingleton<ISingleMapper<Turma, TurmaEntity>, TurmaMapper>();
+            container.RegisterSingleton<ISingleMapper<CenarioFilaTurma, CenarioFilaTurmaEntity>, CenarioFilaTurmaMapper>();
             container.RegisterSingleton<ISingleMapper<Cenario, CenarioEntity>, CenarioMapper>();
             container.RegisterSingleton<ISingleMapper<Ministra, MinistraEntity>, MinistraMapper>();
             container.RegisterSingleton<ISingleMapper<DistribuicaoCarga, DistribuicaoCargaEntity>, DistribuicaoCargaMapper>();
@@ -60,6 +64,7 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<ITurmasService, TurmasService>();
             container.RegisterType<IDistribuicaoService, DistribuicaoService>();
             container.RegisterSingleton<IMinistraService, MinistraService>();
+            container.RegisterSingleton<ICenariosFilasTurmasService, CenariosFilasTurmasService>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
             

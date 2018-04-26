@@ -1,4 +1,6 @@
-﻿using DistribuicaoDisciplinas.Services;
+﻿using DistribuicaoDisciplinas.Exceptions;
+using DistribuicaoDisciplinas.Models;
+using DistribuicaoDisciplinas.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,35 @@ namespace DistribuicaoDisciplinas.Controllers
             {
                 return Ok(_cenariosService.List());
             } catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+        }
+
+        public IHttpActionResult DeleteCenario(int id)
+        {
+            try
+            {
+                _cenariosService.DeleteCenario(id);
+                return Ok();
+            } catch (CenarioNaoEncontradoException e)
+            {
+                return Content(HttpStatusCode.NotFound, e.Message);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+        }
+
+        [Route("api/Cenarios/{numCenario}/Duplica")]
+        public IHttpActionResult PostDuplica(int numCenario, Cenario cenario)
+        {
+            try
+            {
+                return Ok(_cenariosService.DuplicarCenario(numCenario, cenario));
+            }
+            catch (Exception e)
             {
                 return InternalServerError(e);
             }

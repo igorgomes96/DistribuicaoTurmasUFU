@@ -11,7 +11,7 @@ namespace DistribuicaoDisciplinas.Entities
     public class CenarioEntity
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int num_cenario { get; set; }
         public string descricao_cenario { get; set; }
         public int ano { get; set; }

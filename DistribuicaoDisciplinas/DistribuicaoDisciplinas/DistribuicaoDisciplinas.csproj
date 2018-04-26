@@ -161,6 +161,7 @@
     <Compile Include="Controllers\DistribuicaoController.cs" />
     <Compile Include="Controllers\TestesController.cs" />
     <Compile Include="Dto\BloqueioDto.cs" />
+    <Compile Include="Dto\CenarioDistribuicaoDto.cs" />
     <Compile Include="Dto\FilaDto.cs" />
     <Compile Include="Dto\FilaTurmaDto.cs" />
     <Compile Include="Dto\ProfessorDto.cs" />
@@ -179,7 +180,13 @@
     <Compile Include="Entities\ProfessorEntity.cs" />
     <Compile Include="Entities\RestricaoEntity.cs" />
     <Compile Include="Entities\TurmaEntity.cs" />
+    <Compile Include="Exceptions\CenarioNaoEncontradoException.cs" />
+    <Compile Include="Exceptions\ChoqueHorarioException.cs" />
+    <Compile Include="Exceptions\ChoquePeriodoException.cs" />
     <Compile Include="Exceptions\FilaTurmaNaoEncontradaException.cs" />
+    <Compile Include="Exceptions\JaAtribuidaException.cs" />
+    <Compile Include="Exceptions\RestricaoHorarioException.cs" />
+    <Compile Include="Exceptions\SemestreDiferenteCenarioException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

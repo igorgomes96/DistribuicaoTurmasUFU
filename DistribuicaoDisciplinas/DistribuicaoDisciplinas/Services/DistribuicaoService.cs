@@ -35,6 +35,7 @@ namespace DistribuicaoDisciplinas.Services
         private readonly IGenericRepository<FilaTurmaEntity> _filasTurmasRep;
         private readonly ICenariosFilasTurmasRepository _cenarioFilaTurmaRep;
         private readonly IMinistraRepository _ministraRepository;
+        private readonly IGenericRepository<CenarioEntity> _cenarioRep;
         #endregion
 
         #region Services
@@ -44,10 +45,12 @@ namespace DistribuicaoDisciplinas.Services
         private readonly IMinistraService _ministraService;
         private readonly ICenariosFilasTurmasService _cenariosFilasTurmasService;
         private readonly IFilasTurmasService _filasTurmasService;
+        private readonly IRestricoesService _restricoesService;
         #endregion
 
         #region Map
         private readonly IMapper<Turma, TurmaDto> _turmaMapper;
+        private readonly IMapper<Fila, FilaDto> _filaMapper;
         private readonly IMapper<Bloqueio, BloqueioDto> _bloqueioMapper;
         private readonly IMapper<Ministra, FilaTurma> _ministraFTMapper;
         private readonly IMapper<Professor, ProfessorDto> _professorMapper;
@@ -59,13 +62,16 @@ namespace DistribuicaoDisciplinas.Services
             IGenericRepository<FilaTurmaEntity> filasTurmasRep,
             ICenariosFilasTurmasRepository cenarioFilaTurmaRep,
             IMinistraRepository ministraRepository,
+            IGenericRepository<CenarioEntity> cenarioRep,
             IProfessoresService professoresService,
             ITurmasService turmasService,
             ICenariosService cenariosService,
             IMinistraService ministraService,
             ICenariosFilasTurmasService cenariosFilasTurmasService,
             IFilasTurmasService filasTurmasService,
+            IRestricoesService restricoesService,
             IMapper<Turma, TurmaDto> turmaMapper,
+            IMapper<Fila, FilaDto> filaMapper,
             IMapper<Bloqueio, BloqueioDto> bloqueioMapper,
             IMapper<Ministra, FilaTurma> ministraFTMapper,
             IMapper<Professor, ProfessorDto> professorMapper,
@@ -74,18 +80,22 @@ namespace DistribuicaoDisciplinas.Services
             _filasTurmasRep = filasTurmasRep;
             _cenarioFilaTurmaRep = cenarioFilaTurmaRep;
             _ministraRepository = ministraRepository;
+            _cenarioRep = cenarioRep;
 
             _professoresService = professoresService;
             _turmasService = turmasService;
             _cenariosService = cenariosService;
             _ministraService = ministraService;
+            _cenariosFilasTurmasService = cenariosFilasTurmasService;
+            _filasTurmasService = filasTurmasService;
+            _restricoesService = restricoesService;
+
             _turmaMapper = turmaMapper;
+            _filaMapper = filaMapper;
             _bloqueioMapper = bloqueioMapper;
             _ministraFTMapper = ministraFTMapper;
             _professorMapper = professorMapper;
             _filaTurmaMapper = filaTurmaMapper;
-            _cenariosFilasTurmasService = cenariosFilasTurmasService;
-            _filasTurmasService = filasTurmasService;
 
             //Instancia um novo Set de FilasTurmas
             filasTurmas = new HashSet<FilaTurma>();
@@ -145,8 +155,8 @@ namespace DistribuicaoDisciplinas.Services
             });
 
             // Disciplinas optativas e de pós-graduação (não tem fila)
-            List<FilaTurma> optativas = GetTurmasSemFilas().ToList();
-            optativas.ForEach(op =>
+            List<FilaTurma> turmasSemFila = GetTurmasSemFilas().ToList();
+            turmasSemFila.ForEach(op =>
             {
                 op.Turma = turmas[op.Turma.Id];
                 op.Fila.Disciplina = disciplinas[op.Turma.CodigoDisc];
@@ -335,7 +345,7 @@ namespace DistribuicaoDisciplinas.Services
                     .Select(x => x.Id).ToList(),
                 Turmas = _turmaMapper.Map(turmas.Values),
                 FilasTurmas = _filaTurmaMapper.Map(filasTurmas),
-                Bloqueios = _bloqueioMapper.Map(bloqueios).OrderBy(x => x.Tamanho).ToList()
+                Bloqueios = bloqueios == null ? new List<BloqueioDto>() : _bloqueioMapper.Map(bloqueios).OrderBy(x => x.Tamanho).ToList()
             };
 
             //SalvaResposta(resposta);
@@ -595,9 +605,13 @@ namespace DistribuicaoDisciplinas.Services
         /// </summary>
         /// <param name="numCenario"></param>
         /// <param name="filasTurmasDto"></param>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         private void PreparaDistribuicao(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             cenario = _cenariosService.Find(numCenario);
+
+            if (cenario == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
+
             ICollection<FilaTurmaEntity> filasTurmasEntities = _filasTurmasRep
                 .Query(ft => ft.Turma.ano == cenario.Ano
                     && ft.Turma.semestre == cenario.Semestre
@@ -627,6 +641,33 @@ namespace DistribuicaoDisciplinas.Services
         }
 
         /// <summary>
+        /// Verifica se a atribuição de uma turma a um professor é válida, retornando o motivo.
+        /// </summary>
+        /// <param name="filaTurma"></param>
+        /// <returns></returns>
+        private ValidaAtribuicao VerificaAtribuicaoTurma(FilaTurma filaTurma)
+        {
+            if (!filaTurma.Turma.TurmaPendente())
+                return ValidaAtribuicao.JaAtribuida;
+
+            List<Turma> turmasAtribuidas = filaTurma.Fila.Professor.Prioridades
+                .Where(p => p.StatusAlgoritmo == StatusFila.Atribuida)
+                .Select(x => x.Turma).ToList();
+
+            if (_turmasService.ChoqueHorario(filaTurma.Turma, turmasAtribuidas))
+                return ValidaAtribuicao.ChoqueHorario;
+
+            if (_turmasService.ChoquePeriodo(filaTurma.Turma, turmasAtribuidas))
+                return ValidaAtribuicao.ChoquePeriodo;
+
+            if (_restricoesService.TemRestricao(filaTurma.Fila.Professor, filaTurma.Turma))
+                return ValidaAtribuicao.RestricaoHorario;
+
+            return ValidaAtribuicao.Valida;
+
+        }
+
+        /// <summary>
         /// Atualiza o status da FilaTurma, desde que seja diferente de atribuída
         /// </summary>
         /// <param name="filaTurma"></param>
@@ -639,13 +680,17 @@ namespace DistribuicaoDisciplinas.Services
             Professor professor = filaTurma.Fila.Professor;
 
             //Se não tiver a CH completa (já que uma turma foi removida),
-            //altera o status das turmas = CHCompleta para EmEspera
+            //altera o status das turmas = CHCompleta para EmEspera daquelas que ainda não estão com nenhum professor
             if (!professor.CHCompletaAtribuida())
             {
-                professor.Prioridades.Where(p => p.Turma.TurmaPendente() && p.StatusAlgoritmo == StatusFila.CHCompleta)
-                    .ToList().ForEach(p => p.StatusAlgoritmo = StatusFila.EmEspera);
+                List<FilaTurma> pendentesEmEspera = professor
+                    .Prioridades.Where(p => p.Turma.TurmaPendente() && p.StatusAlgoritmo == StatusFila.CHCompleta)
+                    .ToList();
+                pendentesEmEspera.ForEach(p => p.StatusAlgoritmo = StatusFila.EmEspera);
             }
 
+            // Como uma turma foi removida, alterar o status daquelas que tem choque com ela
+            // para EmEspera, se ela não tiver choque com mais nenhum atribuída.
             ICollection<FilaTurma> choques = professor.Prioridades
                 .Where(x => x.StatusAlgoritmo == StatusFila.ChoqueHorario || x.StatusAlgoritmo == StatusFila.ChoquePeriodo)
                 .ToList();
@@ -660,8 +705,11 @@ namespace DistribuicaoDisciplinas.Services
                 bool temChoque = _turmasService.ChoqueHorario(ft.Turma, atribuidas)
                     || _turmasService.ChoquePeriodo(ft.Turma, atribuidas);
 
-                if (!temChoque)
+                // Se não choque e está pendente, coloca em espera
+                if (!temChoque && ft.Turma.TurmaPendente())
                     ft.StatusAlgoritmo = StatusFila.EmEspera;
+                else if (!temChoque)// Se não tem choque, mas já foi atribuída a outro professor, altera para AtribuidoParaOutroProfessor
+                    ft.StatusAlgoritmo = StatusFila.OutroProfessor;
             }
         }
 
@@ -724,6 +772,8 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="turma">Id da turma utilizado para encontrar o objeto FilaTurma</param>
         /// <param name="filasTurmasDto">Estado atual da distribuição</param>
         /// <returns>Objeto RespostaDto</returns>
+        /// <exception cref="FilaTurmaNaoEncontradaException"></exception>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         public RespostaDto Remover(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             PreparaDistribuicao(numCenario, filasTurmasDto);
@@ -750,6 +800,8 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="turma">Id da turma utilizado para encontrar o objeto FilaTurma</param>
         /// <param name="filasTurmasDto">Estado atual da distribuição</param>
         /// <returns></returns>
+        /// <exception cref="FilaTurmaNaoEncontradaException"></exception>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         public RespostaDto UltimaPrioridade(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             PreparaDistribuicao(numCenario, filasTurmasDto);
@@ -776,6 +828,8 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="turma">Id da turma utilizado para encontrar o objeto FilaTurma</param>
         /// <param name="filasTurmasDto">Estado atual da distribuição</param>
         /// <returns></returns>
+        /// <exception cref="FilaTurmaNaoEncontradaException"></exception>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         public RespostaDto FinalFila(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             PreparaDistribuicao(numCenario, filasTurmasDto);
@@ -803,11 +857,29 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="turma">Id da turma utilizado para encontrar o objeto FilaTurma</param>
         /// <param name="filasTurmasDto">Estado atual da distribuição</param>
         /// <returns>Objeto RespostaDto</returns>
+        /// <exception cref="ChoqueHorarioException"></exception>
+        /// <exception cref="ChoquePeriodoException"></exception>
+        /// <exception cref="JaAtribuidaException"></exception>
+        /// <exception cref="RestricaoHorarioException"></exception>
+        /// <exception cref="FilaTurmaNaoEncontradaException"></exception>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         public RespostaDto Atribuir(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             PreparaDistribuicao(numCenario, filasTurmasDto);
 
             FilaTurma filaTurma = GetFilaTurma(siape, turma);
+
+            switch(VerificaAtribuicaoTurma(filaTurma))
+            {
+                case ValidaAtribuicao.ChoqueHorario:
+                    throw new ChoqueHorarioException("Atribuição inválida! Choque de horário com turma já atribuída!");
+                case ValidaAtribuicao.ChoquePeriodo:
+                    throw new ChoquePeriodoException("Atribuição inválida! Choque de período com turma já atribuída!");
+                case ValidaAtribuicao.JaAtribuida:
+                    throw new JaAtribuidaException("Atribuição inválida! Turma já atribuída a outro professor!");
+                case ValidaAtribuicao.RestricaoHorario:
+                    throw new RestricaoHorarioException("Atribuição inválida! O professor possui restrição em algum horário da turma!");
+            }
 
             if (filaTurma == null)
                 throw new FilaTurmaNaoEncontradaException();
@@ -830,6 +902,7 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="numCenario">Número do cenário a que se refere a distribuição</param>
         /// <param name="filasTurmasDto">Distribuição em seu estado atual (null, se estiver começando a distribuição)</param>
         /// <returns>Objeto RespostaDto</returns>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         public RespostaDto Distribuir(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto)
         {
             PreparaDistribuicao(numCenario, filasTurmasDto);
@@ -842,13 +915,46 @@ namespace DistribuicaoDisciplinas.Services
         }
 
         /// <summary>
+        /// Carrega do banco o status de cada FilaTurma do que já foi distribuido para determinado cenário.
+        /// </summary>
+        /// <param name="numCenario"></param>
+        /// <returns></returns>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
+        public RespostaDto CarregaDistribuicao(int numCenario)
+        {
+            if (!_cenarioRep.Existe(numCenario))
+                throw new CenarioNaoEncontradoException("Código de cenário não encontrado!");
+
+            ICollection<CenarioFilaTurma> cenarioFilasTurmas = _cenariosFilasTurmasService.List(numCenario);
+
+            ICollection<FilaTurmaDto> filasTurmasDto = cenarioFilasTurmas?
+                .Select(x => new FilaTurmaDto
+                {
+                    Fila = _filaMapper.Map(x.FilaTurma.Fila),
+                    IdTurma = x.FilaTurma.Turma.Id,
+                    PrioridadeBanco = x.FilaTurma.PrioridadeBanco,
+                    PrioridadeReal = x.FilaTurma.PrioridadeReal,
+                    Status = x.Status
+                }).ToList();
+
+            if (filasTurmasDto == null || filasTurmasDto.Count == 0) return null;
+
+            PreparaDistribuicao(numCenario, filasTurmasDto);
+            return GeraResposta(null);
+        }
+
+        /// <summary>
         /// Salva a distribuição para o cenário especificado
         /// </summary>
         /// <param name="numCenario"></param>
         /// <param name="filasTurmas"></param>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         public void SalvarDistribuicao(int numCenario, ICollection<FilaTurmaDto> filasTurmas)
         {
             cenario = _cenariosService.Find(numCenario);
+
+            if (cenario == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
+
             ICollection<CenarioFilaTurmaEntity> entitiesToSave = new List<CenarioFilaTurmaEntity>();
 
             //_cenarioFilaTurmaRep.Delete(x => x.num_cenario == numCenario);
@@ -873,9 +979,12 @@ namespace DistribuicaoDisciplinas.Services
         /// Oficiliza (salva na tabela ministra) uma distribuição já realizada para um cenário
         /// </summary>
         /// <param name="numCenario"></param>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
         public void OficializarDistribuicao(int numCenario)
         {
             cenario = _cenariosService.Find(numCenario);
+
+            if (cenario == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
 
             // Limpa todas as atribuições para o semestre, ignorando as turmas que não possuem fila
             _ministraRepository.DeleteTurmasComFilaBySemestre(cenario.Ano, cenario.Semestre);
@@ -888,6 +997,47 @@ namespace DistribuicaoDisciplinas.Services
                     id_turma = x.id_turma,
                     siape = x.FilaTurma.Fila.siape
                 }).ToList());
+        }
+
+        /// <summary>
+        /// Cria um novo cenário, e duplica a distribuição do cenário de id numCenario para o novo cenário
+        /// criado.
+        /// </summary>
+        /// <param name="numCenario">Id do cenário base</param>
+        /// <param name="novoCenario">Cenário a ser criado</param>
+        /// <returns></returns>
+        /// <exception cref="SemestreDiferenteCenarioException"></exception>
+        /// <exception cref="CenarioNaoEncontradoException"></exception>
+        public CenarioDistribuicaoDto DuplicarDistribuicao(int numCenario, Cenario novoCenario)
+        {
+            Cenario cenario = _cenariosService.Find(numCenario);
+
+            if (cenario == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
+
+            if (novoCenario.Ano != cenario.Ano || novoCenario.Semestre != cenario.Semestre)
+                throw new SemestreDiferenteCenarioException("O novo cenário deve ser no mesmo semestre do cenário base!");
+
+            novoCenario = _cenariosService.DuplicarCenario(numCenario, novoCenario);
+
+            ICollection<CenarioFilaTurmaEntity> distBase = _cenarioFilaTurmaRep
+                .Query(x => x.num_cenario == numCenario);
+
+            ICollection<CenarioFilaTurmaEntity> distribuicao = distBase
+                .Select(x => new CenarioFilaTurmaEntity
+                {
+                    num_cenario = novoCenario.NumCenario,
+                    id_fila = x.id_fila,
+                    id_turma = x.id_turma,
+                    status = x.status
+                }).ToList();
+                
+            _cenarioFilaTurmaRep.SaveAll(distribuicao);
+
+            return new CenarioDistribuicaoDto
+            {
+                Resposta = CarregaDistribuicao(novoCenario.NumCenario),
+                Cenario = novoCenario
+            };
         }
         #endregion
 

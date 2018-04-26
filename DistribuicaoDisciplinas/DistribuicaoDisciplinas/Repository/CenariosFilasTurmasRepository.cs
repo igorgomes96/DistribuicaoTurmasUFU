@@ -26,7 +26,7 @@ namespace DistribuicaoDisciplinas.Repository
                     "delete from cenario_fila_turma where num_cenario = @numCenario", 
                     new NpgsqlParameter("@numCenario", numCenario));
                 _db.Database.CurrentTransaction.Commit();
-                CleanContext(EntityState.Deleted);
+                CleanContext(EntityState.Added, EntityState.Deleted, EntityState.Modified, EntityState.Unchanged);
             } catch
             {
                 _db.Database.CurrentTransaction.Rollback();
@@ -40,7 +40,7 @@ namespace DistribuicaoDisciplinas.Repository
             CleanContext(EntityState.Added, EntityState.Deleted, EntityState.Modified, EntityState.Unchanged);
             _db.Set<CenarioFilaTurmaEntity>().AddRange(distribuicao);
             _db.SaveChanges();
-            CleanContext(EntityState.Added);
+            CleanContext(EntityState.Added, EntityState.Deleted, EntityState.Modified, EntityState.Unchanged);
             //dbDisposable.Dispose();
         }
     }

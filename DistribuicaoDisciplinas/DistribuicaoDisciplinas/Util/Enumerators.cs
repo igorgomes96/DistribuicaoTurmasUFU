@@ -21,7 +21,14 @@ namespace DistribuicaoDisciplinas.Util
             UltrapassariaCH = 9,    //FilaTurma que se atribuída faria a CH do professor ser ultrapassada
         }
 
-        
+        public enum ValidaAtribuicao
+        {
+            Valida,
+            JaAtribuida,
+            ChoqueHorario,
+            ChoquePeriodo,
+            RestricaoHorario
+        }
 
     }
 }

@@ -17,8 +17,6 @@ namespace DistribuicaoDisciplinas.Repository
 
         public void DeleteTurmasComFilaBySemestre(int ano, int semestre)
         {
-            // Modelo dbDisposable = new Modelo();
-            // dbDisposable.Database.BeginTransaction();
 
             CleanContext(EntityState.Added, EntityState.Deleted, EntityState.Modified, EntityState.Unchanged);
             _db.Database.BeginTransaction();
@@ -29,7 +27,7 @@ namespace DistribuicaoDisciplinas.Repository
                     @"delete from ministra a
                       using turma b, fila_turma_new c
                       where a.id_turma = b.id and a.id_turma = c.id_turma
-                      and c.id_turma is not null and b.ano = @ano and b.semestre = @semestre",
+                      and b.ano = @ano and b.semestre = @semestre",
                     new NpgsqlParameter("@ano", ano),
                     new NpgsqlParameter("@semestre", semestre)
                 );
@@ -39,17 +37,14 @@ namespace DistribuicaoDisciplinas.Repository
             {
                 _db.Database.CurrentTransaction.Rollback();
             }
-            //_db.Dispose();
         }
 
         public void SalvarDistribuicao(ICollection<MinistraEntity> distribuicao)
         {
-            //Modelo dbDisposable = new Modelo();
             CleanContext(EntityState.Added, EntityState.Deleted, EntityState.Modified, EntityState.Unchanged);
             _db.Set<MinistraEntity>().AddRange(distribuicao);
             _db.SaveChanges();
             CleanContext(EntityState.Added);
-            //dbDisposable.Dispose();
         }
     }
 }

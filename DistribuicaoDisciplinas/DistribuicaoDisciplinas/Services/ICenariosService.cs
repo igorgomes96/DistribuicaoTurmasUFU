@@ -12,5 +12,8 @@ namespace DistribuicaoDisciplinas.Services
     {
         ICollection<Cenario> List();
         Cenario Find(int num);
+        Cenario DuplicarCenario(int cenarioBase, Cenario novoCenario);
+        Cenario NovoCenario(Cenario cenario);
+        void DeleteCenario(int idCenario);
     }
 }

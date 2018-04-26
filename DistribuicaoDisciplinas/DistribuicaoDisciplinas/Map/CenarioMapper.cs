@@ -19,7 +19,13 @@ namespace DistribuicaoDisciplinas.Map
 
         public CenarioEntity Map(Cenario source)
         {
-            throw new NotImplementedException();
+            return source == null ? null : new CenarioEntity
+            {
+                num_cenario = source.NumCenario,
+                ano = source.Ano,
+                semestre = source.Semestre,
+                descricao_cenario = source.Descricao
+            };
         }
 
         public Cenario Map(CenarioEntity destination)
@@ -30,7 +36,7 @@ namespace DistribuicaoDisciplinas.Map
                 Descricao = destination.descricao_cenario,
                 Ano = destination.ano,
                 Semestre = destination.semestre,
-                FilasTurmasStatus = _cenarioFilaTurmaMap.Map(destination.FilasTurmas)
+                FilasTurmasStatus = destination.FilasTurmas == null ? new List<CenarioFilaTurma>() : _cenarioFilaTurmaMap.Map(destination.FilasTurmas)
             };
         }
     }

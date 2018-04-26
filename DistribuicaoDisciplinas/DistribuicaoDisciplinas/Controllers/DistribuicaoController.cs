@@ -1,4 +1,6 @@
 ﻿using DistribuicaoDisciplinas.Dto;
+using DistribuicaoDisciplinas.Exceptions;
+using DistribuicaoDisciplinas.Models;
 using DistribuicaoDisciplinas.Services;
 using System;
 using System.Collections.Generic;
@@ -23,7 +25,11 @@ namespace DistribuicaoDisciplinas.Controllers
         {
             try
             {
-                return Ok(_distService.Distribuir(id, null));
+                return Ok(_distService.CarregaDistribuicao(id));
+            }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
             }
             catch (Exception e)
             {
@@ -38,6 +44,10 @@ namespace DistribuicaoDisciplinas.Controllers
             {
                 return Ok(_distService.Distribuir(id, filasTurmas));
             }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
             catch (Exception e)
             {
                 return InternalServerError(e);
@@ -50,6 +60,30 @@ namespace DistribuicaoDisciplinas.Controllers
             try
             {
                 return Ok(_distService.Atribuir(cenario, siape, idTurma, filasTurmas));
+            }
+            catch (FilaTurmaNaoEncontradaException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
+            catch (ChoqueHorarioException e)
+            {
+                return Content(System.Net.HttpStatusCode.BadRequest, e.Message);
+            }
+            catch (ChoquePeriodoException e)
+            {
+                return Content(System.Net.HttpStatusCode.BadRequest, e.Message);
+            }
+            catch (JaAtribuidaException e)
+            {
+                return Content(System.Net.HttpStatusCode.BadRequest, e.Message);
+            }
+            catch (RestricaoHorarioException e)
+            {
+                return Content(System.Net.HttpStatusCode.BadRequest, e.Message);
+            }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
             }
             catch (Exception e)
             {
@@ -64,6 +98,14 @@ namespace DistribuicaoDisciplinas.Controllers
             {
                 return Ok(_distService.Remover(cenario, siape, idTurma, filasTurmas));
             }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
+            catch (FilaTurmaNaoEncontradaException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
             catch (Exception e)
             {
                 return InternalServerError(e);
@@ -77,6 +119,14 @@ namespace DistribuicaoDisciplinas.Controllers
             {
                 return Ok(_distService.UltimaPrioridade(cenario, siape, idTurma, filasTurmas));
             }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
+            catch (FilaTurmaNaoEncontradaException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
             catch (Exception e)
             {
                 return InternalServerError(e);
@@ -89,6 +139,14 @@ namespace DistribuicaoDisciplinas.Controllers
             try
             {
                 return Ok(_distService.FinalFila(cenario, siape, idTurma, filasTurmas));
+            }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
+            catch (FilaTurmaNaoEncontradaException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
             }
             catch (Exception e)
             {
@@ -104,6 +162,28 @@ namespace DistribuicaoDisciplinas.Controllers
                 _distService.SalvarDistribuicao(cenario, filasTurmas);
                 return Ok();
             }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+
+        }
+
+        [Route("api/Distribuicao/Duplicar/{cenario}")]
+        public IHttpActionResult PostDuplicarDistribuicao(int cenario, Cenario novoCenario)
+        {
+            try
+            {
+                return Ok(_distService.DuplicarDistribuicao(cenario, novoCenario));
+            }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
+            }
             catch (Exception e)
             {
                 return InternalServerError(e);
@@ -118,6 +198,10 @@ namespace DistribuicaoDisciplinas.Controllers
             {
                 _distService.OficializarDistribuicao(cenario);
                 return Ok();
+            }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(System.Net.HttpStatusCode.NotFound, e.Message);
             }
             catch (Exception e)
             {

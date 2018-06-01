@@ -163,8 +163,8 @@ C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Di
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\pt-br\System.Net.Http.Formatting.resources.dll
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\pt-br\System.Web.Http.resources.dll
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\bin\pt-br\System.Web.Http.WebHost.resources.dll
-C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\obj\Release\DistribuicaoDisciplinas.csprojResolveAssemblyReference.cache
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\obj\Release\DistribuicaoDisciplinas.csproj.CoreCompileInputs.cache
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\obj\Release\DistribuicaoDisciplinas.csproj.CopyComplete
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\obj\Release\DistribuicaoDisciplinas.dll
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\obj\Release\DistribuicaoDisciplinas.pdb
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\DistribuicaoDisciplinas\obj\Release\DistribuicaoDisciplinas.csprojAssemblyReference.cache

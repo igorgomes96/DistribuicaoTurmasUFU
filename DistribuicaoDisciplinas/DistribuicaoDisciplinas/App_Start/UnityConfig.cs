@@ -47,6 +47,7 @@ namespace DistribuicaoDisciplinas
             //Dto
             //container.RegisterSingleton<ISingleMapper<FilaTurma, TurmaRespostaDto>, TurmaRespostaMapper>();
             //container.RegisterSingleton<ISingleMapper<FilaTurma, ProfessorRespostaDto>, ProfessorRespostaMapper>();
+            container.RegisterSingleton<ISingleMapper<Cenario, CenarioDto>, CenarioDtoMapper>();
             container.RegisterSingleton<ISingleMapper<Turma, TurmaDto>, TurmaDtoMapper>();
             container.RegisterSingleton<ISingleMapper<Professor, ProfessorDto>, ProfessorDtoMapper>();
             container.RegisterSingleton<ISingleMapper<Bloqueio, BloqueioDto>, BloqueioMapper>();

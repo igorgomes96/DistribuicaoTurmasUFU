@@ -159,9 +159,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CenariosController.cs" />
     <Compile Include="Controllers\DistribuicaoController.cs" />
-    <Compile Include="Controllers\TestesController.cs" />
     <Compile Include="Dto\BloqueioDto.cs" />
     <Compile Include="Dto\CenarioDistribuicaoDto.cs" />
+    <Compile Include="Dto\CenarioDto.cs" />
     <Compile Include="Dto\FilaDto.cs" />
     <Compile Include="Dto\FilaTurmaDto.cs" />
     <Compile Include="Dto\ProfessorDto.cs" />
@@ -191,6 +191,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Map\BloqueioMapper.cs" />
+    <Compile Include="Map\CenarioDtoMapper.cs" />
     <Compile Include="Map\CenarioFilaTurmaMapper.cs" />
     <Compile Include="Map\CenarioMapper.cs" />
     <Compile Include="Map\CursoMapper.cs" />
@@ -247,6 +248,8 @@
     <Compile Include="Util\Enumerators.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Entities\DiagramaEntities.cd" />
+    <Content Include="Models\DiagramaModel.cd" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">

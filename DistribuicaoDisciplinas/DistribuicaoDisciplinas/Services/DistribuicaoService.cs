@@ -300,7 +300,6 @@ namespace DistribuicaoDisciplinas.Services
                         }
                         else if ((p.CHAtribuida() + filaTurma.Turma.CH) > chLimite && chEmEspera <= 0)
                         //Se ultrapassar a CH na atribuição, mas não tiver turmas em espera
-                        //Analisar caso da Sara Luzia de Melo (1937166)
                         {
                             filaTurma.StatusAlgoritmo = StatusFila.UltrapassariaCH;
                         }

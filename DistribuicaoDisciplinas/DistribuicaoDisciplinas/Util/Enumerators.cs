@@ -11,7 +11,7 @@ namespace DistribuicaoDisciplinas.Util
         {
             NaoAnalisadaAinda = 0,  //FilaTurma não desconsiderada, porém o algoritmo ainda não chegou à ela.
             Atribuida = 1,          //FilaTurma atribuída
-            Desconsiderada = 2,     //FilaTurma que está com uma prioridade muito baixa e as que estão com prioridade maior com certeza completarão a CH do professor
+            Desconsiderada = 2,     //FilaTurma foi removida durante a distriuição
             EmEspera = 3,           //FilaTurma analisada, porém o professor não está na primeira posição da turma
             ChoqueHorario = 4,      //FilaTurma em que a turma choca horário com outra já atribuída ao professor
             ChoqueRestricao = 5,    //FilaTurma em que a turma choca com um horário que o professor estará indisponível

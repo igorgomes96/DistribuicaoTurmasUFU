@@ -42,4 +42,3 @@ C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisci
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Mapping\obj\Debug\netstandard2.0\Mapping.AssemblyInfo.cs
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Mapping\obj\Debug\netstandard2.0\Mapping.dll
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Mapping\obj\Debug\netstandard2.0\Mapping.pdb
-C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Mapping\obj\Debug\netstandard2.0\Mapping.csprojResolveAssemblyReference.cache

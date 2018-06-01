@@ -1,6 +1,8 @@
-﻿using DistribuicaoDisciplinas.Exceptions;
+﻿using DistribuicaoDisciplinas.Dto;
+using DistribuicaoDisciplinas.Exceptions;
 using DistribuicaoDisciplinas.Models;
 using DistribuicaoDisciplinas.Services;
+using Mapping.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,19 @@ namespace DistribuicaoDisciplinas.Controllers
     public class CenariosController : ApiController
     {
         private readonly ICenariosService _cenariosService;
+        private readonly IMapper<Cenario, CenarioDto> _cenarioMapper;
 
-        public CenariosController(ICenariosService cenariosService)
+        public CenariosController(ICenariosService cenariosService, IMapper<Cenario, CenarioDto> cenarioMapper)
         {
             _cenariosService = cenariosService;
+            _cenarioMapper = cenarioMapper;
         }
 
         public IHttpActionResult Get()
         {
             try
             {
-                return Ok(_cenariosService.List());
+                return Ok(_cenarioMapper.Map(_cenariosService.List()));
             } catch (Exception e)
             {
                 return InternalServerError(e);
@@ -51,7 +55,7 @@ namespace DistribuicaoDisciplinas.Controllers
         {
             try
             {
-                return Ok(_cenariosService.DuplicarCenario(numCenario, cenario));
+                return Ok(_cenarioMapper.Map(_cenariosService.DuplicarCenario(numCenario, cenario)));
             }
             catch (Exception e)
             {

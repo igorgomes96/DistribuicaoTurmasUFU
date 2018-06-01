@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="DistribuicaoDisciplinas.Entities.CenarioEntity">
+    <Position X="9.5" Y="2.5" Width="2" />
+    <Members>
+      <Property Name="FilasTurmas" Hidden="true" />
+      <Property Name="num_cenario" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAEAAAAAAAAAAAAAAAgAAAAAAAABAAAgA=</HashCode>
+      <FileName>Entities\CenarioEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.CenarioFilaTurmaEntity">
+    <Position X="5.25" Y="3" Width="2" />
+    <Members>
+      <Property Name="id_fila" Hidden="true" />
+      <Property Name="id_turma" Hidden="true" />
+      <Property Name="num_cenario" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Cenario" Type="DistribuicaoDisciplinas.Entities.CenarioEntity" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.25" Y="3" />
+        <Point X="6.25" Y="2.75" />
+        <Point X="7.5" Y="2.75" />
+        <Point X="7.5" Y="3.313" />
+        <Point X="9.5" Y="3.313" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>BAQAAAAAAAAAIAAAAAAAAAQAAAAAAAAAgAAAABAAAAA=</HashCode>
+      <FileName>Entities\CenarioFilaTurmaEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Cenario" />
+      <Property Name="FilaTurma" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.CursoEntity">
+    <Position X="10.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQABAAAAAAAACAAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\CursoEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.DisciplinaEntity">
+    <Position X="7.25" Y="8.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQABAAAQASAAAAEAQAAAAIAAAgAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Entities\DisciplinaEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Curso" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.DistribuicaoCargaEntity">
+    <Position X="12.5" Y="3" Width="2" />
+    <Members>
+      <Property Name="IdCenario" Hidden="true" />
+      <Property Name="Siape" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BCAAAAAAAACAAAAAgAAAAACAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Entities\DistribuicaoCargaEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Cenario" />
+      <Property Name="Professor" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.FilaEntity">
+    <Position X="7.5" Y="3.75" Width="1.75" />
+    <Members>
+      <Property Name="codigo_disc" Hidden="true" />
+      <Property Name="FilasTurmas" Hidden="true" />
+      <Property Name="siape" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACACCAIAAgEAAAAAAAAICACAAAgAAAAAgAAAAgAgA=</HashCode>
+      <FileName>Entities\FilaEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Disciplina" />
+      <Property Name="Professor" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.FilaTurmaEntity">
+    <Position X="5.25" Y="4.5" Width="1.5" />
+    <Members>
+      <Property Name="id_fila" Hidden="true" />
+      <Property Name="id_turma" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAIAIAAAAAAAQAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\FilaTurmaEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Fila" />
+      <Property Name="Turma" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.MinistraEntity">
+    <Position X="7.75" Y="6.75" Width="1.5" />
+    <Members>
+      <Property Name="id_turma" Hidden="true" />
+      <Property Name="siape" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAASAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Entities\MinistraEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Professor" />
+      <Property Name="Turma" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.OfertaEntity">
+    <Position X="4.75" Y="9" Width="1.5" />
+    <Members>
+      <Property Name="id_turma" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAIAAAAAAAQAAAAAAAAAAAAAAAEAAgA=</HashCode>
+      <FileName>Entities\OfertaEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Turma" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.ProfessorEntity">
+    <Position X="10.25" Y="5.5" Width="2.5" />
+    <Members>
+      <Property Name="CHsPorCenarios" Hidden="true" />
+      <Property Name="Restricoes" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>gQQAgAAAAAAAABAAgEACAEAAAAAAAAIAAAAgAAIggBA=</HashCode>
+      <FileName>Entities\ProfessorEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.RestricaoEntity">
+    <Position X="12.5" Y="9.75" Width="1.5" />
+    <Members>
+      <Property Name="siape" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAEgAAA=</HashCode>
+      <FileName>Entities\RestricaoEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Professor" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.TurmaEntity">
+    <Position X="5.25" Y="6.25" Width="1.5" />
+    <Members>
+      <Property Name="codigo_disc" Hidden="true" />
+      <Property Name="FilasTurmas" Hidden="true" />
+      <Property Name="Horarios" Hidden="true" />
+      <Property Name="turma" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAACAAIAAAEAAEAAACAAAAAACAgAAAAAgAAAAAAgA=</HashCode>
+      <FileName>Entities\TurmaEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Disciplina" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Util.Enumerators">
+    <Position X="14.25" Y="6.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="DistribuicaoDisciplinas.Util.Enumerators.StatusFila">
+        <TypeIdentifier>
+          <NewMemberFileName>Util\Enumerators.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="DistribuicaoDisciplinas.Util.Enumerators.ValidaAtribuicao" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Util\Enumerators.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Util\Enumerators.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

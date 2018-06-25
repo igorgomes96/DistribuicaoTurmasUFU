@@ -36,7 +36,7 @@ namespace DistribuicaoDisciplinas.Services
         {
             return turma1.Disciplina.Curso.Codigo == turma2.Disciplina.Curso.Codigo
                 && turma1.Disciplina.Periodo == turma2.Disciplina.Periodo
-                && turma1.LetraTurma != turma2.LetraTurma;
+                && (turma1.Disciplina.Codigo != turma2.Disciplina.Codigo || (turma1.LetraTurma != turma2.LetraTurma));
         }
 
         public bool ChoquePeriodo(Turma turma, ICollection<Turma> turmas)

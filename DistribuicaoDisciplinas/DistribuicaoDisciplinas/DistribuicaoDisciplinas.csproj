@@ -167,6 +167,7 @@
     <Compile Include="Dto\ProfessorDto.cs" />
     <Compile Include="Dto\RespostaDto.cs" />
     <Compile Include="Dto\TurmaDto.cs" />
+    <Compile Include="Entities\AtribuicaoManualEntity.cs" />
     <Compile Include="Entities\CenarioEntity.cs" />
     <Compile Include="Entities\CenarioFilaTurmaEntity.cs" />
     <Compile Include="Entities\CursoEntity.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Map\AtribuicaoManualMapper.cs" />
     <Compile Include="Map\BloqueioMapper.cs" />
     <Compile Include="Map\CenarioDtoMapper.cs" />
     <Compile Include="Map\CenarioFilaTurmaMapper.cs" />
@@ -209,6 +211,7 @@
     <Compile Include="Map\ProfessorMapper.cs" />
     <Compile Include="Map\RestricaoMapper.cs" />
     <Compile Include="Map\TurmaMapper.cs" />
+    <Compile Include="Models\AtribuicaoManual.cs" />
     <Compile Include="Models\Bloqueio.cs" />
     <Compile Include="Models\Cenario.cs" />
     <Compile Include="Models\CenarioFilaTurma.cs" />

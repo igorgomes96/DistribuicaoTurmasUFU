@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="DistribuicaoDisciplinas.Dto.RespostaDto">
+    <Position X="4.5" Y="2" Width="3" />
+    <AssociationLine Name="Bloqueios" Type="DistribuicaoDisciplinas.Dto.BloqueioDto" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6" Y="2" />
+        <Point X="6" Y="1.25" />
+        <Point X="8.25" Y="1.25" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Professores" Type="DistribuicaoDisciplinas.Dto.ProfessorDto" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.562" Y="2" />
+        <Point X="5.562" Y="1.375" />
+        <Point X="3" Y="1.375" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Turmas" Type="DistribuicaoDisciplinas.Dto.TurmaDto" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.5" Y="3.103" />
+        <Point X="5.5" Y="3.843" />
+        <Point X="3" Y="3.843" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAECIAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dto\RespostaDto.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Bloqueios" />
+      <Property Name="FilasTurmas" />
+      <Property Name="Professores" />
+      <Property Name="Turmas" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Dto.BloqueioDto">
+    <Position X="8.25" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAgAAEAAAAAAAAAAAAAgAAEAAAQAAAAAA=</HashCode>
+      <FileName>Dto\BloqueioDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Dto.FilaTurmaDto">
+    <Position X="8" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAQAAAAAAAAAEAAAgAAAAAAAAAABAA=</HashCode>
+      <FileName>Dto\FilaTurmaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Dto.ProfessorDto">
+    <Position X="0.5" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ACABAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAEIAAA=</HashCode>
+      <FileName>Dto\ProfessorDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Dto.TurmaDto">
+    <Position X="0.5" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACIAAAIAAAAAAAkAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dto\TurmaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

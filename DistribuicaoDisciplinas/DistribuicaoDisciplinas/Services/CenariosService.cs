@@ -16,16 +16,19 @@ namespace DistribuicaoDisciplinas.Services
         private readonly IGenericRepository<CenarioEntity> _rep;
         private readonly IGenericRepository<DistribuicaoCargaEntity> _chsRep;
         private readonly IGenericRepository<CenarioFilaTurmaEntity> _cenarioFilaTurmaRep;
+        private readonly IGenericRepository<AtribuicaoManualEntity> _atribuicaoManualRep;
         private readonly IMapper<Cenario, CenarioEntity> _map;
 
         public CenariosService(IGenericRepository<CenarioEntity> rep,
             IGenericRepository<DistribuicaoCargaEntity> chsRep,
             IGenericRepository<CenarioFilaTurmaEntity> cenarioFilaTurmaRep,
+            IGenericRepository<AtribuicaoManualEntity> atribuicaoManualRep,
             IMapper<Cenario, CenarioEntity> map)
         {
             _rep = rep;
             _chsRep = chsRep;
             _cenarioFilaTurmaRep = cenarioFilaTurmaRep;
+            _atribuicaoManualRep = atribuicaoManualRep;
             _map = map;
         }
 
@@ -35,9 +38,19 @@ namespace DistribuicaoDisciplinas.Services
             if (cenarioEntity == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
 
             _chsRep.Delete(x => x.IdCenario == idCenario);
+            _atribuicaoManualRep.Delete(x => x.num_cenario == idCenario);
             _cenarioFilaTurmaRep.Delete(x => x.num_cenario == idCenario);
             _rep.Delete(idCenario);
 
+        }
+
+        public void LimparCenario(int idCenario)
+        {
+            CenarioEntity cenarioEntity = _rep.Find(idCenario);
+            if (cenarioEntity == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
+
+            _cenarioFilaTurmaRep.Delete(x => x.num_cenario == idCenario);
+            _atribuicaoManualRep.Delete(x => x.num_cenario == idCenario);
         }
 
         public Cenario DuplicarCenario(int cenarioBase, Cenario novoCenario)

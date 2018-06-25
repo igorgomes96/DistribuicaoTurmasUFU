@@ -25,6 +25,7 @@ namespace DistribuicaoDisciplinas.Map
                 IdTurma = source.Turma.Id,
                 PrioridadeBanco = source.PrioridadeBanco,
                 PrioridadeReal = source.PrioridadeReal,
+                AtribuicaoFixa = source.AtribuicaoFixa,
                 Status = source.StatusAlgoritmo
             };
         }

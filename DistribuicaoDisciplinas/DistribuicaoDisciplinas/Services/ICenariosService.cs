@@ -15,5 +15,6 @@ namespace DistribuicaoDisciplinas.Services
         Cenario DuplicarCenario(int cenarioBase, Cenario novoCenario);
         Cenario NovoCenario(Cenario cenario);
         void DeleteCenario(int idCenario);
+        void LimparCenario(int idCenario);
     }
 }

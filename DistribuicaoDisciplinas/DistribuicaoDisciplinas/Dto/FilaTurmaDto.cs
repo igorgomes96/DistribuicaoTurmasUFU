@@ -12,6 +12,7 @@ namespace DistribuicaoDisciplinas.Dto
         public int IdTurma { get; set; }
         public int PrioridadeBanco { get; set; }
         public int PrioridadeReal { get; set; }
+        public bool AtribuicaoFixa { get; set; } = true; // Atribuído previamente (optativas e pós)
 
         public StatusFila Status { get; set; }
     }

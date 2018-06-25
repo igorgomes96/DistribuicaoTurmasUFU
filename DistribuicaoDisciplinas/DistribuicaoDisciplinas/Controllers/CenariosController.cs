@@ -50,17 +50,36 @@ namespace DistribuicaoDisciplinas.Controllers
             }
         }
 
-        [Route("api/Cenarios/{numCenario}/Duplica")]
-        public IHttpActionResult PostDuplica(int numCenario, Cenario cenario)
+        [HttpDelete]
+        [Route("api/Cenarios/Limpar/{id}")]
+        public IHttpActionResult LimparCenario(int id)
         {
             try
             {
-                return Ok(_cenarioMapper.Map(_cenariosService.DuplicarCenario(numCenario, cenario)));
+                _cenariosService.LimparCenario(id);
+                return Ok();
+            }
+            catch (CenarioNaoEncontradoException e)
+            {
+                return Content(HttpStatusCode.NotFound, e.Message);
             }
             catch (Exception e)
             {
                 return InternalServerError(e);
             }
         }
+
+        //[Route("api/Cenarios/{numCenario}/Duplica")]
+        //public IHttpActionResult PostDuplica(int numCenario, Cenario cenario)
+        //{
+        //    try
+        //    {
+        //        return Ok(_cenarioMapper.Map(_cenariosService.DuplicarCenario(numCenario, cenario)));
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return InternalServerError(e);
+        //    }
+        //}
     }
 }

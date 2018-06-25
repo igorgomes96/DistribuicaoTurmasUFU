@@ -23,7 +23,8 @@ namespace DistribuicaoDisciplinas.Models
         
         public Fila Fila { get; set; }
         public Turma Turma { get; set; }
-        
+        public bool AtribuicaoFixa { get; set; } = false; // Atribuído previamente (optativas e pós)
+
         public StatusFila StatusAlgoritmo { get; set; }
 
     }

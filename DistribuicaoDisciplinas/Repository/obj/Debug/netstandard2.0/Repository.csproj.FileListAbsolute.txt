@@ -24,3 +24,4 @@ C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisci
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.AssemblyInfo.cs
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.dll
 C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU - Backup\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.pdb
+C:\Users\igorg\Documents\GitHub\DistribuicaoTurmasUFU\DistribuicaoDisciplinas\Repository\obj\Debug\netstandard2.0\Repository.csprojAssemblyReference.cache

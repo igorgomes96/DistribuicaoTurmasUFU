@@ -9,7 +9,7 @@ namespace DistribuicaoDisciplinas.Services
 {
     public interface IProfessoresService
     {
-        ICollection<Professor> List();
+        ICollection<Professor> ListAtivos();
 
     }
 }

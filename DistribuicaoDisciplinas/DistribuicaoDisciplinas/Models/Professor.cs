@@ -28,6 +28,7 @@ namespace DistribuicaoDisciplinas.Models
         public DateTime DataIngresso { get; set; }
         public DateTime DataNascimento { get; set; }
         public int CH { get; set; }
+        public bool Afastado { get; set; } 
 
         public ICollection<Restricao> Restricoes { get; set; }
         public ICollection<FilaTurma> Prioridades { get; set; }

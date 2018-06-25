@@ -36,6 +36,7 @@ namespace DistribuicaoDisciplinas.Services
         private readonly ICenariosFilasTurmasRepository _cenarioFilaTurmaRep;
         private readonly IMinistraRepository _ministraRepository;
         private readonly IGenericRepository<CenarioEntity> _cenarioRep;
+        private readonly IGenericRepository<AtribuicaoManualEntity> _atribuicaoManualRep;
         #endregion
 
         #region Services
@@ -55,6 +56,7 @@ namespace DistribuicaoDisciplinas.Services
         private readonly IMapper<Ministra, FilaTurma> _ministraFTMapper;
         private readonly IMapper<Professor, ProfessorDto> _professorMapper;
         private readonly IMapper<FilaTurma, FilaTurmaDto> _filaTurmaMapper;
+        private readonly IMapper<AtribuicaoManual, AtribuicaoManualEntity> _atribuicaoManualMapper;
         #endregion
 
         #region Constructor
@@ -63,6 +65,7 @@ namespace DistribuicaoDisciplinas.Services
             ICenariosFilasTurmasRepository cenarioFilaTurmaRep,
             IMinistraRepository ministraRepository,
             IGenericRepository<CenarioEntity> cenarioRep,
+            IGenericRepository<AtribuicaoManualEntity> atribuicaoManualRep,
             IProfessoresService professoresService,
             ITurmasService turmasService,
             ICenariosService cenariosService,
@@ -75,12 +78,14 @@ namespace DistribuicaoDisciplinas.Services
             IMapper<Bloqueio, BloqueioDto> bloqueioMapper,
             IMapper<Ministra, FilaTurma> ministraFTMapper,
             IMapper<Professor, ProfessorDto> professorMapper,
-            IMapper<FilaTurma, FilaTurmaDto> filaTurmaMapper)
+            IMapper<FilaTurma, FilaTurmaDto> filaTurmaMapper,
+            IMapper<AtribuicaoManual, AtribuicaoManualEntity> atribuicaoManualMapper)
         {
             _filasTurmasRep = filasTurmasRep;
             _cenarioFilaTurmaRep = cenarioFilaTurmaRep;
             _ministraRepository = ministraRepository;
             _cenarioRep = cenarioRep;
+            _atribuicaoManualRep = atribuicaoManualRep;
 
             _professoresService = professoresService;
             _turmasService = turmasService;
@@ -96,6 +101,7 @@ namespace DistribuicaoDisciplinas.Services
             _ministraFTMapper = ministraFTMapper;
             _professorMapper = professorMapper;
             _filaTurmaMapper = filaTurmaMapper;
+            _atribuicaoManualMapper = atribuicaoManualMapper;
 
             //Instancia um novo Set de FilasTurmas
             filasTurmas = new HashSet<FilaTurma>();
@@ -111,7 +117,7 @@ namespace DistribuicaoDisciplinas.Services
         private ICollection<FilaTurma> Encadear(ICollection<FilaTurmaEntity> filasTurmasEntities)
         {
             //Carrega todos os professores
-            professores = _professoresService.List().ToDictionary(p => p.Siape.Trim());
+            professores = _professoresService.ListAtivos().ToDictionary(p => p.Siape.Trim());
 
             //Carrega todas as turmas ofertadas no semestre
             turmas = _turmasService.List(cenario.Ano, cenario.Semestre).ToDictionary(t => t.Id);
@@ -142,8 +148,6 @@ namespace DistribuicaoDisciplinas.Services
             {
                 return new FilaTurma
                 {
-                    //IdTurma = ft.id_turma,
-                    //IdFila = ft.id_fila,
                     Fila = filas[ft.id_fila],
                     Turma = turmas[ft.id_turma],
                     PrioridadeReal = ft.prioridade.Value,
@@ -155,8 +159,8 @@ namespace DistribuicaoDisciplinas.Services
             });
 
             // Disciplinas optativas e de pós-graduação (não tem fila)
-            List<FilaTurma> turmasSemFila = GetTurmasSemFilas().ToList();
-            turmasSemFila.ForEach(op =>
+            List<FilaTurma> optativasPos = GetTurmasSemFilas().ToList();
+            optativasPos.ForEach(op =>
             {
                 op.Turma = turmas[op.Turma.Id];
                 op.Fila.Disciplina = disciplinas[op.Turma.CodigoDisc];
@@ -165,8 +169,6 @@ namespace DistribuicaoDisciplinas.Services
             });
 
             //Atualiza prioridades dos professores
-            /*filasTurmas.OrderBy(ft => ft.Fila.QtdaMaximaJaMinistrada).ThenBy(ft => ft.PrioridadeReal) //Ordena por prioridade, colocando no final as filas onde o professor já ministrou a qtda máxima de vezes a turma
-                .ToList().ForEach(ft => ft.Fila.Professor.Prioridades.Add(ft));*/
             filasTurmas.ToList()
                 .ForEach(ft => ft.Fila.Professor.Prioridades.Add(ft));
 
@@ -202,8 +204,32 @@ namespace DistribuicaoDisciplinas.Services
 
             novasFilasTurmas.ToList().ForEach(ft =>
             {
+                ft.AtribuicaoFixa = true;
                 ft.StatusAlgoritmo = StatusFila.Atribuida;
             });
+
+
+            //Ajustes manuais
+            ICollection<AtribuicaoManual> atribuicoesManuais = _atribuicaoManualMapper.Map(
+                _atribuicaoManualRep.Query(a => a.num_cenario == cenario.NumCenario)).ToList();
+
+            foreach (AtribuicaoManual a in atribuicoesManuais)
+            {
+                novasFilasTurmas.Add(new FilaTurma
+                {
+                    Fila = new Fila
+                    {
+                        Professor = a.Professor,
+                        Disciplina = a.Turma.Disciplina,
+                        PosicaoReal = -1,
+                        QtdaMaxima = 1,
+                        QtdaMinistrada = 0
+                    },
+                    Turma = a.Turma,
+                    StatusAlgoritmo = StatusFila.Atribuida,
+                    PrioridadeReal = -1
+                });
+            }
 
             return novasFilasTurmas;
 
@@ -267,6 +293,17 @@ namespace DistribuicaoDisciplinas.Services
 
                 foreach (FilaTurma filaTurma in possibilidadesProf)
                 {
+
+                    //ESSA CONDIÇÃO É EXTREMAMENTE IMPORTANTE, APESAR DE PARECER REDUNDANTE!!!
+                    //A lista possibilidadesProf é um filtro das prioridades EmEspera e NaoAnalisadaAinda.
+                    //Todavia, em passos anteriores desse foreach, o status de filaTurma que antes estava
+                    //EmEspera ou NaoAnalisadaAinda pode ter sido alterado devido a atribuição de alguma outra turma de p,
+                    //com isso, podendo ter conflitado horário ou período, por exemplo. Portanto, não posso considerar que 
+                    //ela ainda seja uma possibilidade de atribuição para o professor p, devendo então passa para a próxima
+                    //filaTurma a ser analisada
+                    if (filaTurma.StatusAlgoritmo != StatusFila.EmEspera && filaTurma.StatusAlgoritmo != StatusFila.NaoAnalisadaAinda)
+                        continue;
+                    
                     List<FilaTurma> possibilidadesTurma = filaTurma.Turma.Posicoes
                         .Where(pt => pt.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda
                             || pt.StatusAlgoritmo == StatusFila.EmEspera).ToList();
@@ -347,8 +384,6 @@ namespace DistribuicaoDisciplinas.Services
                 Bloqueios = bloqueios == null ? new List<BloqueioDto>() : _bloqueioMapper.Map(bloqueios).OrderBy(x => x.Tamanho).ToList()
             };
 
-            //SalvaResposta(resposta);
-
             return resposta;
 
         }
@@ -404,41 +439,16 @@ namespace DistribuicaoDisciplinas.Services
 
             }
 
-            //Trace.WriteLine("\n***********************************************\n");
-            //i = 0;
-            //foreach (Bloqueio deadlock in deadlocks) {
-            //    Trace.WriteLine(string.Format("\n\nDeadlock {0}:", i++));
-            //    PrintDeadlock(deadlock);
-            //}
-
             return deadlocks;
         }
 
         private ICollection<Bloqueio> GetBloqueios()
         {
-            return GetTodosDeadlocks().Concat(GetCHNotDefault()).ToList();
-        }
-
-        /// <summary>
-        /// Printa um deadlock.
-        /// </summary>
-        /// <param name="bloqueio"></param>
-        private void PrintDeadlock(Bloqueio bloqueio)
-        {
-            if (bloqueio == null || bloqueio.FilaTurma == null) return;
-            do
-            {
-                Professor professor = bloqueio.FilaTurma.Fila.Professor;
-                Trace.Write(professor.Nome + "(" + professor.Siape + ") -> " + bloqueio.FilaTurma.Turma.CodigoDisc);
-
-                if (bloqueio.Dependente != null)
-                {
-                    professor = bloqueio.Dependente.FilaTurma.Fila.Professor;
-                    Trace.WriteLine(" -> " + professor.Nome + "(" + professor.Siape + ")");
-                }
-
-                bloqueio = bloqueio.Dependente;
-            } while (bloqueio != null);
+            return GetTodosDeadlocks().Concat(GetCHNotDefault())
+                .OrderBy(x => x.Tamanho)
+                .ThenBy(x => x.FilaTurma.PrioridadeReal)
+                .ThenBy(x => x.FilaTurma.Fila.PosicaoReal)
+                .ToList();
         }
 
         /// <summary>
@@ -470,7 +480,7 @@ namespace DistribuicaoDisciplinas.Services
                         || x.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda).Fila.Professor;
 
                 FilaTurma ftBloqueada = professor.Prioridades
-                            .FirstOrDefault(ft => ft.StatusAlgoritmo == StatusFila.EmEspera);
+                            .FirstOrDefault(ft => ft.StatusAlgoritmo == StatusFila.EmEspera);  // VERIFICAR
 
                 if (ftBloqueada == null) break;
 
@@ -575,7 +585,8 @@ namespace DistribuicaoDisciplinas.Services
                 foreach (FilaTurma ft in filasTurmas)
                 {
                     if (ft.Fila.QtdaMaximaJaMinistrada)
-                        ft.Fila.Professor.JogarParaUltimaPrioridadeReal(ft);
+                        ft.Turma.JogarParaFinalFila(ft);
+                        //ft.Fila.Professor.JogarParaUltimaPrioridadeReal(ft);
                 }
             }
             else
@@ -724,41 +735,6 @@ namespace DistribuicaoDisciplinas.Services
                 && ft.Turma.Id.Equals(turma));
         }
 
-        /// <summary>
-        /// Salva as turmas distribuídas e pendentes e a quantidade das mesmas
-        /// </summary>
-        /// <param name="resposta"></param>
-        private void SalvaResposta(RespostaDto resposta)
-        {
-            List<FilaTurmaDto> atribuidas = resposta.FilasTurmas.Where(x => x.Status == StatusFila.Atribuida).ToList();
-            using (StreamWriter file =
-                new StreamWriter(@"C:\Users\igorg\desktop\resposta.txt", true))
-            {
-                file.WriteLine("******************************************");
-                file.WriteLine(DateTime.Now.ToString("dd/MM/yyy HH:mm"));
-                file.WriteLine("{0} turmas distribuídas", atribuidas.Count);
-                file.WriteLine("{0} turmas pendentes", resposta.TurmasPendentes.Count);
-                file.WriteLine("Pendentes + Distribuídas = {0}", atribuidas.Count + resposta.TurmasPendentes.Count);
-                file.WriteLine("Total de turmas = {0}", resposta.Turmas.Count);
-                file.WriteLine("\nTurmas Distribuídas:");
-                atribuidas.ForEach(ft =>
-                {
-                    TurmaDto t = resposta.Turmas.FirstOrDefault(x => x.Id == ft.IdTurma);
-                    file.WriteLine("{0} - {1} {2} ({3})", t.Id, t.CodigoDisc, t.Disciplina.Nome, t.LetraTurma);
-                });
-
-                file.WriteLine("\nTurmas Pendentes:");
-                resposta.TurmasPendentes.ToList().ForEach(i =>
-                {
-                    TurmaDto t = resposta.Turmas.FirstOrDefault(x => x.Id == i);
-                    file.WriteLine("{0} - {1} {2} ({3})", t.Id, t.CodigoDisc, t.Disciplina.Nome, t.LetraTurma);
-                });
-
-                file.WriteLine("******************************************\n\n\n");
-            }
-
-        }
-
         #endregion
 
         #region Public Methods
@@ -783,6 +759,14 @@ namespace DistribuicaoDisciplinas.Services
                 throw new FilaTurmaNaoEncontradaException();
 
             Remover(filaTurma, StatusFila.Desconsiderada);
+
+            //Se for uma turma atribuída manualmente, remove do banco e remove do encadeamento
+            if (_atribuicaoManualRep.Existe(numCenario, siape, turma)) { 
+                _atribuicaoManualRep.Delete(numCenario, siape, turma);
+                filaTurma.Turma.Posicoes.Remove(filaTurma);
+                filaTurma.Fila.Professor.Prioridades.Remove(filaTurma);
+                filasTurmas.Remove(filaTurma);
+            }
 
             while (CasosTriviais()) { };
 
@@ -864,11 +848,39 @@ namespace DistribuicaoDisciplinas.Services
         /// <exception cref="CenarioNaoEncontradoException"></exception>
         public RespostaDto Atribuir(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
         {
+            bool flagAtribuicaoManual = false;
             PreparaDistribuicao(numCenario, filasTurmasDto);
 
+            //Obtém a referência para FilaTurma, ou se for uma atribuição manual e não houver FilaTurma correspondente
+            //cria um novo objeto e faz o encadeamento do mesmo
             FilaTurma filaTurma = GetFilaTurma(siape, turma);
 
-            switch(VerificaAtribuicaoTurma(filaTurma))
+            if (filaTurma == null) {
+
+                flagAtribuicaoManual = true;
+
+                filaTurma = new FilaTurma
+                {
+                    Fila = new Fila
+                    {
+                        Professor = professores[siape],
+                        Disciplina = turmas[turma].Disciplina,
+                        PosicaoReal = -1,
+                        QtdaMaxima = 1,
+                        QtdaMinistrada = 0
+                    },
+                    PrioridadeReal = -1,
+                    Turma = turmas[turma]
+                };
+
+                professores[siape].Prioridades.Add(filaTurma);
+                turmas[turma].Posicoes.Add(filaTurma);
+                filasTurmas.Add(filaTurma);
+                OrdenaPrioridadesPosicoes();
+
+            }
+
+            switch (VerificaAtribuicaoTurma(filaTurma))
             {
                 case ValidaAtribuicao.ChoqueHorario:
                     throw new ChoqueHorarioException("Atribuição inválida! Choque de horário com turma já atribuída!");
@@ -880,8 +892,14 @@ namespace DistribuicaoDisciplinas.Services
                     throw new RestricaoHorarioException("Atribuição inválida! O professor possui restrição em algum horário da turma!");
             }
 
-            if (filaTurma == null)
-                throw new FilaTurmaNaoEncontradaException();
+            //Se houve atribuição manual, insere o novo registro de atribuição na tabela atribuicao_manual
+            if (flagAtribuicaoManual)
+                _atribuicaoManualRep.Add(new AtribuicaoManualEntity
+                    {
+                        num_cenario = numCenario,
+                        siape = siape,
+                        id_turma = turma
+                    });
 
             AtribuirTurma(filaTurma);
 
@@ -986,16 +1004,22 @@ namespace DistribuicaoDisciplinas.Services
             if (cenario == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
 
             // Limpa todas as atribuições para o semestre, ignorando as turmas que não possuem fila
+            // nem foram atribuída manualmente
             _ministraRepository.DeleteTurmasComFilaBySemestre(cenario.Ano, cenario.Semestre);
 
-            // Salvar a distribuição
+            // Salvar a distribuição, concatenando com as atribuições manuais
             _ministraRepository.SalvarDistribuicao(
                 _cenarioFilaTurmaRep.Query(x => x.status == StatusFila.Atribuida && x.num_cenario == numCenario)
                 .Select(x => new MinistraEntity
                 {
                     id_turma = x.id_turma,
                     siape = x.FilaTurma.Fila.siape
-                }).ToList());
+                }).Concat(_atribuicaoManualRep.Query(x => x.num_cenario == numCenario)
+                .Select(x => new MinistraEntity
+                {
+                    id_turma = x.id_turma,
+                    siape = x.siape
+                })).ToList());
         }
 
         /// <summary>

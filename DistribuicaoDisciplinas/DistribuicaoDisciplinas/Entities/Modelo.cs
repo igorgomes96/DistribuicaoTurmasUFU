@@ -40,6 +40,7 @@ namespace DistribuicaoDisciplinas.Entities
         public virtual DbSet<MinistraEntity> Ministra { get; set; }
         public virtual DbSet<CenarioFilaTurmaEntity> CenariosFilasTurmas { get; set; }
         public virtual DbSet<DistribuicaoCargaEntity> CHsPorCenarios { get; set; }
+        public virtual DbSet<AtribuicaoManualEntity> AtribuicoesManuais { get; set; }
     }
 
 }

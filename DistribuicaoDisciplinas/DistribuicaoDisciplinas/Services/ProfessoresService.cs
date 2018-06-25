@@ -23,9 +23,9 @@ namespace DistribuicaoDisciplinas.Services
 
    
 
-        public ICollection<Professor> List()
+        public ICollection<Professor> ListAtivos()
         {
-            return _profMap.Map(_profRep.List());            
+            return _profMap.Map(_profRep.Query(p => !p.afastado));            
         }
     }
 }

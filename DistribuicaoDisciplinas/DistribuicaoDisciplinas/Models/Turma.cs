@@ -59,7 +59,7 @@ namespace DistribuicaoDisciplinas.Models
             {
                 p.Fila.PosicaoReal -= 1;
             });
-            filaTurma.Fila.PosicaoReal = Posicoes.Max(x => x.PrioridadeReal) + 1;
+            filaTurma.Fila.PosicaoReal = Posicoes.Max(x => x.Fila.PosicaoReal) + 1;
             OrdenaPosicoes();
         }
 

@@ -69,17 +69,16 @@ namespace DistribuicaoDisciplinas.Controllers
             }
         }
 
-        //[Route("api/Cenarios/{numCenario}/Duplica")]
-        //public IHttpActionResult PostDuplica(int numCenario, Cenario cenario)
-        //{
-        //    try
-        //    {
-        //        return Ok(_cenarioMapper.Map(_cenariosService.DuplicarCenario(numCenario, cenario)));
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return InternalServerError(e);
-        //    }
-        //}
+        public IHttpActionResult Post(Cenario cenario)
+        {
+            try
+            {
+                return Ok(_cenarioMapper.Map(_cenariosService.NovoCenario(cenario)));
+            } catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+        }
+
     }
 }

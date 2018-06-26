@@ -24,7 +24,9 @@ namespace DistribuicaoDisciplinas.Map
                 num_cenario = source.Cenario.NumCenario,
                 id_fila = source.FilaTurma.Fila.Id,
                 id_turma = source.FilaTurma.Turma.Id,
-                status = source.FilaTurma.StatusAlgoritmo
+                status = source.FilaTurma.StatusAlgoritmo,
+                posicao = source.FilaTurma.Fila.PosicaoReal,
+                prioridade = source.FilaTurma.PrioridadeReal
             };
         }
 
@@ -40,7 +42,9 @@ namespace DistribuicaoDisciplinas.Map
                     //Descricao = destination.Cenario.descricao_cenario
                 },
                 FilaTurma = _filaTurmaMap.Map(destination.FilaTurma),
-                Status = destination.status
+                Status = destination.status,
+                Posicao = destination.posicao,
+                Prioridade = destination.prioridade
             };
         }
     }

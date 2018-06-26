@@ -14,13 +14,13 @@ namespace DistribuicaoDisciplinas.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column(Order = 0)]
         public int num_cenario { get; set; }
-        [Key]
-        [Column(Order = 1)]
-        public string siape { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Column(Order = 2)]
+        [Column(Order = 1)]
         public int id_turma { get; set; }
+
+        public string siape { get; set; }
 
         [ForeignKey("num_cenario")]
         public virtual CenarioEntity Cenario { get; set; }

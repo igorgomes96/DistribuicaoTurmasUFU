@@ -23,6 +23,8 @@ namespace DistribuicaoDisciplinas.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column(Order = 2)]
         public int id_fila { get; set; }
+        public int posicao { get; set; }
+        public int prioridade { get; set; }
         public StatusFila status { get; set; }
 
         [ForeignKey("num_cenario")]

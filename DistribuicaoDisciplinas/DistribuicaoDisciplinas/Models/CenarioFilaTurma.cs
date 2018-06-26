@@ -11,5 +11,7 @@ namespace DistribuicaoDisciplinas.Models
         public Cenario Cenario { get; set; }
         public FilaTurma FilaTurma { get; set; }
         public StatusFila Status { get; set; }
+        public int Posicao { get; set; }
+        public int Prioridade { get; set; }
     }
 }

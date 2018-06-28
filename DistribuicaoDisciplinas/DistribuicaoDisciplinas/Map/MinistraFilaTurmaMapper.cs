@@ -15,6 +15,7 @@ namespace DistribuicaoDisciplinas.Map
             {
                 Fila = new Fila
                 {
+                    Id = -1,
                     Professor = source.Professor,
                     Disciplina = source.Turma.Disciplina,
                     PosicaoReal = -1,

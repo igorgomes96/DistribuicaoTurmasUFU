@@ -15,5 +15,6 @@ namespace DistribuicaoDisciplinas.Entities
         public string nome { get; set; }
         public string unidade { get; set; }
         public string campus { get; set; }
+        public bool permitir_choque_periodo { get; set; }
     }
 }

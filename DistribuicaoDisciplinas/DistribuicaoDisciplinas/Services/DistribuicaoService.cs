@@ -27,6 +27,7 @@ namespace DistribuicaoDisciplinas.Services
         private ICollection<FilaTurma> _filasTurmas;
         private IDictionary<string, Professor> _professores;
         private IDictionary<int, Turma> _turmas;
+        private IDictionary<int, Fila> _filas;
         private Cenario _cenario;
         #endregion
 
@@ -36,6 +37,7 @@ namespace DistribuicaoDisciplinas.Services
         private readonly ICenariosFilasTurmasRepository _cenarioFilaTurmaRep;
         private readonly IMinistraRepository _ministraRepository;
         private readonly IGenericRepository<CenarioEntity> _cenarioRep;
+        private readonly IGenericRepository<ProfessorEntity> _profRep;
         private readonly IGenericRepository<AtribuicaoManualEntity> _atribuicaoManualRep;
         #endregion
 
@@ -66,6 +68,7 @@ namespace DistribuicaoDisciplinas.Services
             IMinistraRepository ministraRepository,
             IGenericRepository<CenarioEntity> cenarioRep,
             IGenericRepository<AtribuicaoManualEntity> atribuicaoManualRep,
+            IGenericRepository<ProfessorEntity> profRep,
             IProfessoresService professoresService,
             ITurmasService turmasService,
             ICenariosService cenariosService,
@@ -86,6 +89,7 @@ namespace DistribuicaoDisciplinas.Services
             _ministraRepository = ministraRepository;
             _cenarioRep = cenarioRep;
             _atribuicaoManualRep = atribuicaoManualRep;
+            _profRep = profRep;
 
             _professoresService = professoresService;
             _turmasService = turmasService;
@@ -129,7 +133,7 @@ namespace DistribuicaoDisciplinas.Services
                 t.Disciplina = disciplinas[t.CodigoDisc.Trim()];
 
             //Carrega todas as filas da collection passada por parâmetro
-            IDictionary<int, Fila> filas = filasTurmasEntities
+            _filas = filasTurmasEntities
                 .Select(ft =>
                 {
                     return new Fila
@@ -148,7 +152,7 @@ namespace DistribuicaoDisciplinas.Services
             {
                 return new FilaTurma
                 {
-                    Fila = filas[ft.id_fila],
+                    Fila = _filas[ft.id_fila],
                     Turma = _turmas[ft.id_turma],
                     PrioridadeReal = ft.prioridade.Value,
                     PrioridadeBanco = ft.prioridade.Value
@@ -159,9 +163,10 @@ namespace DistribuicaoDisciplinas.Services
             });
 
             // Disciplinas optativas e de pós-graduação (não tem fila)
-            List<FilaTurma> optativasPos = GetTurmasSemFilas().ToList();
+            List<FilaTurma> optativasPos = GetTurmasSemFilas().Concat(GetAtribuicoesManuais()).ToList();
             optativasPos.ForEach(op =>
             {
+
                 op.Turma = _turmas[op.Turma.Id];
                 op.Fila.Disciplina = disciplinas[op.Turma.CodigoDisc];
                 op.Fila.Professor = _professores[op.Fila.Professor.Siape];
@@ -208,17 +213,32 @@ namespace DistribuicaoDisciplinas.Services
                 ft.StatusAlgoritmo = StatusFila.Atribuida;
             });
 
+            return novasFilasTurmas;
 
+        }
+
+        private ICollection<FilaTurma> GetAtribuicoesManuais()
+        {
+            ICollection<FilaTurma> ft = new List<FilaTurma>();
             //Ajustes manuais
-            ICollection<AtribuicaoManual> atribuicoesManuais = _atribuicaoManualMapper.Map(
-                _atribuicaoManualRep.Query(a => a.num_cenario == _cenario.NumCenario)).ToList();
+            ICollection<AtribuicaoManualEntity> atribuicoesManuaisEntities =_atribuicaoManualRep
+                .Query(a => a.num_cenario == _cenario.NumCenario).ToList();
+
+            // Por algum motivo que deconheço, durante os teste houveram casos em que o EntityFramework não 
+            // carregou a entidade relacionada Professor; por isso, carrega explicitamente aqui
+            foreach (AtribuicaoManualEntity a in atribuicoesManuaisEntities)
+                if (a.Professor == null)
+                    _atribuicaoManualRep.LoadReference(a, nameof(a.Professor));
+
+            ICollection<AtribuicaoManual> atribuicoesManuais = _atribuicaoManualMapper.Map(atribuicoesManuaisEntities).ToList();
 
             foreach (AtribuicaoManual a in atribuicoesManuais)
             {
-                novasFilasTurmas.Add(new FilaTurma
+                ft.Add(new FilaTurma
                 {
                     Fila = new Fila
                     {
+                        Id = -1,
                         Professor = a.Professor,
                         Disciplina = a.Turma.Disciplina,
                         PosicaoReal = -1,
@@ -230,9 +250,7 @@ namespace DistribuicaoDisciplinas.Services
                     PrioridadeReal = -1
                 });
             }
-
-            return novasFilasTurmas;
-
+            return ft;
         }
 
         /// <summary>
@@ -383,6 +401,8 @@ namespace DistribuicaoDisciplinas.Services
                 FilasTurmas = _filaTurmaMapper.Map(_filasTurmas),
                 Bloqueios = bloqueios == null ? new List<BloqueioDto>() : _bloqueioMapper.Map(bloqueios).OrderBy(x => x.Tamanho).ToList()
             };
+
+            Inconsistencias();
 
             return resposta;
 
@@ -592,7 +612,12 @@ namespace DistribuicaoDisciplinas.Services
             else
             {
                 foreach (FilaTurmaDto ft in filasTurmasDto)
-                    _filasTurmas.First(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma).PrioridadeReal = ft.PrioridadeReal;
+                {
+                    FilaTurma f = _filasTurmas.FirstOrDefault(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma && ft.Fila.Siape.Equals(x.Fila.Professor.Siape));
+                    if (f == null)
+                        Trace.WriteLine($"Não foi encontrada a FilaTurma {ft.Fila.Id} ({ft.Fila.Siape} - {ft.IdTurma}!)");
+                    f.PrioridadeReal = ft.PrioridadeReal;
+                }
             }
         }
 
@@ -605,7 +630,12 @@ namespace DistribuicaoDisciplinas.Services
             if (filasTurmasDto != null && filasTurmasDto.Count > 0)
             {
                 foreach (FilaTurmaDto ft in filasTurmasDto)
-                    _filasTurmas.First(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma).Fila.PosicaoReal = ft.Fila.PosicaoReal;
+                {
+                    FilaTurma f = _filasTurmas.First(x => x.Fila.Id == ft.Fila.Id && x.Turma.Id == ft.IdTurma && ft.Fila.Siape.Equals(x.Fila.Professor.Siape));
+                    if (f == null)
+                        Trace.WriteLine($"Não foi encontrada a FilaTurma {ft.Fila.Id} ({ft.Fila.Siape} - {ft.IdTurma}!)");
+                    f.Fila.PosicaoReal = ft.Fila.PosicaoReal;
+                }
             }
         }
 
@@ -665,14 +695,14 @@ namespace DistribuicaoDisciplinas.Services
                 .Where(p => p.StatusAlgoritmo == StatusFila.Atribuida)
                 .Select(x => x.Turma).ToList();
 
+            if (_restricoesService.TemRestricao(filaTurma.Fila.Professor, filaTurma.Turma))
+                return ValidaAtribuicao.RestricaoHorario;
+
             if (_turmasService.ChoqueHorario(filaTurma.Turma, turmasAtribuidas))
                 return ValidaAtribuicao.ChoqueHorario;
 
             if (_turmasService.ChoquePeriodo(filaTurma.Turma, turmasAtribuidas))
                 return ValidaAtribuicao.ChoquePeriodo;
-
-            if (_restricoesService.TemRestricao(filaTurma.Fila.Professor, filaTurma.Turma))
-                return ValidaAtribuicao.RestricaoHorario;
 
             return ValidaAtribuicao.Valida;
 
@@ -742,12 +772,15 @@ namespace DistribuicaoDisciplinas.Services
         private void LimpezaInicial()
         {
             bool flagHouveAlteracaoStatus = false;
+            int countLoop = 0;
             do
             {
+                Trace.WriteLine($"Loop {++countLoop}.");
                 flagHouveAlteracaoStatus = false;
                 //Percorre todos os professores
                 foreach (Professor p in _professores.Values)
                 {
+                    Trace.WriteLine($"Professor {p.Siape} - {p.Nome}");
                     // Cria uma lista para armazenar as possíveis atribuições
                     List<FilaTurma> atribuicoes = new List<FilaTurma>();
 
@@ -764,6 +797,7 @@ namespace DistribuicaoDisciplinas.Services
                         {
                             if (pri.StatusAlgoritmo != StatusFila.Desconsiderada)  // ...se houve alteração de status
                             {
+                                Trace.WriteLine($"Status de #{pri.Turma.Id} {pri.Turma.CodigoDisc} - {pri.Turma.Disciplina.Nome} alterado de {Enum.GetName(typeof(StatusFila), pri.StatusAlgoritmo)} para Desconsiderada");
                                 pri.StatusAlgoritmo = StatusFila.Desconsiderada;  //...desconsidera FilaTurma
                                 flagHouveAlteracaoStatus = true;
                             }
@@ -923,6 +957,7 @@ namespace DistribuicaoDisciplinas.Services
                 {
                     Fila = new Fila
                     {
+                        Id = -1,
                         Professor = _professores[siape],
                         Disciplina = _turmas[turma].Disciplina,
                         PosicaoReal = -1,
@@ -945,7 +980,9 @@ namespace DistribuicaoDisciplinas.Services
                 case ValidaAtribuicao.ChoqueHorario:
                     throw new ChoqueHorarioException("Atribuição inválida! Choque de horário com turma já atribuída!");
                 case ValidaAtribuicao.ChoquePeriodo:
-                    throw new ChoquePeriodoException("Atribuição inválida! Choque de período com turma já atribuída!");
+                    if (!filaTurma.Turma.Disciplina.Curso.PermitirChoquePeriodo)
+                        throw new ChoquePeriodoException("Atribuição inválida! Choque de período com turma já atribuída!");
+                    break;
                 case ValidaAtribuicao.JaAtribuida:
                     throw new JaAtribuidaException("Atribuição inválida! Turma já atribuída a outro professor!");
                 case ValidaAtribuicao.RestricaoHorario:
@@ -953,12 +990,13 @@ namespace DistribuicaoDisciplinas.Services
             }
 
             //Se houve atribuição manual, insere o novo registro de atribuição na tabela atribuicao_manual
-            if (flagAtribuicaoManual)
+            if (flagAtribuicaoManual) 
                 _atribuicaoManualRep.Add(new AtribuicaoManualEntity
                 {
                     num_cenario = numCenario,
                     siape = siape,
-                    id_turma = turma
+                    id_turma = turma,
+                    Professor = _profRep.Find(siape)
                 });
 
             AtribuirTurma(filaTurma);
@@ -970,7 +1008,23 @@ namespace DistribuicaoDisciplinas.Services
 
             ICollection<Bloqueio> bloqueios = GetBloqueios();
 
-            return GeraResposta(bloqueios);
+            RespostaDto resposta = GeraResposta(bloqueios);
+
+            return resposta;
+        }
+
+        private void Inconsistencias()
+        {
+            ICollection<Turma> inconsitencias = _turmas.Values
+                .Where(x => x.Posicoes.Count(y => y.StatusAlgoritmo == StatusFila.Atribuida) > 1).ToList();
+
+            foreach (Turma t in inconsitencias)
+            {
+                Trace.WriteLine($"Turma #{t.Id} {t.CodigoDisc} - {t.Disciplina.Nome}:");
+                t.Posicoes.Where(x => x.StatusAlgoritmo == StatusFila.Atribuida).ToList()
+                    .ForEach(x => Trace.WriteLine($"Professor {x.Fila.Professor.Siape} - {x.Fila.Professor.Nome}"));
+                Trace.WriteLine("");
+            }
         }
 
         /// <summary>
@@ -1044,9 +1098,8 @@ namespace DistribuicaoDisciplinas.Services
             //_cenarioFilaTurmaRep.Delete(x => x.num_cenario == numCenario);
             _cenarioFilaTurmaRep.DeleteByCenario(numCenario);
 
-            ICollection<FilaTurma> turmasSemFila = GetTurmasSemFilas();
-
-            entitiesToSave = filasTurmas.Where(x => !turmasSemFila.Any(y => y.Turma.Id == x.IdTurma))
+            // Turmas sem Fila os atribuições manuais (fora das filas) tem o Id da fila setado = -1
+            entitiesToSave = filasTurmas.Where(x => x.Fila.Id != -1)
                 .Select(x => new CenarioFilaTurmaEntity
                 {
                     id_fila = x.Fila.Id,
@@ -1083,7 +1136,7 @@ namespace DistribuicaoDisciplinas.Services
                 {
                     id_turma = x.id_turma,
                     siape = x.FilaTurma.Fila.siape
-                }).Concat(_atribuicaoManualRep.Query(x => x.num_cenario == numCenario)
+                }).Union(_atribuicaoManualRep.Query(x => x.num_cenario == numCenario)
                 .Select(x => new MinistraEntity
                 {
                     id_turma = x.id_turma,

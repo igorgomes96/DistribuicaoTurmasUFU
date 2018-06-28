@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapping", "Mapping\Mapping.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistribuicaoDisciplinas", "DistribuicaoDisciplinas\DistribuicaoDisciplinas.csproj", "{9829592B-8D61-472D-ADC9-80D3C99DACA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{74AE1777-799D-4C50-80E2-0B931735630D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{74AE1777-799D-4C50-80E2-0B931735630D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

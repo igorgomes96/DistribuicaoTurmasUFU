@@ -13,5 +13,6 @@ namespace DistribuicaoDisciplinas.Models
         public string Nome { get; set; }
         public string Unidade { get; set; }
         public string Campus { get; set; }
+        public bool PermitirChoquePeriodo { get; set; }
     }
 }

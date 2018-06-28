@@ -21,7 +21,9 @@ namespace DistribuicaoDisciplinas.Map
             {
                 Codigo = destination.codigo,
                 Nome = destination.nome,
-                Unidade = destination.unidade
+                Unidade = destination.unidade,
+                Campus = destination.campus,
+                PermitirChoquePeriodo = destination.permitir_choque_periodo
             };
         }
     }

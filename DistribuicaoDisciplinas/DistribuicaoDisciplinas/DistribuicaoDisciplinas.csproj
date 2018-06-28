@@ -159,6 +159,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CenariosController.cs" />
     <Compile Include="Controllers\DistribuicaoController.cs" />
+    <Compile Include="Controllers\TesteController.cs" />
     <Compile Include="Dto\BloqueioDto.cs" />
     <Compile Include="Dto\CenarioDistribuicaoDto.cs" />
     <Compile Include="Dto\CenarioDto.cs" />

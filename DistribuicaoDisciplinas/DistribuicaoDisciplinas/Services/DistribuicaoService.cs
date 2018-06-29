@@ -221,16 +221,8 @@ namespace DistribuicaoDisciplinas.Services
         {
             ICollection<FilaTurma> ft = new List<FilaTurma>();
             //Ajustes manuais
-            ICollection<AtribuicaoManualEntity> atribuicoesManuaisEntities =_atribuicaoManualRep
-                .Query(a => a.num_cenario == _cenario.NumCenario).ToList();
-
-            // Por algum motivo que deconheço, durante os teste houveram casos em que o EntityFramework não 
-            // carregou a entidade relacionada Professor; por isso, carrega explicitamente aqui
-            foreach (AtribuicaoManualEntity a in atribuicoesManuaisEntities)
-                if (a.Professor == null)
-                    _atribuicaoManualRep.LoadReference(a, nameof(a.Professor));
-
-            ICollection<AtribuicaoManual> atribuicoesManuais = _atribuicaoManualMapper.Map(atribuicoesManuaisEntities).ToList();
+            ICollection<AtribuicaoManual> atribuicoesManuais = _atribuicaoManualMapper.Map(_atribuicaoManualRep
+                .Query(a => a.num_cenario == _cenario.NumCenario)).ToList();
 
             foreach (AtribuicaoManual a in atribuicoesManuais)
             {
@@ -269,8 +261,7 @@ namespace DistribuicaoDisciplinas.Services
         private void AtualizaStatusCHCompleta()
         {
             _filasTurmas
-                .Where(ft => ft.Fila.Professor.CHCompletaAtribuida() && (ft.StatusAlgoritmo == StatusFila.EmEspera ||
-                    ft.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda))
+                .Where(ft => ft.Fila.Professor.CHCompletaAtribuida() && PossibilidadeAtribuicao(ft))
                 .ToList()
                 .ForEach(ft =>
                 {
@@ -286,8 +277,7 @@ namespace DistribuicaoDisciplinas.Services
         private void AtualizaPrioridadesCHCompleta(Professor professor)
         {
             professor.Prioridades
-                .Where(ft => ft.StatusAlgoritmo == StatusFila.EmEspera ||
-                    ft.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda)
+                .Where(ft => PossibilidadeAtribuicao(ft))
                 .ToList()
                 .ForEach(ft => ft.StatusAlgoritmo = StatusFila.CHCompleta);
         }
@@ -302,8 +292,7 @@ namespace DistribuicaoDisciplinas.Services
             foreach (Professor p in _professores.Values)
             {
                 List<FilaTurma> possibilidadesProf = p.Prioridades
-                    .Where(pp => pp.StatusAlgoritmo == StatusFila.EmEspera
-                        || pp.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda)
+                    .Where(pp => PossibilidadeAtribuicao(pp))
                     .ToList();
 
                 ICollection<Turma> prioridadesEmEspera = new List<Turma>();
@@ -319,12 +308,12 @@ namespace DistribuicaoDisciplinas.Services
                     //com isso, podendo ter conflitado horário ou período, por exemplo. Portanto, não posso considerar que 
                     //ela ainda seja uma possibilidade de atribuição para o professor p, devendo então passa para a próxima
                     //filaTurma a ser analisada
-                    if (filaTurma.StatusAlgoritmo != StatusFila.EmEspera && filaTurma.StatusAlgoritmo != StatusFila.NaoAnalisadaAinda)
+                    if (!PossibilidadeAtribuicao(filaTurma))
                         continue;
 
+
                     List<FilaTurma> possibilidadesTurma = filaTurma.Turma.Posicoes
-                        .Where(pt => pt.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda
-                            || pt.StatusAlgoritmo == StatusFila.EmEspera).ToList();
+                        .Where(pt => PossibilidadeAtribuicao(pt)).ToList();
 
                     if (possibilidadesTurma.Count <= 0)
                         break;
@@ -440,8 +429,7 @@ namespace DistribuicaoDisciplinas.Services
 
             //Buscas os deadlocks de cada professor que tem turma em espera
             ICollection<Professor> professoresPendentes = _professores.Values
-                .Where(p => p.Prioridades.Any(pri => pri.StatusAlgoritmo == StatusFila.EmEspera
-                    || pri.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda)).ToList();
+                .Where(p => p.Prioridades.Any(pri => PossibilidadeAtribuicao(pri))).ToList();
 
             foreach (Professor p in professoresPendentes)
             {
@@ -471,6 +459,12 @@ namespace DistribuicaoDisciplinas.Services
                 .ToList();
         }
 
+        private bool PossibilidadeAtribuicao(FilaTurma filaTurma)
+        {
+            return filaTurma.StatusAlgoritmo == StatusFila.EmEspera
+                    || filaTurma.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda;
+        }
+
         /// <summary>
         /// Encontra toda a cadeia de deadlock a partir de um professor
         /// </summary>
@@ -496,8 +490,7 @@ namespace DistribuicaoDisciplinas.Services
             {
 
                 professor = ultimoBloqueio.FilaTurma.Turma.Posicoes
-                    .FirstOrDefault(x => x.StatusAlgoritmo == StatusFila.EmEspera
-                        || x.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda).Fila.Professor;
+                    .FirstOrDefault(x => PossibilidadeAtribuicao(x)).Fila.Professor;
 
                 FilaTurma ftBloqueada = professor.Prioridades
                             .FirstOrDefault(ft => ft.StatusAlgoritmo == StatusFila.EmEspera);  // VERIFICAR
@@ -538,13 +531,12 @@ namespace DistribuicaoDisciplinas.Services
         {
             //Atualiza o status de todas as filas da turma que foi atribuída para OutroProfessor
             filaTurma.Turma.Posicoes
-                .Where(pt => pt.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda
-                    || pt.StatusAlgoritmo == StatusFila.EmEspera).ToList()
+                .Where(pt => PossibilidadeAtribuicao(pt)).ToList()
                 .ForEach(ft => ft.StatusAlgoritmo = StatusFila.OutroProfessor);
 
             //Atualiza o status das FilasTurmas que chocam horário ou período com a turma atribuída
             foreach (FilaTurma prioridade in filaTurma.Fila.Professor.Prioridades
-                .Where(x => x.StatusAlgoritmo == StatusFila.EmEspera || x.StatusAlgoritmo == StatusFila.NaoAnalisadaAinda))
+                .Where(x => PossibilidadeAtribuicao(x)))
             {
                 if (!prioridade.Equals(filaTurma))
                 {
@@ -815,7 +807,7 @@ namespace DistribuicaoDisciplinas.Services
                         if (pos.Equals(pri))
                         {
                             ValidaAtribuicao validaAtribuicao = VerificaAtribuicaoTurma(pri, atribuicoes.Select(x => x.Turma).ToList());
-                            if (validaAtribuicao == ValidaAtribuicao.Valida)
+                            if (validaAtribuicao == ValidaAtribuicao.Valida || (validaAtribuicao == ValidaAtribuicao.ChoquePeriodo && pos.Turma.Disciplina.Curso.PermitirChoquePeriodo))
                             {  //Se não houver choque
                                 atribuicoes.Add(pri);
                                 chAtr += pri.Turma.CH;

@@ -22,7 +22,6 @@ namespace Repository.Interfaces
         bool Existe(params object[] key);
         int Count(Func<TEntity, bool> predicate);
         void ExecuteSQLCommand(string sql);
-        void LoadReference(TEntity entity, string propertyName);
 
     }
 }

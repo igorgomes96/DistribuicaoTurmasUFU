@@ -22,10 +22,6 @@ namespace Repository.Implementations
             _db = db ?? throw new ArgumentNullException(nameof(DbContext));
         }
 
-        public void LoadReference(TEntity entity, string propertyName)
-        {
-            _db.Entry(entity).Reference(propertyName).Load();
-        }
 
         public void ExecuteSQLCommand(string sql)
         {

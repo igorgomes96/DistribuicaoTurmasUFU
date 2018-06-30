@@ -23,7 +23,8 @@ namespace DistribuicaoDisciplinas.Map
                 Nome = destination.nome,
                 Unidade = destination.unidade,
                 Campus = destination.campus,
-                PermitirChoquePeriodo = destination.permitir_choque_periodo
+                PermitirChoquePeriodo = destination.permitir_choque_periodo,
+                PermitirChoqueHorario = destination.permitir_choque_horario
             };
         }
     }

@@ -1172,6 +1172,19 @@ namespace DistribuicaoDisciplinas.Services
 
             _cenarioFilaTurmaRep.SaveAll(distribuicao);
 
+            //Atribuições manuais
+            ICollection<AtribuicaoManualEntity> atribuicoesManuais = _atribuicaoManualRep.Query(x => x.num_cenario == numCenario)
+                .Select(at =>
+                {
+                    return new AtribuicaoManualEntity
+                    {
+                        num_cenario = novoCenario.NumCenario,
+                        id_turma = at.id_turma,
+                        siape = at.siape
+                    };
+                }).ToList();
+            _atribuicaoManualRep.SaveAll(atribuicoesManuais);
+
             return new CenarioDistribuicaoDto
             {
                 Resposta = CarregaDistribuicao(novoCenario.NumCenario),

@@ -24,7 +24,9 @@ namespace DistribuicaoDisciplinas.Services
 
         public bool ChoqueHorario(Turma turma1, Turma turma2)
         {
-            return turma1.Horarios.Any(h => turma2.Horarios.Any(x => x.Dia == h.Dia && x.Letra == h.Letra));
+            return !turma1.Disciplina.Curso.PermitirChoqueHorario &&
+                !turma2.Disciplina.Curso.PermitirChoqueHorario &&
+                turma1.Horarios.Any(h => turma2.Horarios.Any(x => x.Dia == h.Dia && x.Letra == h.Letra));
         }
 
         public bool ChoqueHorario(Turma turma, ICollection<Turma> turmas)

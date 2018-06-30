@@ -14,5 +14,6 @@ namespace DistribuicaoDisciplinas.Models
         public string Unidade { get; set; }
         public string Campus { get; set; }
         public bool PermitirChoquePeriodo { get; set; }
+        public bool PermitirChoqueHorario { get; set; }
     }
 }

@@ -391,8 +391,6 @@ namespace DistribuicaoDisciplinas.Services
                 Bloqueios = bloqueios == null ? new List<BloqueioDto>() : _bloqueioMapper.Map(bloqueios).OrderBy(x => x.Tamanho).ToList()
             };
 
-            Inconsistencias();
-
             return resposta;
 
         }
@@ -529,7 +527,7 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="filaTurma"></param>
         private void AtribuirTurma(FilaTurma filaTurma)
         {
-            //Atualiza o status de todas as filas da turma que foi atribuída para OutroProfessor
+            //Atualiza o status de todas as filas (passíveis de atribuição) da turma que foi atribuída para OutroProfessor
             filaTurma.Turma.Posicoes
                 .Where(pt => PossibilidadeAtribuicao(pt)).ToList()
                 .ForEach(ft => ft.StatusAlgoritmo = StatusFila.OutroProfessor);
@@ -708,6 +706,8 @@ namespace DistribuicaoDisciplinas.Services
         private void Remover(FilaTurma filaTurma, StatusFila novoStatus)
         {
             if (novoStatus == StatusFila.Atribuida) return;
+            if (filaTurma.StatusAlgoritmo != StatusFila.Atribuida) return;
+
             filaTurma.StatusAlgoritmo = novoStatus;
 
             Professor professor = filaTurma.Fila.Professor;
@@ -732,6 +732,38 @@ namespace DistribuicaoDisciplinas.Services
                 .Where(x => x.StatusAlgoritmo == StatusFila.Atribuida)
                 .Select(x => x.Turma)
                 .ToList();
+
+            //Percorre a fila da turma, alterando aquelas que estão com status = OutroProfessor;
+            //para estes, se a atribuição for válida:
+            //      * e o professor não tiver a CH preenchida ainda, altera o status para EmEspera
+            //      * e o professor tiver a CH preenchida, altera o status para CHCompleta
+            foreach (FilaTurma pos in filaTurma.Turma.Posicoes)
+            {
+                if (pos.StatusAlgoritmo == StatusFila.OutroProfessor && pos != filaTurma)
+                {
+                    ValidaAtribuicao verificacao = VerificaAtribuicaoTurma(pos);
+                    switch(verificacao)
+                    {
+                        case (ValidaAtribuicao.Valida):
+                            if (!pos.Fila.Professor.CHCompletaAtribuida())
+                                pos.StatusAlgoritmo = StatusFila.EmEspera;
+                            else
+                                pos.StatusAlgoritmo = StatusFila.CHCompleta;
+                            break;
+                        case (ValidaAtribuicao.ChoqueHorario):
+                            pos.StatusAlgoritmo = StatusFila.ChoqueHorario;
+                            break;
+                        case (ValidaAtribuicao.ChoquePeriodo):
+                            pos.StatusAlgoritmo = StatusFila.ChoquePeriodo;
+                            break;
+                        case (ValidaAtribuicao.RestricaoHorario):
+                            pos.StatusAlgoritmo = StatusFila.ChoqueRestricao;
+                            break;
+                        default:
+                            throw new Exception("'ValidaAtribuicao' inválido!");
+                    }
+                }
+            }
 
             foreach (FilaTurma ft in choques)
             {
@@ -764,15 +796,12 @@ namespace DistribuicaoDisciplinas.Services
         private void LimpezaInicial()
         {
             bool flagHouveAlteracaoStatus = false;
-            int countLoop = 0;
             do
             {
-                Trace.WriteLine($"Loop {++countLoop}.");
                 flagHouveAlteracaoStatus = false;
                 //Percorre todos os professores
                 foreach (Professor p in _professores.Values)
                 {
-                    Trace.WriteLine($"Professor {p.Siape} - {p.Nome}");
                     // Cria uma lista para armazenar as possíveis atribuições
                     List<FilaTurma> atribuicoes = new List<FilaTurma>();
 
@@ -789,7 +818,6 @@ namespace DistribuicaoDisciplinas.Services
                         {
                             if (pri.StatusAlgoritmo != StatusFila.Desconsiderada)  // ...se houve alteração de status
                             {
-                                Trace.WriteLine($"Status de #{pri.Turma.Id} {pri.Turma.CodigoDisc} - {pri.Turma.Disciplina.Nome} alterado de {Enum.GetName(typeof(StatusFila), pri.StatusAlgoritmo)} para Desconsiderada");
                                 pri.StatusAlgoritmo = StatusFila.Desconsiderada;  //...desconsidera FilaTurma
                                 flagHouveAlteracaoStatus = true;
                             }
@@ -823,8 +851,10 @@ namespace DistribuicaoDisciplinas.Services
 
         #region Public Methods
         /// <summary>
-        /// Altera o status da FilaTurma para DESCONSIDERADA, distribui os casos triviais, encontra os bloqueios
-        /// e retorna a resposta
+        /// Altera o status da FilaTurma para DESCONSIDERADA.
+        /// OBS.: ESSE MÉTODO DEVE SER CHAMADO SOMENTE PARA AJUSTES, APÓS A DISTRIBUIÇÃO JÁ TER SIDO FEITA
+        /// UMA VEZ QUE ELE SIMPLESMENTE ALTERA O STATUS DE UM TURMA JÁ ATRIBUÍDA, SEM FAZER OS AJUSTES
+        /// NECESSÁRIOS NA FILA DA TURMA.
         /// </summary>
         /// <param name="numCenario">Número do cenário a que se refere a distribuição</param>
         /// <param name="siape">Siape do professor utilizado para encontrar o objeto FilaTurma</param>
@@ -842,10 +872,12 @@ namespace DistribuicaoDisciplinas.Services
             if (filaTurma == null)
                 throw new FilaTurmaNaoEncontradaException();
 
-            Remover(filaTurma, StatusFila.Desconsiderada);
+            //Remover(filaTurma, StatusFila.Desconsiderada);
+
+            filaTurma.StatusAlgoritmo = StatusFila.Desconsiderada;
 
             //Se for uma turma atribuída manualmente, remove do banco e remove do encadeamento
-            if (_atribuicaoManualRep.Existe(numCenario, siape, turma))
+            if (_atribuicaoManualRep.Existe(numCenario, turma))
             {
                 _atribuicaoManualRep.Delete(numCenario, siape, turma);
                 filaTurma.Turma.Posicoes.Remove(filaTurma);
@@ -853,11 +885,11 @@ namespace DistribuicaoDisciplinas.Services
                 _filasTurmas.Remove(filaTurma);
             }
 
-            while (CasosTriviais()) { };
+            //while (CasosTriviais()) { };
 
-            ICollection<Bloqueio> bloqueios = GetBloqueios();
+            //ICollection<Bloqueio> bloqueios = GetBloqueios();
 
-            return GeraResposta(bloqueios);
+            return GeraResposta(null);
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
   <Class Name="DistribuicaoDisciplinas.Entities.CenarioEntity">
-    <Position X="7.75" Y="2" Width="2" />
+    <Position X="11" Y="12.75" Width="2" />
     <Members>
       <Property Name="FilasTurmas" Hidden="true" />
       <Property Name="num_cenario" Hidden="true" />
@@ -12,23 +12,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.CenarioFilaTurmaEntity">
-    <Position X="5.25" Y="3" Width="2" />
+    <Position X="14" Y="8.25" Width="2" />
     <Members>
       <Property Name="id_fila" Hidden="true" />
       <Property Name="id_turma" Hidden="true" />
       <Property Name="num_cenario" Hidden="true" />
     </Members>
-    <AssociationLine Name="Cenario" Type="DistribuicaoDisciplinas.Entities.CenarioEntity" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="6.25" Y="3" />
-        <Point X="6.25" Y="2.75" />
-        <Point X="7.5" Y="2.75" />
-        <Point X="7.5" Y="2.813" />
-        <Point X="7.75" Y="2.813" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>BAQAAAAAAAAAIAAAAAAAAAQAAAAAAAAAgAAAABAAAAA=</HashCode>
+      <HashCode>BAQAAACAAAAAIAAAAQAAAAQAAAAAAAAAgAAAABAAAAA=</HashCode>
       <FileName>Entities\CenarioFilaTurmaEntity.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -37,14 +28,14 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.CursoEntity">
-    <Position X="10.25" Y="9.5" Width="1.5" />
+    <Position X="14" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQABAAAAAAAACAAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>gQABAAAAAAAACAAEAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\CursoEntity.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.DisciplinaEntity">
-    <Position X="7.75" Y="8.5" Width="1.75" />
+    <Position X="14.25" Y="5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AQABAAAQASAAAAEAQAAAAIAAAgAAAAAAAAAAAAAAAEA=</HashCode>
       <FileName>Entities\DisciplinaEntity.cs</FileName>
@@ -54,7 +45,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.DistribuicaoCargaEntity">
-    <Position X="11" Y="2.75" Width="2" />
+    <Position X="13.75" Y="11.5" Width="2" />
     <Members>
       <Property Name="IdCenario" Hidden="true" />
       <Property Name="Siape" Hidden="true" />
@@ -69,7 +60,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.FilaEntity">
-    <Position X="7.5" Y="4" Width="1.75" />
+    <Position X="8.25" Y="3" Width="1.75" />
     <Members>
       <Property Name="codigo_disc" Hidden="true" />
       <Property Name="FilasTurmas" Hidden="true" />
@@ -78,11 +69,6 @@
     <Compartments>
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
-    <AssociationLine Name="Disciplina" Type="DistribuicaoDisciplinas.Entities.DisciplinaEntity">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.388" Y="1.13" />
-      </MemberNameLabel>
-    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAACACCAIAAgEAAAAAAAAICACAAAgAAAAAgAAAAgAgA=</HashCode>
       <FileName>Entities\FilaEntity.cs</FileName>
@@ -93,7 +79,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.FilaTurmaEntity">
-    <Position X="5.25" Y="4.5" Width="1.5" />
+    <Position X="9" Y="1.5" Width="1.5" />
     <Members>
       <Property Name="id_fila" Hidden="true" />
       <Property Name="id_turma" Hidden="true" />
@@ -108,7 +94,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.MinistraEntity">
-    <Position X="7.75" Y="7.25" Width="1.5" />
+    <Position X="9.25" Y="5.75" Width="1.5" />
     <Members>
       <Property Name="id_turma" Hidden="true" />
       <Property Name="siape" Hidden="true" />
@@ -123,7 +109,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.OfertaEntity">
-    <Position X="5.5" Y="9.25" Width="1.5" />
+    <Position X="12" Y="3" Width="1.5" />
     <Members>
       <Property Name="id_turma" Hidden="true" />
     </Members>
@@ -136,7 +122,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.ProfessorEntity">
-    <Position X="10.75" Y="5.25" Width="2.5" />
+    <Position X="8.5" Y="7.5" Width="2.5" />
     <Members>
       <Property Name="CHsPorCenarios" Hidden="true" />
       <Property Name="Restricoes" Hidden="true" />
@@ -150,7 +136,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.RestricaoEntity">
-    <Position X="12" Y="10" Width="1.5" />
+    <Position X="12.5" Y="9.75" Width="1.5" />
     <Members>
       <Property Name="siape" Hidden="true" />
     </Members>
@@ -163,24 +149,36 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="DistribuicaoDisciplinas.Entities.TurmaEntity">
-    <Position X="5.25" Y="6.25" Width="1.5" />
+    <Position X="11.75" Y="7.25" Width="1.5" />
     <Members>
       <Property Name="codigo_disc" Hidden="true" />
       <Property Name="FilasTurmas" Hidden="true" />
       <Property Name="Horarios" Hidden="true" />
       <Property Name="turma" Hidden="true" />
     </Members>
-    <AssociationLine Name="Disciplina" Type="DistribuicaoDisciplinas.Entities.DisciplinaEntity">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.893" Y="0.098" />
-      </MemberNameLabel>
-    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAACAAIAAAEAAEAAACAAAAAACAgAAAAAgAAAAAAgA=</HashCode>
       <FileName>Entities\TurmaEntity.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Disciplina" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DistribuicaoDisciplinas.Entities.AtribuicaoManualEntity">
+    <Position X="8.5" Y="12.5" Width="1.5" />
+    <Members>
+      <Property Name="id_turma" Hidden="true" />
+      <Property Name="num_cenario" Hidden="true" />
+      <Property Name="siape" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAIAAAAAAASAAAAAAAAAAAAAABAgAAA=</HashCode>
+      <FileName>Entities\AtribuicaoManualEntity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Cenario" />
+      <Property Name="Professor" />
+      <Property Name="Turma" />
     </ShowAsAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />

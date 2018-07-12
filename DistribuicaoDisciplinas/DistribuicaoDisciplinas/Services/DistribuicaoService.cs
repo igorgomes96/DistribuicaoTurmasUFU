@@ -576,8 +576,10 @@ namespace DistribuicaoDisciplinas.Services
         /// <param name="idCenario"></param>
         private void AtualizaCHProfessores(int idCenario)
         {
-            foreach (Professor p in _professores.Values)
-                p.CH = p.CHCenario(idCenario);
+            foreach (Professor p in _professores.Values) {
+                int ch = p.CHCenario(idCenario);
+                p.CH = ch;
+            }
 
         }
 
@@ -646,7 +648,8 @@ namespace DistribuicaoDisciplinas.Services
                 .Query(ft => ft.Turma.ano == _cenario.Ano
                     && ft.Turma.semestre == _cenario.Semestre
                     && ft.Fila.ano == _cenario.Ano
-                    && ft.Fila.semestre == _cenario.Semestre);
+                    && ft.Fila.semestre == _cenario.Semestre
+                    && !ft.Fila.Professor.afastado);
 
             _filasTurmas = Encadear(filasTurmasEntities);
 
@@ -879,7 +882,7 @@ namespace DistribuicaoDisciplinas.Services
             //Se for uma turma atribuída manualmente, remove do banco e remove do encadeamento
             if (_atribuicaoManualRep.Existe(numCenario, turma))
             {
-                _atribuicaoManualRep.Delete(numCenario, siape, turma);
+                _atribuicaoManualRep.Delete(numCenario, turma);
                 filaTurma.Turma.Posicoes.Remove(filaTurma);
                 filaTurma.Fila.Professor.Prioridades.Remove(filaTurma);
                 _filasTurmas.Remove(filaTurma);
@@ -1037,20 +1040,6 @@ namespace DistribuicaoDisciplinas.Services
             return resposta;
         }
 
-        private void Inconsistencias()
-        {
-            ICollection<Turma> inconsitencias = _turmas.Values
-                .Where(x => x.Posicoes.Count(y => y.StatusAlgoritmo == StatusFila.Atribuida) > 1).ToList();
-
-            foreach (Turma t in inconsitencias)
-            {
-                Trace.WriteLine($"Turma #{t.Id} {t.CodigoDisc} - {t.Disciplina.Nome}:");
-                t.Posicoes.Where(x => x.StatusAlgoritmo == StatusFila.Atribuida).ToList()
-                    .ForEach(x => Trace.WriteLine($"Professor {x.Fila.Professor.Siape} - {x.Fila.Professor.Nome}"));
-                Trace.WriteLine("");
-            }
-        }
-
         /// <summary>
         /// Encontra os casos triviais, encontra os bloqueios e retorna a distribuição.
         /// </summary>
@@ -1099,9 +1088,17 @@ namespace DistribuicaoDisciplinas.Services
                     return f;
                 }).ToList();
 
-            if (filasTurmasDto == null || filasTurmasDto.Count == 0) return null;
-
             PreparaDistribuicao(numCenario, filasTurmasDto);
+            if (filasTurmasDto == null || filasTurmasDto.Count == 0)
+            {
+                AtualizaCHProfessores(numCenario);
+                return new RespostaDto
+                {
+                    Professores = _professorMapper.Map(_professores.Values).OrderBy(x => x.Nome).ToList()
+                };
+            }
+
+            
             return GeraResposta(null);
         }
 

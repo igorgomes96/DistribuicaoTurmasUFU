@@ -33,7 +33,7 @@ namespace DistribuicaoDisciplinas.Map
                 Nome = destination.nome,
                 DataIngresso = destination.data_ingresso.Value,
                 Afastado = destination.afastado,
-                //CH = destination.carga_atual.Value,
+                CH = destination.carga_atual.Value,
                 Restricoes = _restricaoMapper.Map(destination.Restricoes),
                 CHsPorCenarios = _chPorCenarioMapper.Map(destination.CHsPorCenarios)
             };

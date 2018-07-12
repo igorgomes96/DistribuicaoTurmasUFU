@@ -18,18 +18,21 @@ namespace DistribuicaoDisciplinas.Services
         private readonly IGenericRepository<CenarioFilaTurmaEntity> _cenarioFilaTurmaRep;
         private readonly IGenericRepository<AtribuicaoManualEntity> _atribuicaoManualRep;
         private readonly IMapper<Cenario, CenarioEntity> _map;
+        private readonly IProfessoresService _professoresService;
 
         public CenariosService(IGenericRepository<CenarioEntity> rep,
             IGenericRepository<DistribuicaoCargaEntity> chsRep,
             IGenericRepository<CenarioFilaTurmaEntity> cenarioFilaTurmaRep,
             IGenericRepository<AtribuicaoManualEntity> atribuicaoManualRep,
-            IMapper<Cenario, CenarioEntity> map)
+            IMapper<Cenario, CenarioEntity> map,
+            IProfessoresService professoresService)
         {
             _rep = rep;
             _chsRep = chsRep;
             _cenarioFilaTurmaRep = cenarioFilaTurmaRep;
             _atribuicaoManualRep = atribuicaoManualRep;
             _map = map;
+            _professoresService = professoresService;
         }
 
         public void DeleteCenario(int idCenario)
@@ -37,7 +40,8 @@ namespace DistribuicaoDisciplinas.Services
             CenarioEntity cenarioEntity = _rep.Find(idCenario);
             if (cenarioEntity == null) throw new CenarioNaoEncontradoException("Cenário não encontrado!");
 
-            _chsRep.Delete(x => x.IdCenario == idCenario);
+            if (_chsRep.Count(x => x.IdCenario == idCenario) > 0)
+                _chsRep.Delete(x => x.IdCenario == idCenario);
             _atribuicaoManualRep.Delete(x => x.num_cenario == idCenario);
             _cenarioFilaTurmaRep.Delete(x => x.num_cenario == idCenario);
             _rep.Delete(idCenario);
@@ -89,7 +93,9 @@ namespace DistribuicaoDisciplinas.Services
 
         public Cenario NovoCenario(Cenario cenario)
         {
-            return _map.Map(_rep.Add(_map.Map(cenario)));
+            Cenario c = _map.Map(_rep.Add(_map.Map(cenario)));
+            return c;
         }
+
     }
 }

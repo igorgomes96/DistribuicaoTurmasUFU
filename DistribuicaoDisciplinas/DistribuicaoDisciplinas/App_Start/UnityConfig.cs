@@ -28,6 +28,7 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             container.RegisterSingleton<IMinistraRepository, MinistraRepository>();
             container.RegisterSingleton<ICenariosFilasTurmasRepository, CenariosFilasTurmasRepository>();
+            container.RegisterSingleton<IDistribuicaoCargaCenarioRepository, DistribuicaoCargaCenarioRepository>();
 
             //Mapper
             //Entity
@@ -66,6 +67,7 @@ namespace DistribuicaoDisciplinas
             container.RegisterSingleton<ITurmasService, TurmasService>();
             container.RegisterType<IDistribuicaoService, DistribuicaoService>();
             container.RegisterSingleton<IMinistraService, MinistraService>();
+            container.RegisterSingleton<IDistribuicaoCargaCenarioService, DistribuicaoCargaCenarioService>();
             container.RegisterSingleton<ICenariosFilasTurmasService, CenariosFilasTurmasService>();
 
             GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);

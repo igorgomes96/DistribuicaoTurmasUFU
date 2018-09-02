@@ -160,6 +160,7 @@
     <Compile Include="Controllers\CenariosController.cs" />
     <Compile Include="Controllers\DistribuicaoController.cs" />
     <Compile Include="Controllers\ProfessoresController.cs" />
+    <Compile Include="Controllers\UtilController.cs" />
     <Compile Include="Dto\BloqueioDto.cs" />
     <Compile Include="Dto\CenarioDistribuicaoDto.cs" />
     <Compile Include="Dto\CenarioDto.cs" />

@@ -94,7 +94,7 @@ namespace Repository.Implementations
             return entidade;
         }
 
-        protected void CleanContext(params EntityState[] entityStates)
+        public void CleanContext(params EntityState[] entityStates)
         {
             foreach (EntityState entityState in entityStates)
             {

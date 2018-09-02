@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Repository.Interfaces
         bool Existe(params object[] key);
         int Count(Func<TEntity, bool> predicate);
         void ExecuteSQLCommand(string sql);
+        void CleanContext(params EntityState[] entityStates);
 
     }
 }

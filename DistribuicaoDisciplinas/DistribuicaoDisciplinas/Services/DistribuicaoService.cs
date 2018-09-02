@@ -49,6 +49,7 @@ namespace DistribuicaoDisciplinas.Services
         private readonly ICenariosFilasTurmasService _cenariosFilasTurmasService;
         private readonly IFilasTurmasService _filasTurmasService;
         private readonly IRestricoesService _restricoesService;
+        private readonly IDistribuicaoCargaCenarioService _chsService;
         #endregion
 
         #region Map
@@ -76,6 +77,7 @@ namespace DistribuicaoDisciplinas.Services
             ICenariosFilasTurmasService cenariosFilasTurmasService,
             IFilasTurmasService filasTurmasService,
             IRestricoesService restricoesService,
+            IDistribuicaoCargaCenarioService chsService,
             IMapper<Turma, TurmaDto> turmaMapper,
             IMapper<Fila, FilaDto> filaMapper,
             IMapper<Bloqueio, BloqueioDto> bloqueioMapper,
@@ -98,6 +100,7 @@ namespace DistribuicaoDisciplinas.Services
             _cenariosFilasTurmasService = cenariosFilasTurmasService;
             _filasTurmasService = filasTurmasService;
             _restricoesService = restricoesService;
+            _chsService = chsService;
 
             _turmaMapper = turmaMapper;
             _filaMapper = filaMapper;
@@ -577,7 +580,7 @@ namespace DistribuicaoDisciplinas.Services
         private void AtualizaCHProfessores(int idCenario)
         {
             foreach (Professor p in _professores.Values) {
-                int ch = p.CHCenario(idCenario);
+                int ch = _chsService.GetCargaProfessor(idCenario, p.Siape);
                 p.CH = ch;
             }
 
@@ -809,7 +812,7 @@ namespace DistribuicaoDisciplinas.Services
                     List<FilaTurma> atribuicoes = new List<FilaTurma>();
 
                     // Defini o limite máximo de ch a ser atribuída
-                    int ch = p.CHCenario(_cenario.NumCenario) + 2;
+                    int ch = _chsService.GetCargaProfessor(_cenario.NumCenario, p.Siape) + 2;
                     //Inicializa a ch atribuída do professor = 0
                     int chAtr = 0;
 
@@ -866,7 +869,7 @@ namespace DistribuicaoDisciplinas.Services
         /// <returns>Objeto RespostaDto</returns>
         /// <exception cref="FilaTurmaNaoEncontradaException"></exception>
         /// <exception cref="CenarioNaoEncontradoException"></exception>
-        public RespostaDto Remover(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto)
+        public RespostaDto Remover(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto, bool modoAjuste = false)
         {
             PreparaDistribuicao(numCenario, filasTurmasDto);
 
@@ -888,11 +891,16 @@ namespace DistribuicaoDisciplinas.Services
                 _filasTurmas.Remove(filaTurma);
             }
 
-            //while (CasosTriviais()) { };
+            if (!modoAjuste)
+            {
+                while (CasosTriviais()) { };
 
-            //ICollection<Bloqueio> bloqueios = GetBloqueios();
+                ICollection<Bloqueio> bloqueios = GetBloqueios();
 
-            return GeraResposta(null);
+                return GeraResposta(bloqueios);
+            }
+            else
+                return GeraResposta(null);
         }
 
         /// <summary>
@@ -1089,9 +1097,9 @@ namespace DistribuicaoDisciplinas.Services
                 }).ToList();
 
             PreparaDistribuicao(numCenario, filasTurmasDto);
+            AtualizaCHProfessores(numCenario);
             if (filasTurmasDto == null || filasTurmasDto.Count == 0)
             {
-                AtualizaCHProfessores(numCenario);
                 return new RespostaDto
                 {
                     Professores = _professorMapper.Map(_professores.Values).OrderBy(x => x.Nome).ToList()

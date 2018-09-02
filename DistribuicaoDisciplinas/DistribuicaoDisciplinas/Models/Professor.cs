@@ -15,7 +15,7 @@ namespace DistribuicaoDisciplinas.Models
         {
             Restricoes = new HashSet<Restricao>();
             Prioridades = new HashSet<FilaTurma>();
-            CHsPorCenarios = new HashSet<DistribuicaoCarga>();
+            //CHsPorCenarios = new HashSet<DistribuicaoCarga>();
         }
 
         private string siape;
@@ -32,7 +32,7 @@ namespace DistribuicaoDisciplinas.Models
 
         public ICollection<Restricao> Restricoes { get; set; }
         public ICollection<FilaTurma> Prioridades { get; set; }
-        public ICollection<DistribuicaoCarga> CHsPorCenarios { get; set; }
+        //public ICollection<DistribuicaoCarga> CHsPorCenarios { get; set; }
 
         public FilaTurma PrimeiraPrioridadeDisponivel()
         {
@@ -66,10 +66,10 @@ namespace DistribuicaoDisciplinas.Models
         /// </summary>
         /// <param name="idCenario"></param>
         /// <returns></returns>
-        public int CHCenario(int idCenario)
-        {
-            return CHsPorCenarios.Where(x => x.IdCenario == idCenario).Select(x => x.CH).Sum();
-        }
+        //public int CHCenario(int idCenario)
+        //{
+        //    return CHsPorCenarios.Where(x => x.IdCenario == idCenario).Select(x => x.CH).Sum();
+        //}
 
         /// <summary>
         /// CH já atribuída.

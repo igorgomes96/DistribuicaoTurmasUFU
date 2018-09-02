@@ -10,5 +10,6 @@ namespace DistribuicaoDisciplinas.Repository
     public interface IDistribuicaoCargaCenarioRepository : IGenericRepository<DistribuicaoCargaEntity>
     {
         void DeleteByCenario(int numCenario);
+        void CleanContext();
     }
 }

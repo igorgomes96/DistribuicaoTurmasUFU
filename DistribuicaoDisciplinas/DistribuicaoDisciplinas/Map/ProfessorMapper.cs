@@ -35,7 +35,7 @@ namespace DistribuicaoDisciplinas.Map
                 Afastado = destination.afastado,
                 CH = destination.carga_atual.Value,
                 Restricoes = _restricaoMapper.Map(destination.Restricoes),
-                CHsPorCenarios = _chPorCenarioMapper.Map(destination.CHsPorCenarios)
+                //CHsPorCenarios = _chPorCenarioMapper.Map(destination.CHsPorCenarios)
             };
         }
     }

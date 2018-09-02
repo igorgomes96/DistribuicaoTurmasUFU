@@ -42,8 +42,10 @@ namespace DistribuicaoDisciplinas.Services
 
             if (_chsRep.Count(x => x.IdCenario == idCenario) > 0)
                 _chsRep.Delete(x => x.IdCenario == idCenario);
-            _atribuicaoManualRep.Delete(x => x.num_cenario == idCenario);
-            _cenarioFilaTurmaRep.Delete(x => x.num_cenario == idCenario);
+            if (_atribuicaoManualRep.Count(x => x.num_cenario == idCenario) > 0)
+                _atribuicaoManualRep.Delete(x => x.num_cenario == idCenario);
+            if (_cenarioFilaTurmaRep.Count(x => x.num_cenario == idCenario) > 0)
+                _cenarioFilaTurmaRep.Delete(x => x.num_cenario == idCenario);
             _rep.Delete(idCenario);
 
         }
@@ -88,7 +90,7 @@ namespace DistribuicaoDisciplinas.Services
 
         public ICollection<Cenario> List()
         {
-            return _map.Map(_rep.List());
+            return _map.Map(_rep.List().OrderBy(x => x.ano).ThenBy(x => x.semestre).ToList());
         }
 
         public Cenario NovoCenario(Cenario cenario)

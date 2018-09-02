@@ -92,11 +92,11 @@ namespace DistribuicaoDisciplinas.Controllers
         }
 
         [Route("api/Distribuicao/RemocaoManual/{cenario}/{siape}/{idTurma}")]
-        public IHttpActionResult PostRemoverTurmaManualmente(int cenario, string siape, int idTurma, ICollection<FilaTurmaDto> filasTurmas)
+        public IHttpActionResult PostRemoverTurmaManualmente(int cenario, string siape, int idTurma, bool? modoAjuste, [FromBody]ICollection<FilaTurmaDto> filasTurmas)
         {
             try
             {
-                return Ok(_distService.Remover(cenario, siape, idTurma, filasTurmas));
+                return Ok(_distService.Remover(cenario, siape, idTurma, filasTurmas, modoAjuste.HasValue && modoAjuste.Value));
             }
             catch (CenarioNaoEncontradoException e)
             {

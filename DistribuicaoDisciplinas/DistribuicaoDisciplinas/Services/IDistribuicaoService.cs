@@ -11,7 +11,7 @@ namespace DistribuicaoDisciplinas.Services
     {
         RespostaDto Distribuir(int numCenario, ICollection<FilaTurmaDto> filasTurmasDto);
         RespostaDto Atribuir(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
-        RespostaDto Remover(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
+        RespostaDto Remover(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto, bool modoAjuste = false);
         RespostaDto UltimaPrioridade(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
         RespostaDto FinalFila(int numCenario, string siape, int turma, ICollection<FilaTurmaDto> filasTurmasDto);
         RespostaDto CarregaDistribuicao(int numCenario);

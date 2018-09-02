@@ -34,6 +34,8 @@ namespace DistribuicaoDisciplinas.Repository
             //_db.Dispose();
         }
 
+        
+
         public void SaveDistribuicao(ICollection<CenarioFilaTurmaEntity> distribuicao)
         {
             //Modelo dbDisposable = new Modelo();

@@ -10,10 +10,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>06/28/2018 18:51:53</publishTime>
+      <publishTime>07/12/2018 21:06:31</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>06/28/2018 18:51:53</publishTime>
+      <publishTime>07/12/2018 21:06:30</publishTime>
     </File>
     <File Include="bin/CommonServiceLocator.dll">
       <publishTime>02/02/2018 20:28:39</publishTime>
@@ -22,10 +22,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/02/2018 20:28:39</publishTime>
     </File>
     <File Include="bin/DistribuicaoDisciplinas.dll">
-      <publishTime>06/28/2018 18:51:06</publishTime>
+      <publishTime>07/12/2018 21:06:15</publishTime>
     </File>
     <File Include="bin/DistribuicaoDisciplinas.pdb">
-      <publishTime>06/28/2018 18:51:06</publishTime>
+      <publishTime>07/12/2018 21:06:15</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>02/02/2018 20:28:25</publishTime>
@@ -37,10 +37,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/02/2018 20:28:25</publishTime>
     </File>
     <File Include="bin/Mapping.dll">
-      <publishTime>06/24/2018 19:53:27</publishTime>
+      <publishTime>07/12/2018 20:42:16</publishTime>
     </File>
     <File Include="bin/Mapping.pdb">
-      <publishTime>06/24/2018 19:53:27</publishTime>
+      <publishTime>07/12/2018 20:42:16</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>02/02/2018 20:28:32</publishTime>
@@ -88,10 +88,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/02/2018 20:28:30</publishTime>
     </File>
     <File Include="bin/Repository.dll">
-      <publishTime>06/28/2018 18:50:56</publishTime>
+      <publishTime>07/12/2018 20:42:16</publishTime>
     </File>
     <File Include="bin/Repository.pdb">
-      <publishTime>06/28/2018 18:50:56</publishTime>
+      <publishTime>07/12/2018 20:42:16</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>02/02/2018 20:28:35</publishTime>
@@ -601,7 +601,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/02/2018 20:28:46</publishTime>
     </File>
     <File Include="Entities/DiagramaEntities.cd">
-      <publishTime>06/09/2018 12:37:49</publishTime>
+      <publishTime>07/02/2018 20:25:58</publishTime>
     </File>
     <File Include="Global.asax">
       <publishTime>02/02/2018 20:28:21</publishTime>
@@ -610,7 +610,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/31/2018 23:29:05</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>06/28/2018 18:51:14</publishTime>
+      <publishTime>07/12/2018 21:06:18</publishTime>
     </File>
     <File Include="Web.config">
       <publishTime>06/24/2018 19:53:47</publishTime>

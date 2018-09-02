@@ -24,12 +24,17 @@ namespace DistribuicaoDisciplinas.Repository
                     "delete from distribuicao_carga where cenario = @numCenario",
                     new NpgsqlParameter("@numCenario", numCenario));
                 _db.Database.CurrentTransaction.Commit();
-                CleanContext(EntityState.Deleted);
+                CleanContext(EntityState.Added, EntityState.Deleted, EntityState.Modified, EntityState.Unchanged);
             }
             catch
             {
                 _db.Database.CurrentTransaction.Rollback();
             }
+        }
+
+        public void CleanContext()
+        {
+            base.CleanContext(EntityState.Added, EntityState.Deleted, EntityState.Modified, EntityState.Unchanged);
         }
 
     }

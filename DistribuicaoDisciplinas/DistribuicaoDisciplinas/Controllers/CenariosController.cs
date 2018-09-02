@@ -84,7 +84,6 @@ namespace DistribuicaoDisciplinas.Controllers
             {;
                 CenarioDto retorno = _cenarioMapper.Map(_cenariosService.NovoCenario(cenario));
                 _distribuicaoCargaService.CHPadraoPorCenario(retorno.NumCenario);
-                _db.Databas
                 return Ok(retorno);
             } catch (Exception e)
             {

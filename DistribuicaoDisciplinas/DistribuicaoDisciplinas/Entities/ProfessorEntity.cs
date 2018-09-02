@@ -13,7 +13,7 @@ namespace DistribuicaoDisciplinas.Entities
         public ProfessorEntity()
         {
             Restricoes = new HashSet<RestricaoEntity>();
-            CHsPorCenarios = new HashSet<DistribuicaoCargaEntity>();
+            //CHsPorCenarios = new HashSet<DistribuicaoCargaEntity>();
         }
 
         [Key]
@@ -32,7 +32,7 @@ namespace DistribuicaoDisciplinas.Entities
         public string status { get; set; }
 
         public virtual ICollection<RestricaoEntity> Restricoes { get; set; }
-        public virtual ICollection<DistribuicaoCargaEntity> CHsPorCenarios { get; set; }
+        //public virtual ICollection<DistribuicaoCargaEntity> CHsPorCenarios { get; set; }
 
     }
 }

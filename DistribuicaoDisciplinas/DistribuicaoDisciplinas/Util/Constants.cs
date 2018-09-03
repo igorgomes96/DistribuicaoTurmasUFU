@@ -12,6 +12,7 @@ namespace DistribuicaoDisciplinas.Util
         {
             public const string Deadlock = "Deadlock";
             public const string DisciplinaCHDiferente4 = "Disciplina com CH diferente de 4 horas";
+            public const string UltrapassaCH = "Ultrapassa a carga horária do professor";
         }
     }
 }

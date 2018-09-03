@@ -19,7 +19,7 @@ namespace DistribuicaoDisciplinas.Util
             OutroProfessor = 7,     //FilaTurma em que a turma já foi atribuída a outro professor no momento da análise
             CHCompleta = 8,         //FilaTurma em que o professor já está com CH completa no momento em que foi atribuída a outro professor
             UltrapassariaCH = 9,    //FilaTurma que se atribuída faria a CH do professor ser ultrapassada
-            CHLimite = 10           //Se a turma for atribuída, o professor ultrapassará a ch do professor, mas ficará igual ou abaixo do limite CH_LIMITE
+            //CHLimite = 10           //Se a turma for atribuída, o professor ultrapassará a ch do professor, mas ficará igual ou abaixo do limite CH_LIMITE
         }
 
         public enum ValidaAtribuicao

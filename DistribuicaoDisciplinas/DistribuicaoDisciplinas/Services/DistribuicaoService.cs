@@ -309,7 +309,7 @@ namespace DistribuicaoDisciplinas.Services
                     //Todavia, em passos anteriores desse foreach, o status de filaTurma que antes estava
                     //EmEspera ou NaoAnalisadaAinda pode ter sido alterado devido a atribuição de alguma outra turma de p,
                     //com isso, podendo ter conflitado horário ou período, por exemplo. Portanto, não posso considerar que 
-                    //ela ainda seja uma possibilidade de atribuição para o professor p, devendo então passa para a próxima
+                    //ela ainda seja uma possibilidade de atribuição para o professor p, devendo então passar para a próxima
                     //filaTurma a ser analisada
                     if (!PossibilidadeAtribuicao(filaTurma))
                         continue;
@@ -329,7 +329,7 @@ namespace DistribuicaoDisciplinas.Services
                         && filaTurma.Turma.CH == CH_DEFAULT)                     //Verifica se a CH da turma tem CH default
                     {
 
-                        if ((p.CHAtribuida() + filaTurma.Turma.CH + chEmEspera) <= chLimite)
+                        if ((p.CHAtribuida() + filaTurma.Turma.CH + chEmEspera) <= p.CH)
                         {
                             AtribuirTurma(filaTurma);
                             flagHouveAtribuicao = true;
@@ -344,6 +344,12 @@ namespace DistribuicaoDisciplinas.Services
                                 break;
                             }
 
+                        }
+                        //Ultrapassaria CH, mas dentro do limite: confirmação
+                        else if ((p.CHAtribuida() + filaTurma.Turma.CH + chEmEspera) <= chLimite)
+                        {
+                            filaTurma.StatusAlgoritmo = StatusFila.EmEspera;
+                            break;
                         }
                         else if ((p.CHAtribuida() + filaTurma.Turma.CH) > chLimite && chEmEspera <= 0)
                         //Se ultrapassar a CH na atribuição, mas não tiver turmas em espera
@@ -421,10 +427,36 @@ namespace DistribuicaoDisciplinas.Services
         }
 
         /// <summary>
+        /// Retorna as turmas em espera que ultrapassariam a ch do professor se atribuídas, mas dentro do limite ACRESCIMO_CH
+        /// </summary>
+        /// <returns></returns>
+        private ICollection<Bloqueio> GetUltrapassaCH()
+        {
+            ICollection<Bloqueio> bloqueios = new List<Bloqueio>();
+            foreach (Professor p in _professores.Values)
+            {
+                FilaTurma primeiraPrioridade = p.PrimeiraPrioridadeDisponivel();
+                if (primeiraPrioridade == null) continue;
+                int chComAtribuicao = (primeiraPrioridade.Turma.CH + p.CHAtribuida());
+                if (primeiraPrioridade.Turma.CH == CH_DEFAULT && chComAtribuicao <= (p.CH + ACRESCIMO_CH) && chComAtribuicao > p.CH)
+                {
+                    bloqueios.Add(new Bloqueio
+                    {
+                        TipoBloqueio = TipoBloqueio.UltrapassaCH,
+                        FilaTurma = p.PrimeiraPrioridadeDisponivel()
+                    });
+                }
+            }
+            return bloqueios;
+        }
+
+
+
+        /// <summary>
         /// Identifica e retorna todos os deadlocks
         /// </summary>
         /// <returns>Lista de todos os deadlocks</returns>
-        private ICollection<Bloqueio> GetTodosDeadlocks()
+        private ICollection<Bloqueio> GetTodosDeadlocks(ICollection<Bloqueio> ultrapassaCH)
         {
             ICollection<Bloqueio> deadlocks = new List<Bloqueio>();
 
@@ -436,8 +468,11 @@ namespace DistribuicaoDisciplinas.Services
             {
                 Bloqueio deadlock = GetDeadlock(p);
 
+                bool containsUltrapassaCH = ultrapassaCH
+                    .Any(x => x.FilaTurma.Turma.Id == deadlock.FilaTurma.Turma.Id && x.FilaTurma.Fila.Id == deadlock.FilaTurma.Fila.Id);
+
                 //Verifica se é uma turma que somente está esperando confirmação por ter CH diferente da CH default
-                if (deadlock.Tamanho == 2 && deadlock.Dependente.FilaTurma.Turma.CH != CH_DEFAULT)
+                if (containsUltrapassaCH || (deadlock.Tamanho == 2 && (deadlock.Dependente.FilaTurma.Turma.CH != CH_DEFAULT)))
                     continue;
 
                 //Verifico se esse deadlock já foi identificado. Para isso,
@@ -453,7 +488,9 @@ namespace DistribuicaoDisciplinas.Services
 
         private ICollection<Bloqueio> GetBloqueios()
         {
-            return GetTodosDeadlocks().Concat(GetCHNotDefault())
+            ICollection<Bloqueio> ultrapassaCH = GetUltrapassaCH();
+
+            return ultrapassaCH.Concat(GetTodosDeadlocks(ultrapassaCH)).Concat(GetCHNotDefault())
                 .OrderBy(x => x.Tamanho)
                 .ThenBy(x => x.FilaTurma.PrioridadeReal)
                 .ThenBy(x => x.FilaTurma.Fila.PosicaoReal)
